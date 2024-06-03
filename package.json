@@ -1,0 +1,37 @@
+{
+  "name": "noble_front",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.1.1",
+    "2gis-maps": "^3.7.3",
+    "axios": "^1.6.8",
+    "flowbite": "^2.2.1",
+    "flowbite-vue": "^0.1.2",
+    "vue": "^3.3.11",
+    "vue-i18n": "^9.9.0",
+    "vue-router": "^4.2.5",
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.3.3",
+    "@vitejs/plugin-vue": "^4.5.2",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.49.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "postcss": "^8.4.33",
+    "prettier": "^3.0.3",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.10"
+  }
+}

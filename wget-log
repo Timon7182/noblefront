@@ -1,0 +1,6 @@
+--2024-01-23 10:32:21--  https://s3-alpha-sig.figma.com/img/d14a/6f70/7a33b414075640097cca3e58cbf87b8f?Expires=1707091200
+Resolving s3-alpha-sig.figma.com (s3-alpha-sig.figma.com)... 18.165.122.115, 18.165.122.113, 18.165.122.70, ...
+Connecting to s3-alpha-sig.figma.com (s3-alpha-sig.figma.com)|18.165.122.115|:443... connected.
+HTTP request sent, awaiting response... 403 Forbidden
+2024-01-23 10:32:21 ERROR 403: Forbidden.
+
