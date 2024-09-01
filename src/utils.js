@@ -8,5 +8,5 @@ export function currencyFormatter() {
 }
 
 export function getImgUrl(path) {
-    return `${BASE_URL}/images${path}`
+    return `${path}`
 }
