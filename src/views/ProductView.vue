@@ -28,7 +28,7 @@
 
             <div class="my-5 border-t-2 border-b-2 font-semibold border-gray-950 p-1 flex justify-between items-center">
               <button @click="toggleDescription">
-                {{ $t('description') }}
+                Описание
               </button>
               <button @click="toggleDescription">
                 <span v-if="showDescription">-</span>
@@ -41,7 +41,7 @@
 
             <div class="my-5 border-t-2 border-b-2 font-semibold border-gray-950 p-1 flex justify-between items-center">
               <button @click="toggleHistory">
-                {{ $t('history') }}
+                История
               </button>
               <button @click="toggleHistory">
                 <span v-if="showHistory">-</span>
@@ -50,6 +50,20 @@
             </div>
             <div v-if="showHistory">
               <p class="p-1">{{ item.history }}</p>
+            </div>
+
+            <div class="my-5 border-t-2 border-b-2 font-semibold border-gray-950 p-1 flex justify-between items-center">
+              <button @click="toggleInstagram">
+                Instagram
+              </button>
+              <button @click="toggleInstagram">
+                <span v-if="showInstagram">-</span>
+                <span v-else>+</span>
+              </button>
+            </div>
+            <div v-if="showInstagram">
+              <label>dsds</label>
+              <div id="instagram-post" class="mt-10 flex justify-center"></div>
             </div>
 
             <p class="my-4 self-center text-4xl">
@@ -71,20 +85,12 @@
               :itemsCount="cart.filter(cartItem => cartItem.id === item.id).length" @add="addToCart(item)"
               @remove="removeFromCart(item)">
             </InCartButton>
-
-            <div class="mt-10 flex justify-center">
-              <div id="instagram-post"></div>
-            </div>
           </div>
         </div>
-
         <div v-if="item.productionItems && item.productionItems.length">
-          <h2 class="text-xl font-semibold my-5">Товары из этой коллекции</h2>
+          <h2 class="text-xl font-semibold my-5 text-center">Товары из этой коллекции</h2>
           <Collections :items="item.productionItems"/>
         </div>
-        
-
-
       </div>
     </Transition>
     <div v-else class="flex items-center justify-center p-10 h-screen">
@@ -92,7 +98,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { defineComponent, watch } from 'vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
@@ -123,12 +128,12 @@ export default defineComponent({
       mainImage: null,
       imageIndex: 0,
       showDescription: false,
-      showHistory: false
+      showHistory: false,
+      showInstagram: false
     }
   },
   computed: {
     breadcrumbItems() {
-      console.log(this.$route)
       return [
         {
           label: this.item.name,
@@ -167,78 +172,67 @@ export default defineComponent({
   methods: {
     fetchItem() {
       try {
-        const searchParams = new URLSearchParams()
-        searchParams.append('type', this.$route.params.type)
-        searchParams.append('productionId', this.$route.params.id)
+        const searchParams = new URLSearchParams();
+        searchParams.append('type', this.$route.params.type);
+        searchParams.append('productionId', this.$route.params.id);
 
         api.get(`${GET_ONE_URL}?${searchParams.toString()}`).then((response) => {
-          this.item = response.data
-        })
+          this.item = response.data;
+        });
       } catch (error) {
-        console.error('Error fetching item:', error)
+        console.error('Error fetching item:', error);
       }
     },
     currencyFormatter,
     getImgUrl,
-    handleMoveLeft() {
-      const container = this.$refs.imageContainer
-      container.scrollTo({
-        left: container.scrollLeft - container.clientWidth / 3,
-        behavior: 'smooth'
-      })
-    },
-    handleMoveRight() {
-      const container = this.$refs.imageContainer
-      container.scrollTo({
-        left: container.scrollLeft + container.clientWidth / 3,
-        behavior: 'smooth'
-      })
-    },
-    changeMainImage(url) {
-      this.mainImage = url
-    },
-    getImageByIndex(index) {
-      if (!this.item.images) return null
-
-      const sorted = this.item.images.sort((a, b) => a.order - b.order)
-      return sorted[index].image
-    },
-    addToCart(item) {
-      this.$store.commit('addToCart', item)
-    },
-    removeFromCart(item) {
-      this.$store.commit('removeSingleFromCart', item)
-    },
     toggleDescription() {
-      this.showDescription = !this.showDescription
+      this.showDescription = !this.showDescription;
     },
     toggleHistory() {
-      this.showHistory = !this.showHistory
+      this.showHistory = !this.showHistory;
+    },
+    toggleInstagram() {
+      this.showInstagram = !this.showInstagram;
+      console.log(this.showInstagram)
+      if (this.showInstagram) {
+        this.loadInstagramEmbed();
+      }
     },
     loadInstagramEmbed() {
-      if (!window.instgrm) {
+      console.log(window.instgrm)
+      console.log(this.instagramLink)
+      if (this.instagramLink && window.instgrm) {
+        const embedContainer = document.getElementById('instagram-post');
+        embedContainer.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${this.instagramLink}" data-instgrm-version="12"></blockquote>`;
+        window.instgrm.Embeds.process();
+      } else if (this.instagramLink) {
         const script = document.createElement('script');
         script.src = 'https://www.instagram.com/embed.js';
         script.async = true;
         script.defer = true;
         script.onload = () => this.embedInstagramPost();
         document.head.appendChild(script);
-      } else {
-        this.embedInstagramPost();
       }
     },
     embedInstagramPost() {
-      const embedContainer = document.getElementById('instagram-post');
-      embedContainer.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${this.instagramLink}" data-instgrm-version="12"></blockquote>`;
-      window.instgrm.Embeds.process();
+      if (window.instgrm) {
+        const embedContainer = document.getElementById('instagram-post');
+        embedContainer.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${this.instagramLink}" data-instgrm-version="12"></blockquote>`;
+        window.instgrm.Embeds.process();
+      }
     }
   }
 })
 </script>
 
-<style>
+
+
+<style scoped>
 .carousel img {
   object-fit: cover;
   height: 500px;
+}
+.text-center {
+  text-align: center;
 }
 </style>

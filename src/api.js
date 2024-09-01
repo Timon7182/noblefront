@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const BASE_URL = 'https://195.49.210.129';
+export const BASE_URL = 'https://noble-79d83ff80894.herokuapp.com';
 
 let config = {
-    baseURL: `${BASE_URL}/api/rest/productionService/`,
+    baseURL: `${BASE_URL}/rest/productionService/`,
     timeout: 30000,
 }
 

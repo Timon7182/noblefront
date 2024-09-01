@@ -19,11 +19,11 @@
           </p>
           <p class="text-center font-light text-xl">
             <span class="">
-              <template v-if="item.newPrce">
+              <template v-if="item.newPrice">
                 <span class="line-through">
                   {{currencyFormatter().format(item.oldPrice)}}тг
                 </span>
-                |{{currencyFormatter().format(item.newPrce)}}тг
+                |{{currencyFormatter().format(item.newPrice)}}тг
               </template>
               <template v-else>
                 {{currencyFormatter().format(item.oldPrice)}}тг
