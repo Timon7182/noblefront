@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/api";
 
 export function currencyFormatter() {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('de-De', {
         currency: 'KZT',
         maximumFractionDigits: 0
     });

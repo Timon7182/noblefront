@@ -191,6 +191,12 @@ export default defineComponent({
     toggleHistory() {
       this.showHistory = !this.showHistory;
     },
+    addToCart(item) {
+      this.$store.commit('addToCart', item)
+    },
+    removeFromCart(item) {
+      this.$store.commit('removeSingleFromCart', item)
+    },
     toggleInstagram() {
       this.showInstagram = !this.showInstagram;
       console.log(this.showInstagram)

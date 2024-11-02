@@ -30,7 +30,7 @@
           </catalogue-item>
         </template>
         <template v-else>
-          <div class="w-full h-[300px] col-span-4 flex items-center justify-center">
+          <div class="w-full h-[100px] col-span-4 flex items-center justify-center">
             <h1 class="text-5xl uppercase font-thin mx-auto text-center">{{$t('products_not_found')}}</h1>
           </div>
         </template>
@@ -102,7 +102,6 @@ onMounted(async () => {
 })
 
 const applyFilters = (query) => {
-  console.log("Here is query", query)
   fetchProducts()
 }
 

@@ -14,7 +14,7 @@ const mainStore = {
             return state.cart.filter(item => item.id == id)
         },
         categories: state => state.categories,
-        catBrands: state => state.categories.find(el => el.name === 'Бренды')?.subCategoryPojoList || null,
+        catBrands: state => state.categories.find(el => el.name === 'Бренд')?.subCategoryPojoList || null,
         parentCategories: state => state.categories.filter(el => (el && !el.subCategoryPojoList) || (el && el.subCategoryPojoList && el.subCategoryPojoList.length <= 0)),
     },
 
@@ -43,8 +43,14 @@ const mainStore = {
             }
         },
         setCategories(state, payload) {
-            state.categories = payload
+            // Sort categories by the 'order' field before setting them in state
+            const sortedCategories = payload.sort((a, b) => {
+                // Check if order exists and sort accordingly, handling missing values
+                return (a.order ?? 0) - (b.order ?? 0);
+            });
+            state.categories = sortedCategories;
         }
     }
 }
+
 export default mainStore;
