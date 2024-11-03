@@ -52,7 +52,7 @@ export default defineComponent({
   },
   data() {
     return {
-      isMobile: false,
+      isMobile: window.innerWidth <= 768, // Set initial value based on screen width
       filters: {
         discount: false,
         price: {
@@ -79,6 +79,10 @@ export default defineComponent({
   },
   mounted() {
     this.setBrands(this.brands)
+    window.addEventListener('resize', this.updateIsMobile) // Listen to window resize events
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateIsMobile) // Clean up on component unmount
   },
   methods: {
     applyFilters() {
@@ -99,9 +103,13 @@ export default defineComponent({
       query.page = 1
 
       this.$emit('applyFilters', query)
+
+      // Close modal if on mobile
+      if (this.isMobile) {
+        this.$emit('closeModal')
+      }
     },
     setBrands(brands) {
-      // Create a new object to hold the filtered brands
       const updatedBrands = {}
 
       for (let i = 0; i < brands.length; i++) {
@@ -111,8 +119,11 @@ export default defineComponent({
         }
       }
 
-      // Replace the entire filters.brands object with the updatedBrands object
       this.filters.brands = reactive(updatedBrands)
+    },
+    updateIsMobile() {
+      // Update `isMobile` based on screen width
+      this.isMobile = window.innerWidth <= 768
     }
   }
 })

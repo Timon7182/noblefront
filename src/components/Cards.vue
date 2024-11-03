@@ -1,7 +1,7 @@
 <template>
-  <div class="relative lg:px-10 my-20">
-    <div class="overflow-x-auto flex flex-nowrap items-start w-full no-scrollbar">
-      <div class="gap-3 grid grid-cols-2">
+  <div class="relative w-3/5 mx-auto lg:px-10 my-20"> <!-- 90% width on small screens and full width on large -->
+    <div class="flex flex-nowrap items-start w-full">
+      <div class="gap-3 grid grid-cols-2"> <!-- Adjusted grid settings -->
         <div
           v-for="item in orderedProducts"
           :key="`card-${item.id}`"
@@ -33,6 +33,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { defineComponent } from 'vue'
