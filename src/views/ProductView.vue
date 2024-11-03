@@ -94,7 +94,6 @@
           </div>
         </div>
 
-        <!-- Collection Section -->
         <div v-if="item.productionItems && item.productionItems.length">
           <h2 class="text-xl font-semibold my-5 text-center">Товары из этой коллекции</h2>
           <Collections :items="item.productionItems"/>
@@ -245,6 +244,9 @@ export default defineComponent({
   },
   beforeUnmount() {
     window.removeEventListener("keydown", this.handleEscapeKey);
+  },
+  watch: {
+    '$route.params.id': 'fetchItem' // Watch for route param changes and re-fetch item
   }
 })
 </script>

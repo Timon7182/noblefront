@@ -62,6 +62,7 @@ export default defineComponent({
     currencyFormatter,
     getImgUrl,
     addToCart(item) {
+      console.log('dsds',item)
       this.$store.commit('addToCart', item)
     },
     removeFromCart(item) {
