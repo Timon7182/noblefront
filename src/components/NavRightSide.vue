@@ -8,7 +8,6 @@
         <div class="flex justify-start mt-5">
           <Bars3Icon class="h-6 cursor-pointer hover:ring-blue-500 hover:ring-2 rounded"
             @click="showLinks = !showLinks" />
-          <LanguageSelector />
         </div>
         <div class="flex justify-center">
           <FwbA href="/">
@@ -76,7 +75,6 @@
         <SearchButton />
 
         <div class="flex justify-end mt-5 gap-6 mr-10 mb-2">
-          <LanguageSelector />
           <FwbA
             href="https://2gis.kz/almaty/search/Noble%2C%20%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD%20%D0%BF%D0%BE%D1%81%D1%83%D0%B4%D1%8B%20%D0%B8%20%D0%BF%D0%BE%D0%B4%D0%B0%D1%80%D0%BA%D0%BE%D0%B2?m=76.934863%2C43.220031%2F13.72"
             class="mb-2">

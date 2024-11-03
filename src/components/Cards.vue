@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-3/5 mx-auto lg:px-10 my-20"> <!-- 90% width on small screens and full width on large -->
+  <div class="relative w-full lg:w-3/5 mx-auto lg:px-10 my-20"> <!-- 90% width on small screens and full width on large -->
     <div class="flex flex-nowrap items-start w-full">
       <div class="gap-3 grid grid-cols-2"> <!-- Adjusted grid settings -->
         <div

@@ -5,15 +5,21 @@
         <breadcrumbs :items="breadcrumbItems" />
         <div class="grid grid-cols-1 md:grid-cols-2">
           <div>
-            <FwbCarousel class="carousel w-100 my-3" :pictures="carouselImages" :slide="false" :slide-interval="15000"
-              animation>
-            </FwbCarousel>
+            <!-- Main Carousel -->
+            <FwbCarousel
+              class="carousel w-100 my-3"
+              :pictures="carouselImages"
+              :slide="false"
+              :slide-interval="15000"
+              animation
+              @click="openFullScreenCarousel"
+            />
             <div class="hidden md:block mt-3">
               <div ref="imageContainer" class="overflow-x-auto flex flex-nowrap items-start w-full no-scrollbar">
                 <div v-for="(pic, index) in item.images" :key="pic" class="flex-none p-1 bg-gray-200"
                   style="min-width: 200px; min-height: 100px;">
                   <img class="card-image cursor-pointer w-[200px] h-[100px] p-1" :src="getImgUrl(pic.image)"
-                    :alt="item.name" @click="imageIndex = index" />
+                    :alt="item.name" @click="openFullScreenCarousel(index)" />
                 </div>
               </div>
             </div>
@@ -87,21 +93,43 @@
             </InCartButton>
           </div>
         </div>
+
+        <!-- Collection Section -->
         <div v-if="item.productionItems && item.productionItems.length">
           <h2 class="text-xl font-semibold my-5 text-center">Товары из этой коллекции</h2>
           <Collections :items="item.productionItems"/>
         </div>
       </div>
     </Transition>
-    <div v-else class="flex items-center justify-center p-10 h-screen">
-      <fwb-spinner size="12" color="gray"></fwb-spinner>
+
+    <!-- Full-Screen Carousel Modal -->
+    <div 
+      v-if="showFullScreenCarousel" 
+      class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" 
+      @click.self="closeFullScreenCarousel"
+      @touchstart="startTouch"
+      @touchend="endTouch"
+    >
+      <div class="relative w-full max-w-4xl">
+        <button @click="closeFullScreenCarousel" class="absolute top-2 right-2 text-white text-3xl md:text-5xl">&times;</button>
+        <FwbCarousel
+          class="carousel w-full"
+          :pictures="carouselImages"
+          :slide="false"
+          :slide-interval="15000"
+          animation
+          :noControls="false"
+          :noIndicators="false"
+          v-model="imageIndex"
+        />
+      </div>
     </div>
   </div>
 </template>
+
 <script>
-import { defineComponent, watch } from 'vue'
+import { defineComponent, ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
-import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon } from '@heroicons/vue/24/solid/index.js'
 import { currencyFormatter, getImgUrl } from '@/utils.js'
 import PrimaryBtn from '@/components/PrimaryBtn.vue'
 import Collections from '@/components/Collections.vue'
@@ -116,8 +144,6 @@ export default defineComponent({
     Collections,
     PrimaryBtn,
     Breadcrumbs,
-    ChevronDoubleRightIcon,
-    ChevronDoubleLeftIcon,
     FwbCarousel,
     FwbSpinner,
     InCartButton
@@ -127,22 +153,24 @@ export default defineComponent({
       item: null,
       mainImage: null,
       imageIndex: 0,
-      showDescription: false,
+      showDescription: true,
       showHistory: false,
-      showInstagram: false
+      showInstagram: false,
+      showFullScreenCarousel: false, // Modal state
+      touchStartY: 0 // Variable to track swipe gesture start position
     }
   },
   computed: {
     breadcrumbItems() {
       return [
         {
-          label: this.item.name,
+          label: this.item?.name,
           link: this.$route.href
         }
       ]
     },
     sortedImages() {
-      return this.item.images.sort((a, b) => a.order - b.order)
+      return this.item?.images.sort((a, b) => a.order - b.order) || []
     },
     carouselImages() {
       return this.sortedImages.map((el) => {
@@ -154,34 +182,19 @@ export default defineComponent({
     },
     cart() {
       return this.$store.state.mainStore.cart || []
-    },
-    instagramLink() {
-      return this.item?.externalServiceLink || '';
-    }
-  },
-  mounted() {
-    this.fetchItem();
-  },
-  watch: {
-    item(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.loadInstagramEmbed();
-      }
     }
   },
   methods: {
     fetchItem() {
-      try {
-        const searchParams = new URLSearchParams();
-        searchParams.append('type', this.$route.params.type);
-        searchParams.append('productionId', this.$route.params.id);
+      const searchParams = new URLSearchParams();
+      searchParams.append('type', this.$route.params.type);
+      searchParams.append('productionId', this.$route.params.id);
 
-        api.get(`${GET_ONE_URL}?${searchParams.toString()}`).then((response) => {
-          this.item = response.data;
-        });
-      } catch (error) {
+      api.get(`${GET_ONE_URL}?${searchParams.toString()}`).then((response) => {
+        this.item = response.data;
+      }).catch(error => {
         console.error('Error fetching item:', error);
-      }
+      });
     },
     currencyFormatter,
     getImgUrl,
@@ -199,39 +212,42 @@ export default defineComponent({
     },
     toggleInstagram() {
       this.showInstagram = !this.showInstagram;
-      console.log(this.showInstagram)
       if (this.showInstagram) {
         this.loadInstagramEmbed();
       }
     },
-    loadInstagramEmbed() {
-      console.log(window.instgrm)
-      console.log(this.instagramLink)
-      if (this.instagramLink && window.instgrm) {
-        const embedContainer = document.getElementById('instagram-post');
-        embedContainer.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${this.instagramLink}" data-instgrm-version="12"></blockquote>`;
-        window.instgrm.Embeds.process();
-      } else if (this.instagramLink) {
-        const script = document.createElement('script');
-        script.src = 'https://www.instagram.com/embed.js';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => this.embedInstagramPost();
-        document.head.appendChild(script);
+    openFullScreenCarousel(index = 0) {
+      this.imageIndex = index;
+      this.showFullScreenCarousel = true;
+    },
+    closeFullScreenCarousel() {
+      this.showFullScreenCarousel = false;
+    },
+    startTouch(event) {
+      this.touchStartY = event.touches[0].clientY;
+    },
+    endTouch(event) {
+      const touchEndY = event.changedTouches[0].clientY;
+      const swipeDistance = touchEndY - this.touchStartY;
+      if (swipeDistance > 50) {
+        this.closeFullScreenCarousel();
       }
     },
-    embedInstagramPost() {
-      if (window.instgrm) {
-        const embedContainer = document.getElementById('instagram-post');
-        embedContainer.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${this.instagramLink}" data-instgrm-version="12"></blockquote>`;
-        window.instgrm.Embeds.process();
+    handleEscapeKey(event) {
+      if (event.key === "Escape") {
+        this.closeFullScreenCarousel();
       }
     }
+  },
+  mounted() {
+    this.fetchItem();
+    window.addEventListener("keydown", this.handleEscapeKey);
+  },
+  beforeUnmount() {
+    window.removeEventListener("keydown", this.handleEscapeKey);
   }
 })
 </script>
-
-
 
 <style scoped>
 .carousel img {

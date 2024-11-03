@@ -8,6 +8,7 @@
         id="search"
         class="block w-full border-0 pr-24 text-gray-900 placeholder:text-gray-400 border-b-2 focus:border-2 focus:border-gray-950 sm:text-sm sm:leading-6"
         :placeholder="$t('search')"
+        @keyup.enter="applyFilters"
       />
       <div class="absolute inset-y-0 right-0 flex items-center bg-gray-950 p-3">
         <button @click="applyFilters">

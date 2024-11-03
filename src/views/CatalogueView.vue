@@ -11,10 +11,6 @@
         <AdjustmentsHorizontalIcon class="h-4 mt-1.5 mr-1" />
         {{ $t('filters') }}
       </button>
-      <button type="button" class="flex w-50 mx-auto uppercase py-2">
-        <Bars3BottomRightIcon class="h-4 mt-1.5 mr-1" />
-        {{ $t('sort') }}
-      </button>
     </div>
     <div class="flex">
       <div class="flex=none">
@@ -31,9 +27,12 @@
         </template>
         <template v-else>
           <div class="w-full h-[100px] col-span-4 flex items-center justify-center">
-            <h1 class="text-5xl uppercase font-thin mx-auto text-center">{{$t('products_not_found')}}</h1>
-          </div>
-        </template>
+            <h1 class="text-lg sm:text-xl md:text-3xl lg:text-5xl uppercase font-thin mx-auto text-center">
+              {{$t('products_not_found')}}
+    </h1>
+  </div>
+</template>
+
       </div>
     </div>
 
@@ -72,10 +71,12 @@ const getQuery = (query) => {
   }
 }
 
-const changePage = () => {
+const changePage = async () => {
   route.query.page = currentPage.value
-  fetchProducts()
+  await fetchProducts()
+  window.scrollTo({ top: 0, behavior: 'smooth' }) // Scroll to the top of the page
 }
+
 
 const fetchProducts = async () => {
   loading.value = true

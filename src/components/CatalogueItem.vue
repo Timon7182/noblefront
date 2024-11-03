@@ -20,8 +20,13 @@
 </style>
 
 <template>
-  <fwb-card class="m-1 xl:m-2 fwb-card shadow-2xl hover:border-2 hover:m-1" :img-alt="title" 
-  :img-src="getImgUrl(imageUrl)" variant="image">
+  <fwb-card 
+    class="m-1 xl:m-2 fwb-card shadow-2xl hover:border-2 hover:m-1" 
+    :img-alt="title" 
+    :img-src="getImgUrl(imageUrl)" 
+    variant="image" 
+    @click.native="$router.push({ name: 'product', params: { id: id, type: type || 'SINGLE' } })" 
+    style="cursor: pointer;">
     <div class="p-2 lg:p-3">
       <h5
         class="mb-2 md:text-2xl font-normal tracking-tight text-gray-900 title-container min-h-24 max-h-24 overflow-hidden dark:text-white">
@@ -47,6 +52,7 @@
     </div>
   </fwb-card>
 </template>
+
 
 <script>
 import { FwbCard } from 'flowbite-vue'
