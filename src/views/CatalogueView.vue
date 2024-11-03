@@ -27,7 +27,7 @@
         </template>
         <template v-else>
           <div class="w-full h-[100px] col-span-4 flex items-center justify-center">
-            <h1 class="text-lg sm:text-xl md:text-3xl lg:text-5xl uppercase font-thin mx-auto text-center">
+            <h1 class="text-lg sm:text-xl md:text-3xl lg:text-5xl font-thin mx-auto text-center">
               {{$t('products_not_found')}}
     </h1>
   </div>

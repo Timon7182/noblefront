@@ -28,14 +28,10 @@
                 <p class="mt-1 text-2xl">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
               </template>
             </div>
-
-            <div class="m-2 flex flex-col items-center justify-center text-lg font-light">
-              {{ $t('mainStoreAddress') }}
-            </div>
           </template>
         </div>
         <!-- Desktop view -->
-        <div class="hidden xl:grid grid-cols-4 xl:w-4/5 border border-gray-650 pb-[100px]">
+        <div class="hidden xl:grid grid-cols-3 xl:w-4/5 border border-gray-650 pb-[100px]">
           <h2 class="text-xl font-light text-center p-4">
             {{ $t('product') }}
           </h2>
@@ -45,9 +41,7 @@
           <h2 class="text-xl font-light text-center p-4">
             {{ $t('price') }}
           </h2>
-          <h2 class="text-xl font-light text-center p-4">
-            {{ $t('availability') }}
-          </h2>
+  
 
           <div class="col-span-4 border-b border-gray-650 mx-10 mt-5" />
 
@@ -75,9 +69,6 @@
               </template>
             </div>
 
-            <div class="m-10 flex flex-col items-center justify-center text-lg font-light">
-              {{ $t('mainStoreAddress') }}
-            </div>
           </template>
         </div>
         <div class="xl:w-1/5 xl:ml-3 h-full flex flex-col">
