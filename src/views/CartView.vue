@@ -6,7 +6,7 @@
       <div class="flex flex-col xl:flex-row">
         <!-- Mobile view -->
         <div class="xl:hidden flex flex-col border border-gray-650 p-4">
-          <template v-for="cartItem in itemsWithQuantity">
+          <template v-for="cartItem in itemsWithQuantity" :key="cartItem.id">
             <div class="m-5 flex flex-col items-center justify-center">
               <div class="relative image-container-noh w-[220px] h-[170px]"
                 :style="{ backgroundImage: `url(${getImgUrl(cartItem.image)})` }">
@@ -14,9 +14,9 @@
               <p class="font-light text-sm">{{ cartItem.name }}</p>
             </div>
             <div class="flex justify-center items-center text-xl font-light">
-              <MinusCircleIcon class="h-8 text-gray-500" />
+              <MinusCircleIcon class="h-8 text-gray-500 cursor-pointer" @click="removeFromCart(cartItem)" />
               <p class="mx-4">{{ cartItem.quantity }}</p>
-              <PlusCircleIcon class="h-8" />
+              <PlusCircleIcon class="h-8 cursor-pointer" @click="addToCart(cartItem)" />
             </div>
 
             <div class="flex flex-col items-center justify-center font-light mt-3">
@@ -28,10 +28,15 @@
                 <p class="mt-1 text-2xl">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
               </template>
             </div>
+
+            <div class="m-2 flex flex-col items-center justify-center text-lg font-light">
+              {{ $t('mainStoreAddress') }}
+            </div>
           </template>
         </div>
+
         <!-- Desktop view -->
-        <div class="hidden xl:grid grid-cols-3 xl:w-4/5 border border-gray-650 pb-[100px]">
+        <div class="hidden xl:grid grid-cols-4 xl:w-4/5 border border-gray-650 pb-[100px]">
           <h2 class="text-xl font-light text-center p-4">
             {{ $t('product') }}
           </h2>
@@ -41,11 +46,10 @@
           <h2 class="text-xl font-light text-center p-4">
             {{ $t('price') }}
           </h2>
-  
 
-          <div class="col-span-4 border-b border-gray-650 mx-10 mt-5" />
+          <div class="col-span-4 border-b border-gray-650 mx-10 mt-5"></div>
 
-          <template v-for="cartItem in itemsWithQuantity">
+          <template v-for="cartItem in itemsWithQuantity" :key="cartItem.id">
             <div class="m-10 flex flex-col items-center justify-center">
               <div class="relative image-container-noh w-[220px] h-[170px]"
                 :style="{ backgroundImage: `url(${getImgUrl(cartItem.image)})` }">
@@ -69,8 +73,13 @@
               </template>
             </div>
 
+            <div class="m-10 flex flex-col items-center justify-center text-lg font-light">
+              {{ $t('mainStoreAddress') }}
+            </div>
           </template>
         </div>
+
+        <!-- Order Summary and Form -->
         <div class="xl:w-1/5 xl:ml-3 h-full flex flex-col">
           <div class="grid grid-cols-2 border border-gray-650">
             <h2 class="text-xl font-light text-center px-4 py-2">
@@ -89,7 +98,7 @@
               </h2>
             </template>
 
-            <div class="col-span-2 border-b border-gray-650 mx-10 mt-2" />
+            <div class="col-span-2 border-b border-gray-650 mx-10 mt-2"></div>
 
             <h2 class="text-xl font-light text-center px-4 py-2">
               {{ $t('total') }}
@@ -112,30 +121,29 @@
             <fwb-input class="col-span-2 m-2" v-model="createOrderForm.address" required type="text"
               :label="$t('address')" v-validate="'required'" :placeholder="$t('enter_your_address')"></fwb-input>
 
-            <PrimaryBtn class="col-span-2 w-auto mx-auto px-5 mx-5 py-3 my-3" @click="createOrder()">{{
-              $t('createOrder') }}
+            <PrimaryBtn class="col-span-2 w-auto mx-auto px-5 mx-5 py-3 my-3" @click="createOrder()">
+              {{ $t('createOrder') }}
             </PrimaryBtn>
           </div>
-
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import { defineComponent } from "vue";
 import Breadcrumbs from "@/components/Breadcrumbs.vue";
-import serviz2 from "@/assets/serviz2.jpeg";
-import { FwbImg, FwbInput } from "flowbite-vue";
-import { PlusCircleIcon, MinusCircleIcon, ChevronDownIcon } from "@heroicons/vue/24/outline/index.js";
+import { FwbInput } from "flowbite-vue";
+import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/vue/24/outline/index.js";
 import { currencyFormatter, getImgUrl } from "@/utils.js";
 import PrimaryBtn from "@/components/PrimaryBtn.vue";
-import api from '@/api'
+import api from '@/api';
 
-const CREATE_ORDER_URL = '/ww/createOrder'
+const CREATE_ORDER_URL = '/ww/createOrderNoPayment';
 
 export default defineComponent({
-  components: { PrimaryBtn, FwbImg, Breadcrumbs, PlusCircleIcon, MinusCircleIcon, ChevronDownIcon, FwbInput },
+  components: { PrimaryBtn, Breadcrumbs, PlusCircleIcon, MinusCircleIcon, FwbInput },
   data() {
     return {
       createOrderForm: {
@@ -144,16 +152,16 @@ export default defineComponent({
         phone: null,
         address: null,
       }
-    }
+    };
   },
   methods: {
     getImgUrl,
     currencyFormatter,
     addToCart(item) {
-      this.$store.commit('addToCart', item)
+      this.$store.commit('addToCart', item);
     },
     removeFromCart(item) {
-      this.$store.commit('removeSingleFromCart', item)
+      this.$store.commit('removeSingleFromCart', item);
     },
     createOrder() {
       const itemsWithoutImages = this.itemsWithQuantity.map(item => {
@@ -168,11 +176,18 @@ export default defineComponent({
         ...this.createOrderForm,
         items: itemsWithoutImages
       }).then((response) => {
-        window.location = response.data.url;
+        const { invId } = response.data;
+
+        if (invId) {
+          this.$router.push({ name: 'paymentSuccess', query: { invId } });
+        } else {
+          alert("There was an issue processing your order. Please try again.");
+        }
+      }).catch(error => {
+        console.error("Order creation failed:", error);
+        alert("An error occurred while creating the order. Please try again.");
       });
     }
-
-
   },
   computed: {
     breadcrumbItems() {
@@ -181,16 +196,16 @@ export default defineComponent({
           label: this.$t('cart'),
           link: this.$route
         }
-      ]
+      ];
     },
     cartItems() {
-      return this.$store.state.mainStore.cart || []
+      return this.$store.state.mainStore.cart || [];
     },
     oldPriceCount() {
-      return this.cartItems.reduce((total, item) => total + item.oldPrice, 0)
+      return this.cartItems.reduce((total, item) => total + item.oldPrice, 0);
     },
     newPriceCount() {
-      return this.cartItems.reduce((total, item) => total + (item.newPrice ? item.newPrice : item.oldPrice), 0)
+      return this.cartItems.reduce((total, item) => total + (item.newPrice ? item.newPrice : item.oldPrice), 0);
     },
     itemsWithQuantity() {
       const uniqueObjectsById = this.cartItems.reduce((acc, obj) => {
@@ -198,16 +213,13 @@ export default defineComponent({
         return acc;
       }, {});
 
-      // Step 2: Convert the object back to an array
       const uniqueObjectsArray = Object.values(uniqueObjectsById);
 
-      // Step 3: Add quantity property to each object
       return uniqueObjectsArray.map(obj => {
         obj.quantity = this.cartItems.filter(item => item.id === obj.id).length;
         return obj;
       });
     }
-  },
-})
-
+  }
+});
 </script>
