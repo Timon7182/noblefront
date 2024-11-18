@@ -19,20 +19,27 @@
         </catalogue-filter>
       </div>
       <div class="grow grid grid-cols-2 xl:grid-cols-4">
-        <template v-if="products.length > 0">
+        <!-- Loading Animation -->
+        <div v-if="loading" class="w-full col-span-4 flex items-center justify-center">
+          <div class="loader"></div> <!-- Replace with your spinner or animation -->
+        </div>
+
+        <!-- Products List -->
+        <template v-if="!loading && products.length > 0">
           <catalogue-item v-for="item in products" :key="item.id" :id="item.id" :title="item.name"
              :imageUrl="item.image" :oldPrice="item.oldPrice" :newPrice="item.newPrice"
             :type="item.type">
           </catalogue-item>
         </template>
-        <template v-else>
+
+        <!-- No Products Found -->
+        <template v-else-if="!loading && products.length === 0">
           <div class="w-full h-[100px] col-span-4 flex items-center justify-center">
             <h1 class="text-lg sm:text-xl md:text-3xl lg:text-5xl font-thin mx-auto text-center">
               {{$t('products_not_found')}}
-    </h1>
-  </div>
-</template>
-
+            </h1>
+          </div>
+        </template>
       </div>
     </div>
 
@@ -40,6 +47,7 @@
       @page-changed="changePage"></fwb-pagination>
   </div>
 </template>
+
 
 <script setup>
 import { FwbBreadcrumb, FwbBreadcrumbItem, FwbPagination } from 'flowbite-vue'
@@ -114,3 +122,20 @@ const breadcrumbItems = [
 ]
 
 </script>
+<style>
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-left-color: #4fa94d;
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+</style>

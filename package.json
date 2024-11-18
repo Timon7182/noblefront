@@ -12,17 +12,19 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@chenfengyuan/vue-carousel": "^2.0.0",
     "@heroicons/vue": "^2.1.1",
     "2gis-maps": "^3.7.3",
     "axios": "^1.6.8",
+    "express": "^4.17.1",
     "flowbite": "^2.2.1",
     "flowbite-vue": "^0.1.2",
     "vue": "^3.3.11",
+    "vue-easy-lightbox": "^1.19.0",
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.2.5",
     "vuex": "^4.1.0",
-    "vuex-persistedstate": "^4.1.0",
-    "express": "^4.17.1"
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.3.3",

@@ -84,7 +84,7 @@
         </div>
       </div>
 
-      <div class="w-full flex font-bold justify-around uppercase z-40 category-dropdowns"
+      <div class="w-full flex font-bold justify-around  z-40 category-dropdowns"
         :class="{ 'fixed bg-white top-0': isSticky }">
         <CategoryDropdowns :categories="categories"></CategoryDropdowns>
       </div>
