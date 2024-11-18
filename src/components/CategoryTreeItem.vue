@@ -1,65 +1,109 @@
 <template>
-  <div class="category-item" ref="dropdown" @mouseover="checkSpace">
+  <div class="category-item">
     <!-- Category Button -->
-    <button v-if="category.subCategoryPojoList && category.subCategoryPojoList.length > 0"
-            @click="toggleDropdown"
-            :class="['dropdown-button', { 'is-subcategory': level > 1 }]">
+    <button
+      v-if="hasSubCategories"
+      @click="toggleDropdown"
+      ref="trigger"
+      :class="['dropdown-button', { 'is-subcategory': level > 1 }]"
+    >
       {{ category.name }}
       <!-- Show the ">" symbol only on subcategories of subcategories (level > 1) -->
-      <span v-if="level > 1 && category.subCategoryPojoList && category.subCategoryPojoList.length > 0" class="indicator"> &gt; </span>
+      <span
+        v-if="level > 1 && hasSubCategories"
+        class="indicator"
+      >
+        &gt;
+      </span>
     </button>
 
     <!-- If no subcategories, show as a link -->
-    <a v-else :href="`/catalogue?categoryId=${category.id}`" 
-       :class="['dropdown-link', { 'is-subcategory': level > 1 }]">
+    <a
+      v-else
+      :href="`/catalogue?categoryId=${category.id}`"
+      :class="['dropdown-link', { 'is-subcategory': level > 1 }]"
+    >
       {{ category.name }}
     </a>
 
     <!-- Dropdown menu for subcategories -->
-    <div v-if="isOpen && category.subCategoryPojoList && category.subCategoryPojoList.length > 0"
-         :class="['category-dropdown', { 'open-down': level === 1, 'open-left': shouldOpenLeft, 'open-right': !shouldOpenLeft && level > 1 }]">
-      <!-- "Все" (All) styled with gray background -->
-      <a :href="`/catalogue?categoryId=${category.id}`" class="dropdown-link is-subcategory all-categories-link">
-        Все
-      </a>
+    <Teleport to="body" v-if="isOpen && hasSubCategories">
+      <div
+        :class="dropdownClasses"
+        :style="dropdownPosition"
+      >
+        <!-- "Все" (All) styled with gray background -->
+        <a
+          :href="`/catalogue?categoryId=${category.id}`"
+          class="dropdown-link is-subcategory all-categories-link"
+        >
+          Все
+        </a>
 
-      <!-- Recursive subcategory rendering -->
-      <div class="subcategory-container">
-        <category-tree-item
-          v-for="subCategory in category.subCategoryPojoList"
-          :key="subCategory.id"
-          :category="subCategory"
-          :is-open="subOpenCategory === subCategory.id"
-          :level="level + 1"
-          @toggle="toggleSubCategory(subCategory.id)"
-        />
+        <!-- Recursive subcategory rendering -->
+        <div class="subcategory-container">
+          <category-tree-item
+            v-for="subCategory in category.subCategoryPojoList"
+            :key="subCategory.id"
+            :category="subCategory"
+            :is-open="subOpenCategory === subCategory.id"
+            :level="level + 1"
+            @toggle="toggleSubCategory(subCategory.id)"
+            @close-all-dropdowns="closeAllDropdowns"
+          />
+        </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 
 <script>
+import { Teleport, defineAsyncComponent } from 'vue';
+
 export default {
   name: 'CategoryTreeItem',
+  components: {
+    Teleport,
+    CategoryTreeItem: defineAsyncComponent(() => import('./CategoryTreeItem.vue')), // Lazy-load the component to resolve circular dependency
+  },
   props: {
     category: {
       type: Object,
-      required: true
+      required: true,
     },
     isOpen: {
       type: Boolean,
-      default: false
+      default: false,
     },
     level: {
       type: Number,
-      default: 1 // Start at level 1 for top-level categories
-    }
+      default: 1, // Start at level 1 for top-level categories
+    },
   },
   data() {
     return {
       subOpenCategory: null, // Track which subcategory is open
-      shouldOpenLeft: false  // Determine if subcategories should open to the left
+      shouldOpenLeft: false, // Determine if subcategories should open to the left
+      dropdownPosition: {}, // Style object for positioning dropdown
     };
+  },
+  computed: {
+    hasSubCategories() {
+      return (
+        this.category.subCategoryPojoList &&
+        this.category.subCategoryPojoList.length > 0
+      );
+    },
+    dropdownClasses() {
+      return [
+        'category-dropdown',
+        {
+          'open-down': this.level === 1,
+          'open-left': this.shouldOpenLeft,
+          'open-right': !this.shouldOpenLeft && this.level > 1,
+        },
+      ];
+    },
   },
   methods: {
     toggleDropdown() {
@@ -67,32 +111,58 @@ export default {
     },
     toggleSubCategory(subCategoryId) {
       // Toggle the selected subcategory, close others
-      this.subOpenCategory = this.subOpenCategory === subCategoryId ? null : subCategoryId;
+      this.subOpenCategory =
+        this.subOpenCategory === subCategoryId ? null : subCategoryId;
     },
     checkSpace() {
-      const dropdown = this.$refs.dropdown;
-      const rect = dropdown.getBoundingClientRect();
+      const triggerEl = this.$refs.trigger;
+      const rect = triggerEl.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
 
       // Check if there is enough space on the right, if not, open to the left
-      if (rect.right + 220 > viewportWidth) {
-        this.shouldOpenLeft = true;
+      this.shouldOpenLeft = rect.right + 220 > viewportWidth;
+    },
+    calculateDropdownPosition() {
+      const triggerEl = this.$refs.trigger;
+      const rect = triggerEl.getBoundingClientRect();
+
+      let top, left;
+      if (this.level === 1) {
+        // For top-level categories, open downwards
+        top = rect.bottom;
+        left = rect.left;
       } else {
-        this.shouldOpenLeft = false;
+        // For subcategories, open to the side
+        top = rect.top;
+        left = this.shouldOpenLeft ? rect.left - 220 : rect.right;
       }
-    }
+
+      this.dropdownPosition = {
+        position: 'absolute',
+        top: `${top}px`,
+        left: `${left}px`,
+        zIndex: 999, // Ensure dropdown appears above other elements
+      };
+    },
+    closeAllDropdowns() {
+      // Close current dropdown
+      this.subOpenCategory = null;
+      this.$emit('close-all-dropdowns'); // Emit event to parent
+    },
   },
   watch: {
     isOpen(newVal) {
-      if (newVal && this.level > 1) {
+      if (newVal) {
         this.$nextTick(() => {
-          this.checkSpace(); // Check space when subcategory opens
+          this.checkSpace();
+          this.calculateDropdownPosition();
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
+
 
 <style scoped>
 /* General dropdown styling */
@@ -100,48 +170,22 @@ export default {
   position: relative;
 }
 
-/* First-level dropdown styling (open downwards below the button) */
+/* Dropdown styles */
+.category-dropdown {
+  position: absolute; /* Now relative to the viewport */
+  width: 220px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  padding: 10px 0;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+/* Scrolling for second level */
 .category-dropdown.open-down {
-  position: absolute;
-  top: 100%; /* Open downwards for the first level */
-  left: 0;
-  width: 220px;
-  z-index: 999;
-  background-color: #f0f0f0;
-  border-radius: 4px;
-  padding: 10px 0;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Subcategory dropdowns for level > 1 (open right by default) */
-.category-dropdown.open-right {
-  position: absolute;
-  top: 0;
-  left: 100%; /* Open to the right by default */
-  width: 220px;
-  z-index: 999;
-  background-color: #f0f0f0;
-  border-radius: 4px;
-  padding: 10px 0;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Subcategory dropdowns that need to open to the left */
-.category-dropdown.open-left {
-  position: absolute;
-  top: 0;
-  right: 100%; /* Open to the left */
-  width: 220px;
-  z-index: 999;
-  background-color: #f0f0f0;
-  border-radius: 4px;
-  padding: 10px 0;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Subcategory container for subcategories */
-.subcategory-container {
-  padding-left: 0px; /* Consistent padding for all items */
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* "Все" (All) link styling */
@@ -202,5 +246,10 @@ export default {
 .dropdown-button:hover,
 .dropdown-link:hover {
   background-color: #e0e0e0;
+}
+
+/* Subcategory container for subcategories */
+.subcategory-container {
+  /* No changes needed */
 }
 </style>
