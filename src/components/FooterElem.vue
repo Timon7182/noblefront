@@ -25,6 +25,8 @@ import FooterMenu from "@/components/FooterMenu.vue";
 import { ChevronUpIcon } from "@heroicons/vue/24/solid/index.js";
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import PublicOffer from "@/views/PublicOffer.vue";
+import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
 
 const store = useStore()
 
@@ -58,19 +60,18 @@ const catalogueItems = [
 ]
 
 const aboutUsItems = [
-  {
-    key: 'company_history',
+{
+    key: 'public_offer',
+    value: 'Public Offer',
+    href: '/public-offer'
   },
   {
-    key: 'product_range',
-  },
-  {
-    key: 'company_values',
-  },
-  {
-    key: 'delivery_and_payment',
-  },
+    key: 'privacy_policy',
+    value: 'Privacy policy',
+    href: '/privacy-policy'
+  }
 ]
+
 
 const contactItems = [
   {

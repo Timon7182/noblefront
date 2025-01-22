@@ -15,7 +15,7 @@ const mainStore = {
         },
         categories: state => state.categories,
         catBrands: state => state.categories.find(el => el.name === 'Бренд')?.subCategoryPojoList || null,
-        parentCategories: state => state.categories.filter(el => (el && !el.subCategoryPojoList) || (el && el.subCategoryPojoList && el.subCategoryPojoList.length <= 0)),
+        parentCategories: state => state.categories,
     },
 
     actions: {

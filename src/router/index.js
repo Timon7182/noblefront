@@ -5,6 +5,8 @@ import ProductView from "@/views/ProductView.vue";
 import CartView from "@/views/CartView.vue";
 import OrderView from "@/views/OrderView.vue";
 import PaymentSuccess from "@/views/PaymentSuccess.vue";
+import PublicOffer from "@/views/PublicOffer.vue";
+import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +40,16 @@ const router = createRouter({
       path: '/payment-success',
       name: 'paymentSuccess',
       component: PaymentSuccess
+    },
+    {
+      path: "/public-offer",
+      name: "PublicOffer",
+      component: PublicOffer
+    },
+    {
+      path: "/privacy-policy",
+      name: "PrivacyPolicy",
+      component: PrivacyPolicy
     }
   ],
   scrollBehavior (to, from, savedPosition) {
