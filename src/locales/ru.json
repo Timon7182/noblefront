@@ -47,7 +47,7 @@
   "mainStoreAddress": "г.Алматы , ​Микрорайон Мирас, 2/27",
   "sum": "Всего",
   "total": "Итого",
-  "createOrder": "Оформить заказ",
+  "createOrder": "Оформить и оплатить заказ",
   "delieveryInfo": "Информация о доставке",
   "drawbackInfo": "Информация о возврате",
   "apply": "Применить",
@@ -65,5 +65,8 @@
   "city":"Город",
   "enter_your_city":"Выберите ваш город",
   "deliveryType":"Доставка",
-  "select_delivery_type":"Выберите доставку"  
+  "select_delivery_type":"Выберите доставку",
+  "order_processing_issue":"Непредвиденная ошибка, попробуйте позже",
+  "please_fill_all_required_fields":"Заполните все поля",
+  "order_creation_error":"Цена на  Товар поменялись"
 }

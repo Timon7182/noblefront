@@ -238,14 +238,12 @@ export default defineComponent({
     selectCity(city) {
       this.cityInput = city.name;
       this.createOrderForm.city = city.name;
-      this.createOrderForm.cityId = city.id;
+      this.createOrderForm.cityId = city.id;  
       this.selectedCity = city;
       this.deliveryTypes = city.deliveryPojoList || [];
-      // Reset delivery type input and selection
       this.deliveryTypeInput = '';
       this.filteredDeliveryTypes = [];
       this.resetDeliveryTypeSelection();
-      // Hide city dropdown
       this.filteredCities = [];
     },
     onDeliveryTypeInputFocus() {
@@ -287,7 +285,7 @@ export default defineComponent({
     createOrder() {
       // Validate that all fields are filled
       if (!this.createOrderForm.name || !this.createOrderForm.email || !this.createOrderForm.phone ||
-          !this.createOrderForm.address || !this.createOrderForm.cityId || !this.createOrderForm.deliveryTypeId) {
+        !this.createOrderForm.address || !this.createOrderForm.cityId || !this.createOrderForm.deliveryTypeId) {
         alert(this.$t('please_fill_all_required_fields'));
         return;
       }
@@ -320,10 +318,52 @@ export default defineComponent({
 
       api.post(CREATE_ORDER_URL, orderPayload)
         .then((response) => {
-          const { invId } = response.data;
+          const {
+            invId,
+            backLink,
+            postLink,
+            terminal,
+            token,
+            invoiceIdAlt,
+            currency,
+            amount
+          } = response.data;
 
           if (invId) {
-            this.$router.push({ name: 'paymentSuccess', query: { invId } });
+
+            const access_token = {
+              access_token: token,
+              expires_in: "1200",
+              refresh_token: "",
+              scope: "payment",
+              token_type: "Bearer",
+            };
+            const paymentObject = {
+              invoiceId: invId,
+              invoiceIdAlt: invoiceIdAlt, 
+              backLink: backLink,
+              failureBackLink: "https://noble.kz/cart",
+              postLink: postLink,
+              failurePostLink: postLink,
+              language: "rus",
+              description: "Оплата в интернет магазине",
+              accountId: this.createOrderForm.name,
+              terminal: terminal,
+              amount: amount, 
+              data: JSON.stringify({
+                statement: {
+                  name: this.createOrderForm.name,
+                  invoiceID: invId,
+                }
+              }),
+              currency: currency,
+              phone: this.createOrderForm.phone,
+              name: this.createOrderForm.name,
+              email: this.createOrderForm.email
+            };
+            paymentObject.auth = access_token;
+
+            halyk.pay(paymentObject);
           } else {
             alert(this.$t('order_processing_issue'));
           }
