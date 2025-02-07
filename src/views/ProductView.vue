@@ -37,7 +37,7 @@
               </button>
             </div>
             <div v-if="showDescription">
-              <h2>{{ item.description }}</h2>
+              <h2 v-html="item.description"></h2>
             </div>
 
             <!-- History Section -->
@@ -51,7 +51,7 @@
               </button>
             </div>
             <div v-if="showHistory">
-              <p class="p-1">{{ item.history }}</p>
+              <div class="p-1" v-html="item.history"></div>
             </div>
 
             <!-- Instagram Section -->

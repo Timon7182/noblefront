@@ -46,7 +46,7 @@
                 </template>
                 <div v-for="subCategory in category.subCategoryPojoList" :key="subCategory.id" class="p-1">
                   <template v-if="subCategory.id">
-                    <a :href="`/category?categoryId=${subCategory.id}`" class="block p-2 hover:bg-gray-100">{{ subCategory.name }}</a>
+                    <a :href="`/catalogue?categoryId=${subCategory.id}`" class="block p-2 hover:bg-gray-100">{{ subCategory.name }}</a>
                   </template>
                   <template v-else>
                     <a href="/catalogue" class="block p-2 hover:bg-gray-100">{{ subCategory.name }}</a>
