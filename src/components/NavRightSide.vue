@@ -130,8 +130,6 @@ const itemsWithQuantity = computed(() => {
   return Object.values(uniqueObjectsById);
 });
 
-// Computed property for total item count (including quantities)
-const totalItemCount = computed(() => cartItems.value.length); // Total quantity of all items
 
 // Computed property for the count of unique items
 const cartItemCount = computed(() => itemsWithQuantity.value.length);

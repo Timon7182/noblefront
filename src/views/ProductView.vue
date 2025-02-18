@@ -18,7 +18,7 @@
               </div>
             </div>
           </div>
-          <div id="info-container" class="flex flex-col md:mx-5 text-center md:text-start text-lg md:w-3/4 md:ml-auto">
+          <div id="info-container" class="flex flex-col md:mx-5  md:text-start text-lg md:w-3/4 md:ml-auto">
             <h1 class="font-thin text-2xl md:text-3xl">
               {{ item.name }}
             </h1>

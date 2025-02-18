@@ -44,10 +44,13 @@ const mainStore = {
         },
         setCategories(state, payload) {
             // Sort categories by the 'order' field before setting them in state
-            const sortedCategories = payload.sort((a, b) => {
-                // Check if order exists and sort accordingly, handling missing values
-                return (a.order ?? 0) - (b.order ?? 0);
-            });
+            const sortedCategories =  payload.map(category => ({
+                ...category,
+                subCategoryPojoList: category.subCategoryPojoList
+                    ? [...category.subCategoryPojoList].sort((a, b) => a.name.localeCompare(b.name))
+                    : []
+            })).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
             state.categories = sortedCategories;
         }
     }
