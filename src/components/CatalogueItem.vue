@@ -115,10 +115,15 @@ export default defineComponent({
   /* Your styles here */
   width: 100%;
   /* Ensure the image takes the full width of the card */
-  height: 200px;
+  height: 400px;
   /* Set the desired height for the image */
   object-fit: cover;
   /* Maintain aspect ratio and cover the entire container */
+}
+@media (max-width: 640px) { /* Tailwind's sm breakpoint (~640px) */
+  .fwb-card img {
+    height: 200px; /* Set height for mobile screens */
+  }
 }
 .title-container {
   display: -webkit-box;
