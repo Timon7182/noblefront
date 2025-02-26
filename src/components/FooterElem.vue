@@ -28,6 +28,7 @@ import { useStore } from 'vuex'
 import PublicOffer from "@/views/PublicOffer.vue";
 import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
 
+
 const store = useStore()
 
 const categories = computed(() => store.getters.parentCategories.map(el => {
@@ -60,7 +61,17 @@ const catalogueItems = [
 ]
 
 const aboutUsItems = [
-{
+  {
+    key: 'delivery_info',
+    value: 'Delivery Info',
+    href: '/delivery-info'
+  },
+  {
+    key: 'garanty_return',
+    value: 'Garanty return',
+    href: '/garanty-return'
+  },
+  {
     key: 'public_offer',
     value: 'Public Offer',
     href: '/public-offer'
@@ -80,6 +91,23 @@ const contactItems = [
   },
   {
     key: 'working_days',
+    href:'https://www.instagram.com/noble_almaty/',
+    icon:'instagram'
+  },
+  {
+    key: 'whatsappsamal',
+    href:'https://www.instagram.com/noble_almaty/',
+    icon:'whatsapp'
+  },
+  {
+    key: 'whatsappmiras',
+    href:'https://www.instagram.com/noble_almaty/',
+    icon:'whatsapp'
+  },
+  {
+    key: 'whatsappastana',
+    href:'https://www.instagram.com/noble_almaty/',
+    icon:'whatsapp'
   },
   {
     key: 'working_hours',

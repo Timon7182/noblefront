@@ -1,7 +1,6 @@
 <template>
   <div class="relative my-20">
-    <h2 class="text-3xl lg:text-6xl uppercase font-thin text-center md:ml-10 mb-5">
-      {{title}}
+    <h2 class="text-3xl lg:text-6xl uppercase font-thin text-center md:ml-10 mb-5" v-html="title">
     </h2>
     <div class="overflow-x-auto flex flex-nowrap items-start lg:justify-around w-full no-scrollbar py-5">
       <div v-for="item in items" :key="item.id"

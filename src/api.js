@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const BASE_URL = 'http://192.168.100.8:8080';
+export const BASE_URL = 'https://noble.kz';
 
 let config = {
-    baseURL: `${BASE_URL}/noble/rest/productionService/`,
+    baseURL: `${BASE_URL}/api/rest/productionService/`,
     timeout: 30000,
 }
 

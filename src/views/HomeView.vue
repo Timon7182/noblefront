@@ -13,6 +13,15 @@
       <template v-else-if="item.type === 'CATEGORY'">
         <Categories :title="item.name" :description="item.description" :categories="item.categories" />
       </template>
+      <template v-else-if="item.type === 'PHOTOS'">
+        <Photos :title="item.name" :photos="item.photos" />
+      </template>
+      <template v-else-if="item.type === 'MAIN_PHOTO'">
+        <MainPhoto :title="item.name" :backColor ="item.backColor" :mainImage="item.mainImage" />
+      </template>
+      <template v-else-if="item.type === 'SIMPLE'">
+        <SimpleText :title="item.name" :description="item.description" />
+      </template>
     </div>
   </div>
   <div v-else class="flex items-center justify-center p-10 h-screen">
@@ -26,6 +35,9 @@ import Carousel from '@/components/Carousel.vue'
 import Collections from '@/components/Collections.vue'
 import Cards from '@/components/Cards.vue'
 import Categories from '@/components/Categories.vue'
+import Photos from '../components/Photos.vue'
+import MainPhoto from '@/components/MainPhoto.vue'
+import SimpleText from '@/components/SimpleText.vue'
 import api from '@/api'
 import { useI18n } from 'vue-i18n'
 import { ref, onMounted } from 'vue'

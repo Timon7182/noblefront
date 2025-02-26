@@ -7,6 +7,8 @@ import OrderView from "@/views/OrderView.vue";
 import PaymentSuccess from "@/views/PaymentSuccess.vue";
 import PublicOffer from "@/views/PublicOffer.vue";
 import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
+import DeliveryInfo from '@/views/DeliveryInfo.vue';
+import GarantyReturn from '@/views/GarantyReturn.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +52,16 @@ const router = createRouter({
       path: "/privacy-policy",
       name: "PrivacyPolicy",
       component: PrivacyPolicy
+    },
+    {
+      path: "/garanty-return",
+      name: "GarantyReturn",
+      component: GarantyReturn
+    },
+    {
+      path: "/delivery-info",
+      name: "DeliveryInfo",
+      component: DeliveryInfo
     }
   ],
   scrollBehavior (to, from, savedPosition) {

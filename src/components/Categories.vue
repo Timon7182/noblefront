@@ -1,7 +1,7 @@
 <template>
     <div class="relative my-20">
       <!-- Title (Name of the Category) -->
-      <h2 class="text-3xl lg:text-6xl  font-thin text-center md:ml-10 mb-5"
+      <h2 class="text-3xl lg:text-4xl  font-thin text-center md:ml-10 mb-5"
        v-html="title">
       </h2>
   
