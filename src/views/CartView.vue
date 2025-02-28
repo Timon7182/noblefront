@@ -18,7 +18,6 @@
               <p class="mx-4">{{ cartItem.quantity }}</p>
               <PlusCircleIcon class="h-8 cursor-pointer" @click="addToCart(cartItem)" />
             </div>
-
             <div class="flex flex-col items-center justify-center font-light mt-3">
               <template v-if="cartItem.newPrice">
                 <p class="line-through text-lg">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
@@ -28,7 +27,6 @@
                 <p class="mt-1 text-2xl">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
               </template>
             </div>
-
             <div class="m-2 flex flex-col items-center justify-center text-lg font-light">
               {{ $t('mainStoreAddress') }}
             </div>
@@ -47,7 +45,6 @@
             {{ $t('price') }}
           </h2>
           <div class="col-span-4 border-b border-gray-650 mx-10 mt-5"></div>
-
           <template v-for="cartItem in itemsWithQuantity" :key="cartItem.id">
             <div class="m-10 flex flex-col items-center justify-center">
               <div class="relative image-container-noh w-[220px] h-[170px]"
@@ -55,13 +52,11 @@
               </div>
               <p class="font-light text-sm">{{ cartItem.name }}</p>
             </div>
-
             <div class="flex justify-center items-center text-xl font-light">
               <MinusCircleIcon class="h-8 cursor-pointer" @click="removeFromCart(cartItem)" />
               <p class="mx-4">{{ cartItem.quantity }}</p>
               <PlusCircleIcon class="h-8 cursor-pointer" @click="addToCart(cartItem)" />
             </div>
-
             <div class="flex flex-col items-center justify-center font-light">
               <template v-if="cartItem.newPrice">
                 <p class="line-through text-lg">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
@@ -71,11 +66,9 @@
                 <p class="mt-3 text-2xl">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
               </template>
             </div>
-
             <div class="m-10 flex flex-col items-center justify-center text-lg font-light">
               {{ $t('mainStoreAddress') }}
             </div>
-
             <div class="col-span-4 border-b border-gray-650 mx-10 mt-5"></div>
           </template>
         </div>
@@ -89,7 +82,6 @@
             <h2 class="text-xl font-light text-center px-4 py-2">
               {{ currencyFormatter().format(oldPriceCount) }}ТГ
             </h2>
-
             <template v-if="newPriceCount !== oldPriceCount">
               <h2 class="text-xl font-light text-center px-4 py-2">
                 {{ $t('discount') }}
@@ -98,25 +90,22 @@
                 {{ currencyFormatter().format(oldPriceCount - newPriceCount) }}ТГ
               </h2>
             </template>
-
             <div class="col-span-2 border-b border-gray-650 mx-10 mt-2"></div>
-
             <h2 class="text-xl font-light text-center px-4 py-2">
               {{ $t('total') }}
             </h2>
+            <!-- Display final total with additional cost (if any) -->
             <h2 class="text-xl font-light text-center px-4 py-2">
-              {{ currencyFormatter().format(newPriceCount) }}ТГ
+              {{ currencyFormatter().format(finalTotal) }}ТГ
             </h2>
 
             <!-- User Information Inputs -->
             <fwb-input class="col-span-2 m-2" v-model="createOrderForm.name" name="name" required type="text"
               :label="$t('name')" v-validate="'required'" :placeholder="$t('enter_your_name')">
             </fwb-input>
-
             <fwb-input class="col-span-2 m-2" v-model="createOrderForm.email" required type="email" name="email"
               :label="$t('email')" v-validate="'required|email'" :placeholder="$t('enter_your_email')">
             </fwb-input>
-
             <fwb-input class="col-span-2 m-2" v-model="createOrderForm.phone" required type="text" name="phone"
               :label="$t('phone')" v-validate="'required|phone'" :placeholder="$t('enter_your_phone')">
             </fwb-input>
@@ -126,7 +115,6 @@
               <fwb-input v-model="cityInput" required type="text" name="city" :label="$t('city')"
                 v-validate="'required'" :placeholder="$t('enter_your_city')" @input="onCityInputChange"
                 @focus="onCityInputFocus"></fwb-input>
-              <!-- Dropdown of filtered cities -->
               <ul v-if="filteredCities.length"
                 class="absolute bg-white border border-gray-300 w-full z-10 max-h-60 overflow-auto">
                 <li v-for="city in filteredCities" :key="city.id" class="p-2 cursor-pointer hover:bg-gray-100"
@@ -141,7 +129,6 @@
               <fwb-input v-model="deliveryTypeInput" required type="text" name="deliveryType"
                 :label="$t('deliveryType')" v-validate="'required'" :placeholder="$t('select_delivery_type')"
                 @input="onDeliveryTypeInputChange" @focus="onDeliveryTypeInputFocus"></fwb-input>
-              <!-- Dropdown of filtered delivery types -->
               <ul v-if="filteredDeliveryTypes.length"
                 class="absolute bg-white border border-gray-300 w-full z-10 max-h-60 overflow-auto">
                 <li v-for="delivery in filteredDeliveryTypes" :key="delivery.id"
@@ -151,9 +138,24 @@
               </ul>
             </div>
 
-            <!-- Address Input -->
-            <fwb-input class="col-span-2 m-2" v-model="createOrderForm.address" required type="text"
-              :label="$t('address')" v-validate="'required'" :placeholder="$t('enter_your_address')"></fwb-input>
+            <!-- Address Input or Storage Selection -->
+            <div class="col-span-2 m-2" v-if="!isSelfDelivery">
+              <fwb-input v-model="createOrderForm.address" required type="text" :label="$t('address')"
+                v-validate="'required'" :placeholder="$t('enter_your_address')">
+              </fwb-input>
+            </div>
+            <div class="col-span-2 m-2 relative" v-else>
+              <fwb-input v-model="storageInput" required type="text" name="storage" :label="$t('selectStorage')"
+                v-validate="'required'" :placeholder="$t('select_storage')" @input="onStorageInputChange"
+                @focus="onStorageInputFocus"></fwb-input>
+              <ul v-if="filteredStorages.length"
+                class="absolute bg-white border border-gray-300 w-full z-10 max-h-60 overflow-auto">
+                <li v-for="storage in filteredStorages" :key="storage.id" class="p-2 cursor-pointer hover:bg-gray-100"
+                  @click="selectStorage(storage)">
+                  {{ storage.nameRu }}
+                </li>
+              </ul>
+            </div>
 
             <!-- Submit Button -->
             <PrimaryBtn class="col-span-2 w-auto mx-auto px-5 py-3 my-3" @click="createOrder">
@@ -165,6 +167,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { defineComponent } from "vue";
 import Breadcrumbs from "@/components/Breadcrumbs.vue";
@@ -195,6 +198,7 @@ export default defineComponent({
         cityId: null,
         deliveryType: null,
         deliveryTypeId: null,
+        storageId: null, // added for self-delivery
       },
       cityInput: '',
       filteredCities: [],
@@ -203,6 +207,12 @@ export default defineComponent({
       selectedDeliveryType: null,
       deliveryTypeInput: '',
       filteredDeliveryTypes: [],
+      isSelfDelivery: false,
+      storages: [],
+      storageInput: '',
+      filteredStorages: [],
+      selectedStorage: null,
+      additionalDeliveryCost: 0, // extra cost for "CITY" delivery type
     };
   },
   methods: {
@@ -215,7 +225,6 @@ export default defineComponent({
       this.$store.commit('removeSingleFromCart', item);
     },
     onCityInputFocus() {
-      // Fetch all cities when input is focused and input is empty
       if (!this.cityInput) {
         this.fetchCities('');
       }
@@ -238,7 +247,7 @@ export default defineComponent({
     selectCity(city) {
       this.cityInput = city.name;
       this.createOrderForm.city = city.name;
-      this.createOrderForm.cityId = city.id;  
+      this.createOrderForm.cityId = city.id;
       this.selectedCity = city;
       this.deliveryTypes = city.deliveryPojoList || [];
       this.deliveryTypeInput = '';
@@ -264,15 +273,34 @@ export default defineComponent({
       this.createOrderForm.deliveryType = delivery.name;
       this.createOrderForm.deliveryTypeId = delivery.id;
       this.selectedDeliveryType = delivery;
-      // Hide dropdown
       this.filteredDeliveryTypes = [];
+
+      if (delivery.code && delivery.code.toUpperCase() === 'MYSELF') {
+        this.isSelfDelivery = true;
+        this.createOrderForm.address = '';
+        let cityCode = (this.selectedCity && this.selectedCity.code) ? this.selectedCity.code : 'ALM';
+        api.get('/ww/storages', { params: { cityCode } })
+          .then(response => {
+            this.storages = response.data;
+            this.filteredStorages = response.data;
+          })
+          .catch(error => {
+            console.error('Failed to fetch storages:', error);
+          });
+        this.additionalDeliveryCost = 0;
+      } else if (delivery.code && delivery.code.toUpperCase() === 'CITY') {
+        this.additionalDeliveryCost = 4000;
+        this.isSelfDelivery = false;
+      } else {
+        this.additionalDeliveryCost = 0;
+        this.isSelfDelivery = false;
+      }
     },
     resetCitySelection() {
       this.createOrderForm.city = null;
       this.createOrderForm.cityId = null;
       this.selectedCity = null;
       this.deliveryTypes = [];
-      // Reset delivery type input and selection
       this.deliveryTypeInput = '';
       this.filteredDeliveryTypes = [];
       this.resetDeliveryTypeSelection();
@@ -281,11 +309,42 @@ export default defineComponent({
       this.createOrderForm.deliveryType = null;
       this.createOrderForm.deliveryTypeId = null;
       this.selectedDeliveryType = null;
+      // Reset self-delivery fields and additional cost
+      this.isSelfDelivery = false;
+      this.createOrderForm.storageId = null;
+      this.storageInput = '';
+      this.filteredStorages = [];
+      this.storages = [];
+      this.additionalDeliveryCost = 0;
+    },
+    onStorageInputFocus() {
+      if (this.storageInput === '' && this.storages.length > 0) {
+        this.filteredStorages = this.storages;
+      }
+    },
+    onStorageInputChange(event) {
+      const value = event.target.value;
+      this.storageInput = value;
+      this.filteredStorages = this.storages.filter(storage =>
+        storage.nameRu.toLowerCase().includes(value.toLowerCase())
+      );
+    },
+    selectStorage(storage) {
+      this.storageInput = storage.nameRu;
+      this.createOrderForm.storageId = storage.id;
+      this.selectedStorage = storage;
+      this.filteredStorages = [];
     },
     createOrder() {
-      // Validate that all fields are filled
-      if (!this.createOrderForm.name || !this.createOrderForm.email || !this.createOrderForm.phone ||
-        !this.createOrderForm.address || !this.createOrderForm.cityId || !this.createOrderForm.deliveryTypeId) {
+      if (
+        !this.createOrderForm.name ||
+        !this.createOrderForm.email ||
+        !this.createOrderForm.phone ||
+        (!this.isSelfDelivery && !this.createOrderForm.address) ||
+        (this.isSelfDelivery && !this.createOrderForm.storageId) ||
+        !this.createOrderForm.cityId ||
+        !this.createOrderForm.deliveryTypeId
+      ) {
         alert(this.$t('please_fill_all_required_fields'));
         return;
       }
@@ -303,7 +362,6 @@ export default defineComponent({
         name: this.createOrderForm.name,
         email: this.createOrderForm.email,
         phone: this.createOrderForm.phone,
-        address: this.createOrderForm.address,
         items: itemsWithoutImages,
         cityPojo: {
           id: this.createOrderForm.cityId,
@@ -312,9 +370,14 @@ export default defineComponent({
         deliveryPojo: {
           id: this.createOrderForm.deliveryTypeId,
           name: this.createOrderForm.deliveryType,
-          description: this.selectedDeliveryType.description // include if needed
+          description: this.selectedDeliveryType ? this.selectedDeliveryType.description : ''
         }
       };
+      if (this.isSelfDelivery) {
+        orderPayload.storageId = this.createOrderForm.storageId;
+      } else {
+        orderPayload.address = this.createOrderForm.address;
+      }
 
       api.post(CREATE_ORDER_URL, orderPayload)
         .then((response) => {
@@ -330,7 +393,6 @@ export default defineComponent({
           } = response.data;
 
           if (invId) {
-
             const access_token = {
               access_token: token,
               expires_in: "1200",
@@ -340,7 +402,7 @@ export default defineComponent({
             };
             const paymentObject = {
               invoiceId: invId,
-              invoiceIdAlt: invoiceIdAlt, 
+              invoiceIdAlt: invoiceIdAlt,
               backLink: backLink,
               failureBackLink: "https://noble.kz/cart",
               postLink: postLink,
@@ -349,7 +411,7 @@ export default defineComponent({
               description: "Оплата в интернет магазине",
               accountId: this.createOrderForm.name,
               terminal: terminal,
-              amount: amount, 
+              amount: amount,
               data: JSON.stringify({
                 statement: {
                   name: this.createOrderForm.name,
@@ -359,7 +421,8 @@ export default defineComponent({
               currency: currency,
               phone: this.createOrderForm.phone,
               name: this.createOrderForm.name,
-              email: this.createOrderForm.email
+              email: this.createOrderForm.email,
+              storageId: this.createOrderForm.storageId
             };
             paymentObject.auth = access_token;
 
@@ -391,6 +454,9 @@ export default defineComponent({
     },
     newPriceCount() {
       return this.itemsWithQuantity.reduce((total, item) => total + ((item.newPrice ? item.newPrice : item.oldPrice) * item.quantity), 0);
+    },
+    finalTotal() {
+      return this.newPriceCount + this.additionalDeliveryCost;
     },
     itemsWithQuantity() {
       const itemMap = {};

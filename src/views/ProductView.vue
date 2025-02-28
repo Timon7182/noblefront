@@ -80,13 +80,18 @@
                 {{ currencyFormatter().format(item.oldPrice) }}тг
               </template>
             </p>
-            <PrimaryBtn v-if="!cart.find((cartItem) => cartItem.id === item.id)"
-              class="p-4 align-bottom uppercase font-semibold mt-3 drop-shadow-xl" @click="addToCart(item)">
-              {{ $t('add_to_cart') }}
-            </PrimaryBtn>
-            <InCartButton v-else class="p-4 align-bottom uppercase font-semibold mt-3 drop-shadow-xl"
-              :itemsCount="cart.filter((cartItem) => cartItem.id === item.id).length" @add="addToCart(item)"
-              @remove="removeFromCart(item)"></InCartButton>
+            <p class="text-center text-lg font-light text-gray-600">
+              В наличии: {{ item.quantity !== null ? item.quantity : 0 }} шт.
+            </p>
+            <PrimaryBtn v-if="!cart.find(cartItem => cartItem.id === item.id)"
+              class="p-4 align-bottom uppercase font-semibold mt-3 drop-shadow-xl"
+              :disabled="!item.quantity || item.quantity <= 0" @click="addToCart(item)">
+              {{ (!item.quantity || item.quantity <= 0) ? 'Нет в наличии' : $t('add_to_cart') }} </PrimaryBtn>
+
+                <InCartButton v-else class="p-4 align-bottom uppercase font-semibold mt-3 drop-shadow-xl"
+                  :itemsCount="cart.filter(cartItem => cartItem.id === item.id).length" @add="addToCart(item)"
+                  @remove="removeFromCart(item)" :maxQuantity="item.quantity">
+                </InCartButton>
           </div>
         </div>
 
@@ -124,234 +129,239 @@
 </template>
 
 
-<script>
-import { defineComponent, nextTick } from 'vue';
+    <script>
+    import { defineComponent, nextTick } from 'vue';
 
-import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import { currencyFormatter, getImgUrl } from '@/utils.js';
-import PrimaryBtn from '@/components/PrimaryBtn.vue';
-import Collections from '@/components/Collections.vue';
-import api from '@/api';
-import { FwbCarousel, FwbSpinner } from 'flowbite-vue';
-import InCartButton from '@/components/InCartButton.vue';
+    import Breadcrumbs from '@/components/Breadcrumbs.vue';
+    import { currencyFormatter, getImgUrl } from '@/utils.js';
+    import PrimaryBtn from '@/components/PrimaryBtn.vue';
+    import Collections from '@/components/Collections.vue';
+    import api from '@/api';
+    import { FwbCarousel, FwbSpinner } from 'flowbite-vue';
+    import InCartButton from '@/components/InCartButton.vue';
 
-const GET_ONE_URL = '/ww/getProductionById/';
+    const GET_ONE_URL = '/ww/getProductionById/';
 
-export default defineComponent({
-  components: {
-    Collections,
-    PrimaryBtn,
-    Breadcrumbs,
-    FwbCarousel,
-    FwbSpinner,
-    InCartButton,
-  },
-  data() {
-    return {
-      item: null,
-      mainImage: null,
-      imageIndex: 0,
-      showDescription: true,
-      showHistory: false,
-      showInstagram: false,
-      showFullScreenCarousel: false,
-      touchStartY: 0,
-      touchStartX: 0,
-      instagramEmbedCode: '', // Add this line
-    };
-  },
-  computed: {
-    breadcrumbItems() {
-      return [
-        {
-          label: this.item?.name,
-          link: this.$route.href,
-        },
-      ];
-    },
-    sortedImages() {
-      return this.item?.images.sort((a, b) => a.order - b.order) || [];
-    },
-    carouselImages() {
-      return this.sortedImages.map((el) => {
+    export default defineComponent({
+      components: {
+        Collections,
+        PrimaryBtn,
+        Breadcrumbs,
+        FwbCarousel,
+        FwbSpinner,
+        InCartButton,
+      },
+      data() {
         return {
-          src: this.getImgUrl(el.image),
-          alt: this.item.name + el.order,
+          item: null,
+          mainImage: null,
+          imageIndex: 0,
+          showDescription: true,
+          showHistory: false,
+          showInstagram: false,
+          showFullScreenCarousel: false,
+          touchStartY: 0,
+          touchStartX: 0,
+          instagramEmbedCode: '', // Add this line
         };
-      });
-    },
-    cart() {
-      return this.$store.state.mainStore.cart || [];
-    },
-  },
-  methods: {
-    prevImage() {
-      if (this.imageIndex > 0) {
-        this.imageIndex--;
-      } else {
-        this.imageIndex = this.carouselImages.length - 1;
-      }
-    },
-    nextImage() {
-      if (this.imageIndex < this.carouselImages.length - 1) {
-        this.imageIndex++;
-      } else {
-        this.imageIndex = 0;
-      }
-    },
-    fetchItem() {
-      const searchParams = new URLSearchParams();
-      searchParams.append('type', this.$route.params.type);
-      searchParams.append('productionId', this.$route.params.id);
+      },
+      computed: {
+        breadcrumbItems() {
+          return [
+            {
+              label: this.item?.name,
+              link: this.$route.href,
+            },
+          ];
+        },
+        sortedImages() {
+          return this.item?.images.sort((a, b) => a.order - b.order) || [];
+        },
+        carouselImages() {
+          return this.sortedImages.map((el) => {
+            return {
+              src: this.getImgUrl(el.image),
+              alt: this.item.name + el.order,
+            };
+          });
+        },
+        cart() {
+          return this.$store.state.mainStore.cart || [];
+        },
+      },
+      methods: {
+        prevImage() {
+          if (this.imageIndex > 0) {
+            this.imageIndex--;
+          } else {
+            this.imageIndex = this.carouselImages.length - 1;
+          }
+        },
+        nextImage() {
+          if (this.imageIndex < this.carouselImages.length - 1) {
+            this.imageIndex++;
+          } else {
+            this.imageIndex = 0;
+          }
+        },
+        fetchItem() {
+          const searchParams = new URLSearchParams();
+          searchParams.append('type', this.$route.params.type);
+          searchParams.append('productionId', this.$route.params.id);
 
-      api
-        .get(`${GET_ONE_URL}?${searchParams.toString()}`)
-        .then((response) => {
-          this.item = response.data;
-          // Load Instagram embed if the section is visible
+          api
+            .get(`${GET_ONE_URL}?${searchParams.toString()}`)
+            .then((response) => {
+              this.item = response.data;
+              // Load Instagram embed if the section is visible
+              if (this.showInstagram) {
+                this.loadInstagramEmbed();
+              }
+            })
+            .catch((error) => {
+              console.error('Error fetching item:', error);
+            });
+        },
+        currencyFormatter,
+        getImgUrl,
+        toggleDescription() {
+          this.showDescription = !this.showDescription;
+        },
+        toggleHistory() {
+          this.showHistory = !this.showHistory;
+        },
+        toggleInstagram() {
+          this.showInstagram = !this.showInstagram;
           if (this.showInstagram) {
             this.loadInstagramEmbed();
           }
-        })
-        .catch((error) => {
-          console.error('Error fetching item:', error);
-        });
-    },
-    currencyFormatter,
-    getImgUrl,
-    toggleDescription() {
-      this.showDescription = !this.showDescription;
-    },
-    toggleHistory() {
-      this.showHistory = !this.showHistory;
-    },
-    toggleInstagram() {
-      this.showInstagram = !this.showInstagram;
-      if (this.showInstagram) {
-        this.loadInstagramEmbed();
-      }
-    },
-    addToCart(item) {
-      this.$store.commit('addToCart', item);
-    },
-    removeFromCart(item) {
-      this.$store.commit('removeSingleFromCart', item);
-    },
-    openFullScreenCarousel(index = 0) {
-      this.imageIndex = index;
-      this.showFullScreenCarousel = true;
-      document.body.classList.add('overflow-hidden');
-    },
-    closeFullScreenCarousel() {
-      this.showFullScreenCarousel = false;
-      document.body.classList.remove('overflow-hidden');
-    },
-    startTouch(event) {
-      this.touchStartX = event.touches[0].clientX;
-      this.touchStartY = event.touches[0].clientY;
-    },
-    endTouch(event) {
-      const touchEndX = event.changedTouches[0].clientX;
-      const touchEndY = event.changedTouches[0].clientY;
-      const deltaX = touchEndX - this.touchStartX;
-      const deltaY = touchEndY - this.touchStartY;
+        },
+        addToCart(item) {
+          const cartItemCount = this.cart.filter(cartItem => cartItem.id === item.id).length;
 
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal swipe
-        if (deltaX > 50) {
-          // Swipe right
-          this.prevImage();
-        } else if (deltaX < -50) {
-          // Swipe left
-          this.nextImage();
-        }
-      } else {
-        // Vertical swipe
-        if (deltaY > 50) {
-          // Swipe down
-          this.closeFullScreenCarousel();
-        }
-      }
-    },
-    handleEscapeKey(event) {
-      if (event.key === 'Escape') {
-        this.closeFullScreenCarousel();
-      }
-    },
-    loadInstagramEmbed() {
-      if (this.item && this.item.externalServiceLink) {
-        const instagramEmbed = `
-        <blockquote class="instagram-media" data-instgrm-permalink="${this.item.externalServiceLink}" data-instgrm-version="14" style="width:100%; max-width:540px; margin:0 auto;"></blockquote>
-      `;
-        this.instagramEmbedCode = instagramEmbed;
+          // Ensure the quantity does not exceed stock availability
+          if (item.quantity !== null && cartItemCount < item.quantity) {
+            this.$store.commit('addToCart', item);
+          }
+        },
+        removeFromCart(item) {
+          this.$store.commit('removeSingleFromCart', item);
+        },
+        openFullScreenCarousel(index = 0) {
+          this.imageIndex = index;
+          this.showFullScreenCarousel = true;
+          document.body.classList.add('overflow-hidden');
+        },
+        closeFullScreenCarousel() {
+          this.showFullScreenCarousel = false;
+          document.body.classList.remove('overflow-hidden');
+        },
+        startTouch(event) {
+          this.touchStartX = event.touches[0].clientX;
+          this.touchStartY = event.touches[0].clientY;
+        },
+        endTouch(event) {
+          const touchEndX = event.changedTouches[0].clientX;
+          const touchEndY = event.changedTouches[0].clientY;
+          const deltaX = touchEndX - this.touchStartX;
+          const deltaY = touchEndY - this.touchStartY;
 
-        nextTick(() => {
-          // Load Instagram embed script
-          if (!document.getElementById('instagram-embed-script')) {
-            const script = document.createElement('script');
-            script.setAttribute('id', 'instagram-embed-script');
-            script.setAttribute('src', 'https://www.instagram.com/embed.js');
-            script.async = true;
-            script.defer = true;
-            document.body.appendChild(script);
-            script.onload = () => {
-              if (window.instgrm) {
-                window.instgrm.Embeds.process();
-              }
-            };
+          if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // Horizontal swipe
+            if (deltaX > 50) {
+              // Swipe right
+              this.prevImage();
+            } else if (deltaX < -50) {
+              // Swipe left
+              this.nextImage();
+            }
           } else {
-            // If script is already loaded, process the embeds
-            if (window.instgrm) {
-              window.instgrm.Embeds.process();
+            // Vertical swipe
+            if (deltaY > 50) {
+              // Swipe down
+              this.closeFullScreenCarousel();
             }
           }
-        });
-      }
-    }
-  },
-  mounted() {
-    this.fetchItem();
-    window.addEventListener('keydown', this.handleEscapeKey);
-  },
-  beforeUnmount() {
-    window.removeEventListener('keydown', this.handleEscapeKey);
-  },
-  watch: {
-    '$route.params.id': 'fetchItem', // Watch for route param changes and re-fetch item
-  },
-});
+        },
+        handleEscapeKey(event) {
+          if (event.key === 'Escape') {
+            this.closeFullScreenCarousel();
+          }
+        },
+        loadInstagramEmbed() {
+          if (this.item && this.item.externalServiceLink) {
+            const instagramEmbed = `
+        <blockquote class="instagram-media" data-instgrm-permalink="${this.item.externalServiceLink}" data-instgrm-version="14" style="width:100%; max-width:540px; margin:0 auto;"></blockquote>
+      `;
+            this.instagramEmbedCode = instagramEmbed;
+
+            nextTick(() => {
+              // Load Instagram embed script
+              if (!document.getElementById('instagram-embed-script')) {
+                const script = document.createElement('script');
+                script.setAttribute('id', 'instagram-embed-script');
+                script.setAttribute('src', 'https://www.instagram.com/embed.js');
+                script.async = true;
+                script.defer = true;
+                document.body.appendChild(script);
+                script.onload = () => {
+                  if (window.instgrm) {
+                    window.instgrm.Embeds.process();
+                  }
+                };
+              } else {
+                // If script is already loaded, process the embeds
+                if (window.instgrm) {
+                  window.instgrm.Embeds.process();
+                }
+              }
+            });
+          }
+        }
+      },
+      mounted() {
+        this.fetchItem();
+        window.addEventListener('keydown', this.handleEscapeKey);
+      },
+      beforeUnmount() {
+        window.removeEventListener('keydown', this.handleEscapeKey);
+      },
+      watch: {
+        '$route.params.id': 'fetchItem', // Watch for route param changes and re-fetch item
+      },
+    });
 </script>
 
-<style scoped>
-.carousel img {
-  object-fit: cover;
-  height: 500px;
-}
+    <style scoped>
+    .carousel img {
+      object-fit: cover;
+      height: 500px;
+    }
 
-.text-center {
-  text-align: center;
-}
+    .text-center {
+      text-align: center;
+    }
 
-/* Optional: Adjust the Instagram embed styles if needed */
-.instagram-media {
-  margin: 0 auto !important;
-}
+    /* Optional: Adjust the Instagram embed styles if needed */
+    .instagram-media {
+      margin: 0 auto !important;
+    }
 
-.full-screen-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.75);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    .full-screen-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.full-screen-modal img {
-  max-width: 100%;
-  max-height: 100%;
-}
-</style>
+    .full-screen-modal img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>

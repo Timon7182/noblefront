@@ -1,7 +1,7 @@
 <template>
   <div class="relative my-20 text-center">
     <!-- Title -->
-    <h2 class="text-3xl lg:text-4xl font-thin text-center mb-10" v-html="title"></h2>
+    <h2 class="text-3xl lg:text-4xl font-thin text-center mb-10 " v-html="title"></h2>
 
     <!-- Centered Container at 80% Width -->
     <div class="w-4/5 mx-auto">

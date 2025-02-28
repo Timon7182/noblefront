@@ -26,7 +26,7 @@
 
         <!-- Products List -->
         <template v-if="!loading && products.length > 0">
-          <catalogue-item v-for="item in products" :key="item.id" :id="item.id" :title="item.name"
+          <catalogue-item v-for="item in products" :key="item.id" :id="item.id" :title="item.name" :discount ="item.discount"
              :imageUrl="item.image" :oldPrice="item.oldPrice" :newPrice="item.newPrice"
             :type="item.type">
           </catalogue-item>

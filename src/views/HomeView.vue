@@ -8,7 +8,7 @@
         <Carousel :productions="item.productions" />
       </template>
       <template v-else-if="item.type === 'DEFAULT'">
-        <Collections :title="item.name" :items="item.productions" />
+        <Collections :title="item.name" :items="item.productions" :discount="item.discount" />
       </template>
       <template v-else-if="item.type === 'CATEGORY'">
         <Categories :title="item.name" :description="item.description" :categories="item.categories" />

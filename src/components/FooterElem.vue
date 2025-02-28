@@ -96,17 +96,17 @@ const contactItems = [
   },
   {
     key: 'whatsappsamal',
-    href:'https://www.instagram.com/noble_almaty/',
+    href:'https://api.whatsapp.com/send?phone=77071710300',
     icon:'whatsapp'
   },
   {
     key: 'whatsappmiras',
-    href:'https://www.instagram.com/noble_almaty/',
+    href:'https://api.whatsapp.com/send?phone=77081903717',
     icon:'whatsapp'
   },
   {
     key: 'whatsappastana',
-    href:'https://www.instagram.com/noble_almaty/',
+    href:'https://api.whatsapp.com/send?phone=77003933327',
     icon:'whatsapp'
   },
   {

@@ -73,5 +73,7 @@
   "select_delivery_type":"Выберите доставку",
   "order_processing_issue":"Непредвиденная ошибка, попробуйте позже",
   "please_fill_all_required_fields":"Заполните все поля",
-  "order_creation_error":"Цена на  Товар поменялись"
+  "order_creation_error":"Цена на  Товар поменялись",
+  "select_storage":"Выберите Магазин",
+  "selectStorage":"Магазин"
 }
