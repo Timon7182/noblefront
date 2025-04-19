@@ -32,7 +32,6 @@
         :class="dropdownClasses"
         :style="dropdownPosition"
       >
-        <!-- "Все" (All) styled with gray background -->
         <a
           :href="`/catalogue?categoryId=${category.id}`"
           class="dropdown-link is-subcategory all-categories-link"
@@ -106,6 +105,12 @@ export default {
     },
   },
   methods: {
+       onWindowMove() {
+     if (this.isOpen) {
+     this.checkSpace();
+       this.calculateDropdownPosition();
+     }
+   },
     toggleDropdown() {
       this.$emit('toggle'); // Emit event to parent to toggle category
     },
@@ -123,27 +128,29 @@ export default {
       this.shouldOpenLeft = rect.right + 220 > viewportWidth;
     },
     calculateDropdownPosition() {
-      const triggerEl = this.$refs.trigger;
-      const rect = triggerEl.getBoundingClientRect();
+  const triggerEl = this.$refs.trigger;
+  const rect = triggerEl.getBoundingClientRect();
 
-      let top, left;
-      if (this.level === 1) {
-        // For top-level categories, open downwards
-        top = rect.bottom;
-        left = rect.left;
-      } else {
-        // For subcategories, open to the side
-        top = rect.top;
-        left = this.shouldOpenLeft ? rect.left - 220 : rect.right;
-      }
+  // Compute viewport‑relative coordinates
+  let top, left;
+  if (this.level === 1) {
+    top  = rect.bottom;
+    left = rect.left;
+  } else {
+    top  = rect.top;
+    left = this.shouldOpenLeft
+      ? rect.left - 220
+      : rect.right;
+  }
 
-      this.dropdownPosition = {
-        position: 'absolute',
-        top: `${top}px`,
-        left: `${left}px`,
-        zIndex: 999, // Ensure dropdown appears above other elements
-      };
-    },
+  // Use fixed instead of absolute
+  this.dropdownPosition = {
+    position: 'fixed',
+    top:  `${top}px`,
+    left: `${left}px`,
+    zIndex: 999
+  };
+},
     closeAllDropdowns() {
       // Close current dropdown
       this.subOpenCategory = null;

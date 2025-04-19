@@ -14,28 +14,44 @@
 import { defineComponent } from 'vue' 
 import CategoryTreeItem from './CategoryTreeItem.vue' 
  
-export default defineComponent({ 
-  components: { 
-    CategoryTreeItem 
-  }, 
-  props: { 
-    categories: { 
-      type: Array, 
-      required: true 
-    } 
-  }, 
-  data() { 
-    return { 
-      openCategory: null, // Track which category is open 
-    } 
-  }, 
-  methods: { 
-    toggleCategory(categoryId) { 
-      // If the same category is clicked, close it. Otherwise, open the new category. 
-      this.openCategory = this.openCategory === categoryId ? null : categoryId; 
-    } 
-  } 
-}) 
+export default defineComponent({
+  name: 'CategoryDropdowns',
+  components: { CategoryTreeItem },
+  props: {
+    categories: {
+      type: Array,
+      required: true
+    }
+  },
+  data() {
+    return {
+      openCategory: null
+    }
+  },
+  methods: {
+    toggleCategory(categoryId) {
+      // Toggle the clicked category; close if same
+      this.openCategory = this.openCategory === categoryId ? null : categoryId
+    },
+    handleClickOutside(event) {
+      // If click originates inside the category bar or inside any dropdown menu, do nothing
+      if (
+        this.$el.contains(event.target) ||
+        event.target.closest('.category-dropdown')
+      ) {
+        return
+      }
+      // Otherwise, close the open category
+      this.openCategory = null
+    }
+  },
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside)
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside)
+  }
+})
 </script> 
  
 <style scoped> 

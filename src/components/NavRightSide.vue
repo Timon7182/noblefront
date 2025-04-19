@@ -61,20 +61,29 @@
     
     <!-- Desktop view -->
     <div class="hidden xl:block">
+    <!-- Fixed header (stripe + logo/search + categories) -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+      <!-- Top stripe -->
       <div class="h-10 bg-gray-950"></div>
-      <div class="mt-4 grid grid-cols-3 mx-4">
+
+      <!-- Logo, Search, Cart row -->
+      <div class="mt-4 grid grid-cols-3 mx-4 items-center">
+        <!-- Logo -->
         <div class="flex justify-start ml-10">
           <FwbA href="/">
             <FwbImg alt="Noble logo" class="w-[125px] h-[45px]" :src="noble_logo" />
           </FwbA>
         </div>
 
+        <!-- Search button -->
         <SearchButton />
 
+        <!-- Map pin and cart -->
         <div class="flex justify-end mt-5 gap-6 mr-10 mb-2">
           <FwbA
             href="https://2gis.kz/almaty/search/Noble%2C%20%D0%BC%D0%B0%D0%B3%D0%B0%D0%B7%D0%B8%D0%BD%20%D0%BF%D0%BE%D1%81%D1%83%D0%B4%D1%8B%20%D0%B8%20%D0%BF%D0%BE%D0%B4%D0%B0%D1%80%D0%BA%D0%BE%D0%B2?m=76.934863%2C43.220031%2F13.72"
-            class="mb-2">
+            class="mb-2"
+          >
             <MapPinIcon class="h-7" />
           </FwbA>
           <FwbA href="/cart" class="relative mb-2">
@@ -84,11 +93,15 @@
         </div>
       </div>
 
-      <div class="w-full flex font-bold justify-around  z-40 category-dropdowns"
-        :class="{ 'fixed bg-white top-0': isSticky }">
-        <CategoryDropdowns :categories="categories"></CategoryDropdowns>
+      <!-- Categories row -->
+      <div class="w-full flex font-bold justify-around category-dropdowns">
+        <CategoryDropdowns :categories="categories" />
       </div>
     </div>
+
+    <!-- Placeholder to offset page content below fixed header -->
+    <div class="h-[152px]"></div>
+  </div>
   </div>
 </template>
 
@@ -115,10 +128,8 @@ const store = useStore()
 let showLinks = ref(false)
 let isSticky = ref(false)
 
-// Computed property to get cart items from the Vuex store
 const cartItems = computed(() => store.state.mainStore.cart || []);
 
-// Computed property to group items by unique ID and calculate quantity
 const itemsWithQuantity = computed(() => {
   const uniqueObjectsById = cartItems.value.reduce((acc, item) => {
     if (!acc[item.id]) {
@@ -162,6 +173,9 @@ onUnmounted(() => {
   position: relative;
   display: inline-block;
   margin-right: 15px;
+}
+.category-dropdowns {
+  background: white;
 }
 
 .cart-count {
