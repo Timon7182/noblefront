@@ -1,55 +1,38 @@
 <template>
   <div class="category-item">
     <!-- Category Button -->
-    <button
-      v-if="hasSubCategories"
-      @click="toggleDropdown"
-      ref="trigger"
-      :class="['dropdown-button', { 'is-subcategory': level > 1 }]"
-    >
+    <button v-if="hasSubCategories" @click="toggleDropdown" ref="trigger"
+      :class="['dropdown-button', { 'is-subcategory': level > 1 }]">
       {{ category.name }}
       <!-- Show the ">" symbol only on subcategories of subcategories (level > 1) -->
-      <span
-        v-if="level > 1 && hasSubCategories"
-        class="indicator"
-      >
+      <span v-if="level > 1 && hasSubCategories" class="indicator">
         &gt;
       </span>
     </button>
 
     <!-- If no subcategories, show as a link -->
-    <a
-      v-else
-      :href="`/catalogue?categoryId=${category.id}`"
-      :class="['dropdown-link', { 'is-subcategory': level > 1 }]"
-    >
+    <a v-else :href="`/catalogue?categoryId=${category.id}`"
+      :class="['dropdown-link', { 'is-subcategory': level > 1 }]">
       {{ category.name }}
     </a>
 
     <!-- Dropdown menu for subcategories -->
     <Teleport to="body" v-if="isOpen && hasSubCategories">
-      <div
-        :class="dropdownClasses"
-        :style="dropdownPosition"
-      >
-        <a
-          :href="`/catalogue?categoryId=${category.id}`"
-          class="dropdown-link is-subcategory all-categories-link"
-        >
+      <div :class="dropdownClasses" :style="dropdownPosition">
+
+        <a v-if="category.name === 'Бренд'" :href="`/brands?parentId=${category.id}`" class="dropdown-link is-subcategory all-categories-link">
+          Все
+        </a>
+        <a v-else :href="`/catalogue?categoryId=${category.id}`"
+          class="dropdown-link is-subcategory all-categories-link">
           Все
         </a>
 
         <!-- Recursive subcategory rendering -->
         <div class="subcategory-container">
-          <category-tree-item
-            v-for="subCategory in category.subCategoryPojoList"
-            :key="subCategory.id"
-            :category="subCategory"
-            :is-open="subOpenCategory === subCategory.id"
-            :level="level + 1"
-            @toggle="toggleSubCategory(subCategory.id)"
-            @close-all-dropdowns="closeAllDropdowns"
-          />
+          <category-tree-item v-for="subCategory in category.subCategoryPojoList" :key="subCategory.id"
+            :category="subCategory" :is-open="subOpenCategory === subCategory.id" :level="level + 1"
+            @toggle="toggleSubCategory(subCategory.id)" @close-all-dropdowns="closeAllDropdowns" />
         </div>
       </div>
     </Teleport>
@@ -105,12 +88,12 @@ export default {
     },
   },
   methods: {
-       onWindowMove() {
-     if (this.isOpen) {
-     this.checkSpace();
-       this.calculateDropdownPosition();
-     }
-   },
+    onWindowMove() {
+      if (this.isOpen) {
+        this.checkSpace();
+        this.calculateDropdownPosition();
+      }
+    },
     toggleDropdown() {
       this.$emit('toggle'); // Emit event to parent to toggle category
     },
@@ -128,29 +111,29 @@ export default {
       this.shouldOpenLeft = rect.right + 220 > viewportWidth;
     },
     calculateDropdownPosition() {
-  const triggerEl = this.$refs.trigger;
-  const rect = triggerEl.getBoundingClientRect();
+      const triggerEl = this.$refs.trigger;
+      const rect = triggerEl.getBoundingClientRect();
 
-  // Compute viewport‑relative coordinates
-  let top, left;
-  if (this.level === 1) {
-    top  = rect.bottom;
-    left = rect.left;
-  } else {
-    top  = rect.top;
-    left = this.shouldOpenLeft
-      ? rect.left - 220
-      : rect.right;
-  }
+      // Compute viewport‑relative coordinates
+      let top, left;
+      if (this.level === 1) {
+        top = rect.bottom;
+        left = rect.left;
+      } else {
+        top = rect.top;
+        left = this.shouldOpenLeft
+          ? rect.left - 220
+          : rect.right;
+      }
 
-  // Use fixed instead of absolute
-  this.dropdownPosition = {
-    position: 'fixed',
-    top:  `${top}px`,
-    left: `${left}px`,
-    zIndex: 999
-  };
-},
+      // Use fixed instead of absolute
+      this.dropdownPosition = {
+        position: 'fixed',
+        top: `${top}px`,
+        left: `${left}px`,
+        zIndex: 999
+      };
+    },
     closeAllDropdowns() {
       // Close current dropdown
       this.subOpenCategory = null;
@@ -179,7 +162,8 @@ export default {
 
 /* Dropdown styles */
 .category-dropdown {
-  position: absolute; /* Now relative to the viewport */
+  position: absolute;
+  /* Now relative to the viewport */
   width: 220px;
   background-color: #f0f0f0;
   border-radius: 4px;

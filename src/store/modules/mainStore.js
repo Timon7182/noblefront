@@ -1,6 +1,7 @@
 import api from '@/api'
 
 const CATEGORIES_URL = '/ww/getCategories'
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
 const mainStore = {
     state: () => ({
@@ -16,6 +17,24 @@ const mainStore = {
         categories: state => state.categories,
         catBrands: state => state.categories.find(el => el.name === 'Бренд')?.subCategoryPojoList || null,
         parentCategories: state => state.categories,
+        groupedBrands: (state, getters) => {
+            const brands = getters.catBrands
+            // initialize A–Z buckets:
+            const buckets = alphabet.reduce((acc, L) => {
+              acc[L] = []
+              return acc
+            }, {})
+            // bucket each brand by its first letter:
+            for (const b of brands) {
+              const first = (b.name?.charAt(0) || '').toUpperCase()
+              if (buckets[first]) buckets[first].push(b)
+            }
+            // sort each bucket:
+            Object.values(buckets).forEach(arr =>
+              arr.sort((a, b) => a.name.localeCompare(b.name))
+            )
+            return buckets
+          }
     },
 
     actions: {

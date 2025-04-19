@@ -9,6 +9,7 @@ import PublicOffer from "@/views/PublicOffer.vue";
 import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
 import DeliveryInfo from '@/views/DeliveryInfo.vue';
 import GarantyReturn from '@/views/GarantyReturn.vue';
+import BrandsPage from '@/views/BrandsPage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,7 @@ const router = createRouter({
       name: 'home',
       component: HomeView
     },
+    { path: '/brands',      name: 'BrandsPage',   component: BrandsPage },
     {
       path: '/catalogue',
       name: 'catalogue',
