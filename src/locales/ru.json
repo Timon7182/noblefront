@@ -75,5 +75,7 @@
   "please_fill_all_required_fields":"Заполните все поля",
   "order_creation_error":"Цена на  Товар поменялись",
   "select_storage":"Выберите Магазин",
-  "selectStorage":"Магазин"
+  "selectStorage":"Магазин",
+  "creatingOrder":"Создаём заказ",
+  "delivery":"Доставка"
 }

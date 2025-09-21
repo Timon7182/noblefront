@@ -82,6 +82,14 @@
             <h2 class="text-xl font-light text-center px-4 py-2">
               {{ currencyFormatter().format(oldPriceCount) }}ТГ
             </h2>
+            
+            <template v-if="selectedDeliveryType && selectedDeliveryType.deliveryPrice">
+              <h2 class="text-xl font-light text-center px-4 py-2">
+                {{ $t('delivery') }}
+              </h2>
+              <h2 class="text-xl font-light text-center px-4 py-2">
+                {{ currencyFormatter().format(selectedDeliveryType.deliveryPrice) }}ТГ</h2>
+            </template>
             <template v-if="newPriceCount !== oldPriceCount">
               <h2 class="text-xl font-light text-center px-4 py-2">
                 {{ $t('discount') }}
@@ -157,10 +165,13 @@
               </ul>
             </div>
 
-            <!-- Submit Button -->
-            <PrimaryBtn class="col-span-2 w-auto mx-auto px-5 py-3 my-3" @click="createOrder">
-              {{ $t('createOrder') }}
-            </PrimaryBtn>
+            <PrimaryBtn
+            class="col-span-2 w-auto mx-auto px-5 py-3 my-3"
+            :disabled="isCreatingOrder"
+            @click="createOrder">
+            <span v-if="isCreatingOrder">{{ $t('creatingOrder') }}...</span>
+            <span v-else>{{ $t('createOrder') }}</span>
+          </PrimaryBtn>
           </div>
         </div>
       </div>
@@ -212,7 +223,8 @@ export default defineComponent({
       storageInput: '',
       filteredStorages: [],
       selectedStorage: null,
-      additionalDeliveryCost: 0, // extra cost for "CITY" delivery type
+      additionalDeliveryCost: 0,
+      isCreatingOrder: false,
     };
   },
   methods: {
@@ -336,6 +348,7 @@ export default defineComponent({
       this.filteredStorages = [];
     },
     createOrder() {
+      if (this.isCreatingOrder) return;
       if (
         !this.createOrderForm.name ||
         !this.createOrderForm.email ||
@@ -348,6 +361,8 @@ export default defineComponent({
         alert(this.$t('please_fill_all_required_fields'));
         return;
       }
+      
+      this.isCreatingOrder = true;
 
       const itemsWithoutImages = this.itemsWithQuantity.map(item => {
         const { images, ...rest } = item;
@@ -434,7 +449,10 @@ export default defineComponent({
         .catch(error => {
           console.error("Order creation failed:", error);
           alert(this.$t('order_creation_error'));
-        });
+        })
+        .finally(() => {
+          this.isCreatingOrder = false; 
+      });
     },
   },
   computed: {
@@ -456,7 +474,13 @@ export default defineComponent({
       return this.itemsWithQuantity.reduce((total, item) => total + ((item.newPrice ? item.newPrice : item.oldPrice) * item.quantity), 0);
     },
     finalTotal() {
-      return this.newPriceCount + this.additionalDeliveryCost;
+      let baseTotal = this.newPriceCount;
+      if (this.selectedDeliveryType && this.selectedDeliveryType.deliveryPrice) {
+        baseTotal += this.selectedDeliveryType.deliveryPrice;
+      } else {
+        baseTotal += this.additionalDeliveryCost;
+      }
+      return baseTotal;
     },
     itemsWithQuantity() {
       const itemMap = {};
