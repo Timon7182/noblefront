@@ -42,6 +42,9 @@
 <script>
 import { Teleport, defineAsyncComponent } from 'vue';
 
+// Должна совпадать с .category-dropdown в стилях ниже
+const DROPDOWN_WIDTH = 260;
+
 export default {
   name: 'CategoryTreeItem',
   components: {
@@ -108,7 +111,7 @@ export default {
       const viewportWidth = window.innerWidth;
 
       // Check if there is enough space on the right, if not, open to the left
-      this.shouldOpenLeft = rect.right + 220 > viewportWidth;
+      this.shouldOpenLeft = rect.right + DROPDOWN_WIDTH > viewportWidth;
     },
     calculateDropdownPosition() {
       const triggerEl = this.$refs.trigger;
@@ -122,7 +125,7 @@ export default {
       } else {
         top = rect.top;
         left = this.shouldOpenLeft
-          ? rect.left - 220
+          ? rect.left - DROPDOWN_WIDTH
           : rect.right;
       }
 
@@ -163,84 +166,134 @@ export default {
 /* Dropdown styles */
 .category-dropdown {
   position: absolute;
-  /* Now relative to the viewport */
-  width: 220px;
-  background-color: #f0f0f0;
-  border-radius: 4px;
-  padding: 10px 0;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 260px;
+  background-color: #FAF7F2;
+  border: 1px solid #E5DFD4;
+  padding: 8px 0;
+  box-shadow: 0 18px 40px rgba(26, 26, 24, 0.08);
   z-index: 999;
 }
 
 /* Scrolling for second level */
 .category-dropdown.open-down {
-  max-height: 400px;
+  max-height: 420px;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+.category-dropdown.open-down:hover {
+  scrollbar-color: #D8D2C6 transparent;
+}
+.category-dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+.category-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+.category-dropdown::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+.category-dropdown:hover::-webkit-scrollbar-thumb {
+  background: #D8D2C6;
 }
 
 /* "Все" (All) link styling */
 .all-categories-link {
-  font-size: 14px;
+  font-size: 13px;
   padding: 10px 20px;
   display: block;
-  color: #333;
-  background-color: #e0e0e0;
+  color: #6B655C;
+  border-bottom: 1px solid #E5DFD4;
+  margin-bottom: 4px;
 }
 
 .all-categories-link:hover {
-  background-color: #d0d0d0;
+  color: #1A1A18;
+  background-color: #F2EDE5;
 }
 
-/* Category buttons */
+/* Category buttons: верхний уровень — тихие капители */
 .dropdown-button {
   width: 100%;
   text-align: left;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 500;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1A1A18;
   background-color: transparent;
   border: none;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 6px;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.25s ease;
 }
 
+/* Длинные названия брендов переносятся, а не обрезаются */
 .is-subcategory {
   font-size: 14px;
+  letter-spacing: 0;
   text-transform: none;
+  white-space: normal;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  align-items: flex-start;
 }
 
 /* Links for categories without subcategories */
 .dropdown-link {
   display: block;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 500;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1A1A18;
   text-decoration: none;
   cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.25s ease;
 }
 
 .is-subcategory.dropdown-link {
   font-size: 14px;
-  padding: 10px 20px;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 9px 20px;
+  color: #6B655C;
+  white-space: normal;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 /* Indicator for subcategories with further subcategories */
 .indicator {
-  font-size: 14px;
-  color: #333;
+  font-size: 13px;
+  color: #6B655C;
 }
 
 /* Hover effects */
 .dropdown-button:hover,
 .dropdown-link:hover {
-  background-color: #e0e0e0;
+  color: #9A6B4F;
 }
 
-/* Subcategory container for subcategories */
-.subcategory-container {
-  /* No changes needed */
+.category-dropdown .dropdown-button,
+.category-dropdown .dropdown-link {
+  color: #6B655C;
+}
+
+.category-dropdown .dropdown-button:hover,
+.category-dropdown .dropdown-link:hover {
+  color: #1A1A18;
+  background-color: #F2EDE5;
 }
 </style>

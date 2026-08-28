@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noble — Almaty Garden</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Newsreader:ital,wght@1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #F4EFE0;
+      --paper:    #F9F4E7;
+      --olive:    #6B7349;
+      --olive-d:  #4F5435;
+      --olive-l:  #ACB48C;
+      --sunset:   #D9A87F;
+      --sunset-d: #B07C52;
+      --ink:      #2A2E26;
+      --ink-2:    #5F6359;
+      --ink-3:    #95988C;
+      --line:     #D8D2BD;
+      --coral:    #C6624A;
+      --r:        18px;
+      --r-s:      12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      font-weight: 400; font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+    .serif-d { font-family: "Marcellus", "Times New Roman", serif; }
+    .serif-i { font-family: "Newsreader", "Times New Roman", serif; font-weight: 400; font-style: italic; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+    .container { max-width: 1340px; margin: 0 auto; padding: 0 28px; }
+    @media (max-width: 720px) { .container { padding: 0 18px; } }
+
+    .chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--olive-d); }
+    .chip::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--sunset-d); }
+
+    /* Anno — sunset */
+    .anno { background: var(--olive-d); color: var(--bg); padding: 11px 0; text-align: center; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .anno em { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset); text-transform: none; letter-spacing: 0; }
+
+    /* Nav */
+    .nav { position: sticky; top: 0; z-index: 60; background: rgba(244,239,224,0.92); backdrop-filter: blur(14px); padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .nav-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }
+    .nav-left { display: flex; gap: 24px; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--olive-d); }
+    .nav-left a:hover { color: var(--sunset-d); }
+    .brand {
+      font-family: "Marcellus", serif;
+      font-size: 30px; font-weight: 400; line-height: 1;
+      text-align: center; letter-spacing: 0.16em; color: var(--olive-d);
+    }
+    .brand .sub { display: block; font-family: "Newsreader", serif; font-style: italic; font-size: 11px; letter-spacing: 0.04em; color: var(--sunset-d); margin-top: 4px; }
+    .nav-right { display: flex; gap: 10px; justify-content: flex-end; }
+    .icon-btn { width: 42px; height: 42px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; color: var(--olive-d); position: relative; transition: background .25s ease, color .25s ease; }
+    .icon-btn:hover { background: var(--olive); color: var(--bg); }
+    .icon-btn .count { position: absolute; top: -4px; right: -4px; background: var(--sunset-d); color: var(--bg); font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 999px; }
+    @media (max-width: 900px) { .nav-left { display: none; } }
+
+    /* HERO — almaty narrative */
+    .hero { padding: 36px 0 80px; }
+    .hero-card { position: relative; border-radius: var(--r); overflow: hidden; min-height: 82vh; max-height: 880px; background: var(--olive); }
+    .hero-bg { position: absolute; inset: 0; background-image: url("assets/main.jpeg"); background-size: cover; background-position: center; transform: scale(1.04); animation: heroZoom 16s ease-out forwards; filter: brightness(0.92); }
+    @keyframes heroZoom { to { transform: scale(1); } }
+    .hero-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(42,46,38,0.15) 30%, rgba(42,46,38,0.7) 100%); }
+    /* Mountain silhouette (SVG-like via clip-path on bottom) */
+    .mountains {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+      height: 22%; pointer-events: none; opacity: 0.6;
+      background: var(--olive-d);
+      clip-path: polygon(0% 100%, 0% 60%, 5% 70%, 12% 40%, 20% 65%, 28% 50%, 36% 70%, 44% 35%, 52% 60%, 60% 45%, 68% 70%, 76% 50%, 84% 65%, 92% 40%, 100% 60%, 100% 100%);
+    }
+    .hero-c { position: absolute; inset: 0; z-index: 2; color: var(--bg); display: flex; flex-direction: column; justify-content: space-between; padding: 40px 0; }
+    .hero-c .container { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .hero-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .hero-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(249,244,231,0.12); backdrop-filter: blur(8px); border: 1px solid rgba(249,244,231,0.3); font-size: 12px; letter-spacing: 0.04em; }
+    .hero-chip::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--sunset); }
+    .hero-meta { display: flex; gap: 18px; font-size: 12px; color: rgba(249,244,231,0.8); letter-spacing: 0.06em; text-transform: uppercase; }
+    .hero-title {
+      font-family: "Marcellus", serif; font-weight: 400;
+      font-size: clamp(56px, 9vw, 152px); line-height: 0.96; letter-spacing: 0.005em;
+      margin: 0; color: var(--bg);
+    }
+    .hero-title .it { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset); font-weight: 400; letter-spacing: 0; }
+    .hero-bot { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+    .hero-deck { font-family: "Newsreader", serif; font-style: italic; font-size: clamp(18px, 1.8vw, 26px); line-height: 1.4; max-width: 38ch; color: rgba(249,244,231,0.95); margin: 0; }
+    .btn-sunset { display: inline-flex; align-items: center; gap: 12px; padding: 17px 28px; border-radius: 999px; background: var(--sunset); color: var(--olive-d); font-weight: 600; font-size: 14px; transition: background .25s ease; }
+    .btn-sunset:hover { background: var(--bg); }
+    .btn-line-light { display: inline-flex; align-items: center; gap: 10px; padding: 15px 24px; border-radius: 999px; background: transparent; color: var(--bg); border: 1px solid rgba(249,244,231,0.4); font-weight: 500; font-size: 14px; transition: background .25s ease, color .25s ease; }
+    .btn-line-light:hover { background: var(--bg); color: var(--olive-d); border-color: var(--bg); }
+
+    /* About strip with mountain panel */
+    .about-strip { padding: 0 0 80px; }
+    .about-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); padding: 48px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; position: relative; overflow: hidden; }
+    @media (max-width: 900px) { .about-card { grid-template-columns: 1fr; padding: 28px; gap: 28px; } }
+    .about-card::after { content: ""; position: absolute; right: -120px; bottom: -120px; width: 320px; height: 320px; border-radius: 999px; background: var(--olive-l); opacity: 0.35; z-index: 0; }
+    .about-card > * { position: relative; z-index: 1; }
+    .about-card h2 { font-family: "Marcellus", serif; font-weight: 400; font-size: clamp(34px, 4.6vw, 60px); line-height: 1; letter-spacing: 0.005em; margin: 16px 0 22px; color: var(--olive-d); }
+    .about-card h2 .it { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset-d); }
+    .about-card p { color: var(--ink-2); margin: 0 0 14px; line-height: 1.7; max-width: 50ch; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+    .stat { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-s); padding: 18px; }
+    .stat strong { display: block; font-family: "Marcellus", serif; font-size: 32px; color: var(--olive); line-height: 1; margin-bottom: 4px; }
+    .stat span { font-size: 12px; color: var(--ink-2); letter-spacing: 0.04em; text-transform: uppercase; }
+    .about-card .photo-stack { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+    .about-card .photo-stack > div { border-radius: var(--r-s); overflow: hidden; aspect-ratio: 4/5; background: var(--surface); }
+    .about-card .photo-stack img { width: 100%; height: 100%; object-fit: cover; }
+    .about-card .photo-stack .small { display: grid; grid-template-rows: 1fr 1fr; gap: 12px; aspect-ratio: auto; background: transparent; }
+    .about-card .photo-stack .small > div { background: var(--sunset); border-radius: var(--r-s); overflow: hidden; }
+    .about-card .photo-stack .small > div:last-child { background: var(--olive); }
+
+    /* Sections */
+    .section { padding: 80px 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+    .section-head h2 {
+      font-family: "Marcellus", serif; font-weight: 400;
+      font-size: clamp(40px, 5.4vw, 80px); line-height: 0.98; letter-spacing: 0.005em;
+      margin: 12px 0 0; color: var(--olive-d);
+    }
+    .section-head h2 .it { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset-d); }
+    .section-head .link { font-size: 14px; color: var(--sunset-d); padding-bottom: 4px; border-bottom: 1px solid var(--sunset-d); }
+
+    /* Pillars */
+    .pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 900px) { .pillars-grid { grid-template-columns: 1fr; } }
+    .pillar { position: relative; overflow: hidden; aspect-ratio: 4/5; border-radius: var(--r); background: var(--olive); transition: transform .35s ease; }
+    .pillar:hover { transform: translateY(-6px); }
+    .pillar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); filter: brightness(0.95); }
+    .pillar:hover img { transform: scale(1.06); filter: brightness(1); }
+    .pillar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(42,46,38,0) 40%, rgba(42,46,38,0.78) 100%); }
+    .pillar-c { position: absolute; inset: 22px; z-index: 2; color: var(--bg); display: flex; flex-direction: column; justify-content: space-between; }
+    .pillar-c .num { font-family: "Marcellus", serif; font-size: 14px; letter-spacing: 0.16em; color: var(--sunset); }
+    .pillar-c h3 { font-family: "Marcellus", serif; font-weight: 400; font-size: clamp(28px, 2.8vw, 42px); line-height: 1; letter-spacing: 0.005em; margin: 0; }
+    .pillar-c h3 .it { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset); letter-spacing: 0; }
+    .pillar-c .bot { display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+    .pillar-c .arrow { width: 46px; height: 46px; border-radius: 999px; background: var(--sunset); color: var(--olive-d); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .35s ease; }
+    .pillar:hover .pillar-c .arrow { transform: rotate(-45deg); background: var(--bg); }
+
+    /* Story spread */
+    .story { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); padding: 48px; display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center; }
+    @media (max-width: 900px) { .story { grid-template-columns: 1fr; padding: 28px; gap: 28px; } }
+    .story-img { border-radius: var(--r-s); overflow: hidden; aspect-ratio: 4/5; position: relative; }
+    .story-img img { width: 100%; height: 100%; object-fit: cover; }
+    .story-img .badge { position: absolute; top: 16px; left: 16px; background: var(--olive); color: var(--bg); padding: 7px 14px; border-radius: 999px; font-family: "Newsreader", serif; font-style: italic; font-size: 14px; }
+    .story h2 { font-family: "Marcellus", serif; font-weight: 400; font-size: clamp(36px, 4.6vw, 60px); line-height: 1; letter-spacing: 0.005em; margin: 16px 0 22px; color: var(--olive-d); }
+    .story h2 .it { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset-d); }
+    .story p { color: var(--ink-2); margin: 0 0 14px; line-height: 1.7; max-width: 50ch; }
+    .story-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .story-meta strong { display: block; font-family: "Marcellus", serif; font-size: 28px; color: var(--olive); line-height: 1; margin-bottom: 4px; }
+    .story-meta span { font-size: 11px; color: var(--ink-2); letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* Products */
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .products-grid { grid-template-columns: 1fr; } }
+    .product { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+    .product:hover { transform: translateY(-3px); border-color: var(--sunset); box-shadow: 0 20px 36px -22px rgba(42,46,38,0.2); }
+    .product-img { position: relative; aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; margin-bottom: 16px; background: var(--olive-l); }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s ease; }
+    .product:hover .product-img img { transform: scale(1.04); }
+    .product-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 5px 10px; border-radius: 999px; background: var(--bg); color: var(--olive-d); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .product-tag.sale { background: var(--sunset-d); color: var(--bg); }
+    .product-brand { font-size: 11px; color: var(--ink-2); margin: 0 0 4px; letter-spacing: 0.04em; }
+    .product-name { font-family: "Marcellus", serif; font-weight: 400; font-size: 22px; line-height: 1.1; margin: 0 0 12px; letter-spacing: 0.005em; }
+    .product-name .it { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset-d); letter-spacing: 0; }
+    .product-foot { display: flex; justify-content: space-between; align-items: center; }
+    .product-price { font-weight: 600; font-size: 15px; color: var(--ink); }
+    .product-price .old { color: var(--ink-3); text-decoration: line-through; font-size: 12px; margin-right: 8px; font-weight: 400; }
+    .product-add { width: 36px; height: 36px; border-radius: 999px; background: var(--olive); color: var(--bg); display: inline-flex; align-items: center; justify-content: center; transition: background .25s ease, transform .25s ease; }
+    .product-add:hover { background: var(--sunset-d); transform: rotate(90deg); }
+
+    /* Almaty card — local rooting */
+    .almaty { padding: 80px 0; }
+    .almaty-card { background: var(--olive-d); color: var(--bg); border-radius: var(--r); padding: 64px 48px; position: relative; overflow: hidden; }
+    @media (max-width: 720px) { .almaty-card { padding: 40px 24px; } }
+    .almaty-card::before { content: ""; position: absolute; right: -120px; top: -120px; width: 320px; height: 320px; border-radius: 999px; background: var(--sunset-d); opacity: 0.4; }
+    .almaty-card::after { content: ""; position: absolute; left: 5%; bottom: 0; right: 0; height: 28%; background: var(--olive); clip-path: polygon(0% 100%, 0% 60%, 8% 70%, 16% 30%, 24% 60%, 32% 45%, 40% 65%, 48% 25%, 56% 55%, 64% 40%, 72% 60%, 80% 35%, 88% 55%, 96% 30%, 100% 50%, 100% 100%); opacity: 0.6; }
+    .almaty-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 56px; align-items: center; position: relative; z-index: 2; }
+    @media (max-width: 900px) { .almaty-grid { grid-template-columns: 1fr; gap: 32px; } }
+    .almaty .chip { background: rgba(249,244,231,0.1); color: var(--bg); border-color: rgba(249,244,231,0.2); }
+    .almaty .chip::before { background: var(--sunset); }
+    .almaty h2 { font-family: "Marcellus", serif; font-weight: 400; font-size: clamp(40px, 5.6vw, 80px); line-height: 1; letter-spacing: 0.005em; margin: 18px 0 22px; }
+    .almaty h2 .it { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset); }
+    .almaty p { color: rgba(249,244,231,0.85); max-width: 46ch; margin: 0 0 32px; line-height: 1.7; }
+    .almaty .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .almaty .stat-row > div { padding: 18px; border: 1px solid rgba(249,244,231,0.18); border-radius: var(--r-s); }
+    .almaty .stat-row strong { display: block; font-family: "Marcellus", serif; font-size: 34px; color: var(--sunset); line-height: 1; margin-bottom: 4px; }
+    .almaty .stat-row span { font-size: 11px; opacity: 0.7; letter-spacing: 0.04em; text-transform: uppercase; }
+    .almaty-photo { aspect-ratio: 4/5; border-radius: var(--r-s); overflow: hidden; }
+    .almaty-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Houses tiles */
+    .houses-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 900px) { .houses-grid { grid-template-columns: repeat(2, 1fr); } }
+    .house { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-s); padding: 22px; transition: background .3s ease, border-color .3s ease, transform .3s ease; }
+    .house:hover { background: var(--olive); color: var(--bg); border-color: var(--olive-d); transform: translateY(-3px); }
+    .house .ord { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset-d); font-size: 14px; }
+    .house:hover .ord { color: var(--sunset); }
+    .house .nm { font-family: "Marcellus", serif; font-size: 22px; line-height: 1; margin: 8px 0 4px; }
+    .house .yr { font-size: 11px; color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+    .house:hover .yr { color: rgba(249,244,231,0.7); }
+
+    /* Boutiques */
+    .boutiques { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }
+    @media (max-width: 900px) { .boutiques { grid-template-columns: 1fr; gap: 32px; } }
+    .boutiques-img { border-radius: var(--r); overflow: hidden; aspect-ratio: 5/4; }
+    .boutiques-img img { width: 100%; height: 100%; object-fit: cover; }
+    .boutiques h2 { font-family: "Marcellus", serif; font-weight: 400; font-size: clamp(36px, 5vw, 60px); line-height: 1; letter-spacing: 0.005em; margin: 16px 0 24px; color: var(--olive-d); }
+    .boutiques h2 .it { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset-d); }
+    .stores { display: flex; flex-direction: column; gap: 10px; }
+    .store { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-s); padding: 16px 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; transition: background .3s ease, border-color .3s ease; }
+    .store:hover { background: var(--sunset); border-color: var(--sunset-d); }
+    .store .nm { font-family: "Marcellus", serif; font-size: 20px; letter-spacing: 0.04em; color: var(--olive-d); }
+    .store .ad { font-size: 13px; color: var(--ink-2); }
+    .store:hover .ad { color: var(--olive-d); }
+    .store .tel { font-weight: 600; font-size: 13px; color: var(--sunset-d); }
+    .store:hover .tel { color: var(--olive-d); }
+
+    /* Newsletter */
+    .news-card { background: var(--sunset); color: var(--olive-d); border-radius: var(--r); padding: 72px 48px; text-align: center; position: relative; overflow: hidden; }
+    @media (max-width: 720px) { .news-card { padding: 48px 24px; } }
+    .news-card::before { content: ""; position: absolute; bottom: -120px; left: -120px; width: 300px; height: 300px; border-radius: 999px; background: var(--olive); opacity: 0.25; }
+    .news-card::after { content: ""; position: absolute; top: -80px; right: -80px; width: 220px; height: 220px; border-radius: 999px; background: var(--coral); opacity: 0.35; }
+    .news-card .chip { background: rgba(42,46,38,0.08); color: var(--olive-d); border-color: rgba(42,46,38,0.18); position: relative; z-index: 2; }
+    .news-card .chip::before { background: var(--olive-d); }
+    .news-card h3 { font-family: "Marcellus", serif; font-weight: 400; font-size: clamp(32px, 4.4vw, 56px); line-height: 1.05; margin: 20px 0 14px; position: relative; z-index: 2; }
+    .news-card h3 .it { font-family: "Newsreader", serif; font-style: italic; color: var(--coral); }
+    .news-card p { color: rgba(42,46,38,0.78); margin: 0 auto 30px; max-width: 36ch; position: relative; z-index: 2; }
+    .news-form { display: flex; gap: 8px; max-width: 480px; margin: 0 auto; background: rgba(42,46,38,0.08); border: 1px solid rgba(42,46,38,0.15); padding: 6px; border-radius: 999px; position: relative; z-index: 2; }
+    .news-form input { flex: 1; background: transparent; border: 0; outline: none; padding: 0 18px; color: var(--olive-d); font: inherit; font-size: 14px; }
+    .news-form input::placeholder { color: rgba(79,84,53,0.5); }
+    .news-form button { padding: 12px 22px; background: var(--olive-d); color: var(--bg); border-radius: 999px; font-weight: 600; font-size: 13px; transition: background .25s ease; }
+    .news-form button:hover { background: var(--ink); }
+
+    /* Footer */
+    .footer { padding: 64px 0 28px; }
+    .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 36px; }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand { font-family: "Marcellus", serif; font-size: 48px; line-height: 1; letter-spacing: 0.12em; color: var(--olive-d); }
+    .footer-sub { font-family: "Newsreader", serif; font-style: italic; color: var(--sunset-d); margin-top: 6px; font-size: 16px; }
+    .footer-tag { color: var(--ink-2); max-width: 30ch; margin-top: 12px; font-size: 14px; line-height: 1.6; }
+    .footer h4 { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; margin: 0 0 16px; color: var(--olive); }
+    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .footer li a { font-size: 14px; color: var(--ink-2); transition: color .25s ease; }
+    .footer li a:hover { color: var(--sunset-d); }
+    .footer-bottom { margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em; }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-1 { transition-delay: .08s; } .reveal-2 { transition-delay: .16s; } .reveal-3 { transition-delay: .24s; }
+
+    /* Switcher */
+    .switcher { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--olive-d); color: var(--bg); padding: 6px; border-radius: 999px; z-index: 100; display: flex; align-items: center; gap: 2px; box-shadow: 0 12px 40px rgba(42,46,38,0.2); font-size: 11px; font-weight: 500; max-width: calc(100% - 24px); overflow-x: auto; }
+    .switcher::-webkit-scrollbar { display: none; }
+    .switcher .label { padding: 0 10px; opacity: 0.55; font-size: 10px; letter-spacing: 0.08em; flex-shrink: 0; }
+    .switcher a { padding: 7px 11px; border-radius: 999px; transition: background .2s ease, color .2s ease; flex-shrink: 0; white-space: nowrap; }
+    .switcher a:hover { background: rgba(249,244,231,0.1); }
+    .switcher .on { background: var(--sunset); color: var(--olive-d); }
+  </style>
+</head>
+<body>
+
+  <div class="anno">С 1998 года в Алматы · <em>доставка по городу от 50 000 ₸ бесплатно</em></div>
+
+  <nav class="nav">
+    <div class="container nav-row">
+      <div class="nav-left">
+        <a href="#">Сервизы</a><a href="#">Бокалы</a><a href="#">Хрусталь</a><a href="#">Подарки</a>
+      </div>
+      <a href="#" class="brand">NOBLE<span class="sub">— almaty —</span></a>
+      <div class="nav-right">
+        <a class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
+        <a class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l-1.5 11H7.5L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="count">2</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-card">
+        <div class="hero-bg"></div>
+        <div class="mountains"></div>
+        <div class="hero-c">
+          <div class="container hero-top">
+            <span class="hero-chip">У подножия Алатау · с 1998</span>
+            <div class="hero-meta"><span>Almaty · 43.22°N</span><span>·</span><span>SS 2026</span></div>
+          </div>
+          <div class="container" style="flex: 1; display: flex; align-items: center;">
+            <h1 class="hero-title">Стол<br/>у подножия<br/><span class="it">Алатау</span>.</h1>
+          </div>
+          <div class="container hero-bot">
+            <p class="hero-deck">Сервизы, бокалы и хрусталь от 34 домов — собранные в Алматы для тех, кто всё ещё накрывает стол как событие.</p>
+            <div style="display:flex; gap: 10px; flex-wrap: wrap;">
+              <a class="btn-line-light" href="#">Бутики</a>
+              <a class="btn-sunset" href="#pillars">К каталогу
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-strip">
+    <div class="container">
+      <div class="about-card">
+        <div>
+          <span class="chip reveal">О Noble</span>
+          <h2 class="reveal reveal-1">Salon — место,<br/>где <span class="it">собираются</span> столы.</h2>
+          <p class="reveal reveal-2">С 1998 года мы привозим в Алматы посуду, которая переживает своих владельцев. Сервизы Wedgwood, бокалы Riedel, хрусталь Bohemia — собранные так, как библиотекарь собирает редкие книги.</p>
+          <div class="stats reveal reveal-3">
+            <div class="stat"><strong>28</strong><span>лет в Алматы</span></div>
+            <div class="stat"><strong>34</strong><span>дома-производителя</span></div>
+            <div class="stat"><strong>3</strong><span>бутика в РК</span></div>
+          </div>
+        </div>
+        <div class="photo-stack reveal reveal-1">
+          <div><img src="assets/serviz1.jpeg" alt="Сервиз" /></div>
+          <div class="small">
+            <div><img src="assets/butterfly_ball.png" alt="Butterfly Ball" style="mix-blend-mode: multiply; opacity: 0.9;" /></div>
+            <div><img src="assets/hrustal.jpeg" alt="Хрусталь" /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pillars">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="chip reveal">Коллекции</span>
+          <h2 class="reveal reveal-1">Три направления, <span class="it">один сад</span>.</h2>
+        </div>
+        <a class="link reveal reveal-1" href="#">Все коллекции →</a>
+      </div>
+      <div class="pillars-grid">
+        <a href="#" class="pillar reveal">
+          <img src="assets/serviz2.jpeg" alt="Сервизы" />
+          <div class="pillar-c">
+            <span class="num">N° 01</span>
+            <div class="bot">
+              <h3>Сервизы<br/><span class="it">&amp; парад</span></h3>
+              <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="pillar reveal reveal-1">
+          <img src="assets/bokaly.jpeg" alt="Бокалы" />
+          <div class="pillar-c">
+            <span class="num">N° 02</span>
+            <div class="bot">
+              <h3>Бокалы<br/><span class="it">&amp; тост</span></h3>
+              <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="pillar reveal reveal-2">
+          <img src="assets/hrustal.jpeg" alt="Хрусталь" />
+          <div class="pillar-c">
+            <span class="num">N° 03</span>
+            <div class="bot">
+              <h3>Хрусталь<br/><span class="it">&amp; свет</span></h3>
+              <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="story reveal">
+        <div class="story-img">
+          <span class="badge">Глава 01</span>
+          <img src="assets/serviz1.jpeg" alt="Wedgwood" />
+        </div>
+        <div>
+          <span class="chip">Хроника</span>
+          <h2>Wedgwood:<br/><span class="it">бабочки</span> из Стаффордшира.</h2>
+          <p>В 1759 году Джозайя Веджвуд научился обжигать фарфор так, чтобы он становился почти прозрачным на свет. С тех пор та же глина, тот же обжиг, те же мастера.</p>
+          <p>Коллекция Butterfly Ball расписана вручную — каждая чашка проходит через 32 пары рук.</p>
+          <div class="story-meta">
+            <div><strong>1759</strong><span>Основан</span></div>
+            <div><strong>32</strong><span>Пары рук</span></div>
+            <div><strong>2014</strong><span>В Noble</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="chip reveal">Подборка недели</span>
+          <h2 class="reveal reveal-1">Выбор <span class="it">куратора</span>.</h2>
+        </div>
+        <a class="link reveal reveal-1" href="#">Весь каталог →</a>
+      </div>
+      <div class="products-grid">
+        <a href="#" class="product reveal">
+          <div class="product-img"><span class="product-tag">New</span><img src="assets/butterfly_ball.png" alt="Butterfly Ball" /></div>
+          <p class="product-brand">Wedgwood</p>
+          <h4 class="product-name">Butterfly <span class="it">Ball</span></h4>
+          <div class="product-foot"><span class="product-price">186 000 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-1">
+          <div class="product-img"><span class="product-tag sale">−18%</span><img src="assets/citrus.jpeg" alt="Citrus" /></div>
+          <p class="product-brand">Wedgwood · Wonderlust</p>
+          <h4 class="product-name">Citrus <span class="it">Bloom</span></h4>
+          <div class="product-foot"><span class="product-price"><span class="old">112 000</span>92 000 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-2">
+          <div class="product-img"><span class="product-tag">Хит</span><img src="assets/serviz3.jpeg" alt="Albatross" /></div>
+          <p class="product-brand">Bohemia</p>
+          <h4 class="product-name">Albatross <span class="it">Set</span></h4>
+          <div class="product-foot"><span class="product-price">74 500 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-3">
+          <div class="product-img"><img src="assets/serviz4.jpeg" alt="Meringa" /></div>
+          <p class="product-brand">Meringa</p>
+          <h4 class="product-name">Pearl <span class="it">Edition</span></h4>
+          <div class="product-foot"><span class="product-price">58 200 ₸</span><span class="product-add">+</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="almaty">
+    <div class="container">
+      <div class="almaty-card">
+        <div class="almaty-grid">
+          <div>
+            <span class="chip reveal">Алматы · 1998 — 2026</span>
+            <h2 class="reveal reveal-1">Двадцать восемь лет <span class="it">у Алатау</span>.</h2>
+            <p class="reveal reveal-2">Мы открыли первый салон на Самале, когда город ещё носил другое имя. С тех пор Алматы вырос, обзавёлся новыми проспектами и привычками — а мы всё там же. Сервиз — это не вещь, это память поколения.</p>
+            <div class="stat-row reveal reveal-2">
+              <div><strong>28</strong><span>лет в городе</span></div>
+              <div><strong>3</strong><span>бутика · РК</span></div>
+              <div><strong>412</strong><span>SKU в наличии</span></div>
+            </div>
+          </div>
+          <div class="almaty-photo reveal reveal-1">
+            <img src="assets/mat_banner.jpeg" alt="Almaty showroom" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="chip reveal">34 дома</span>
+          <h2 class="reveal reveal-1">Имена, которым <span class="it">доверяют</span>.</h2>
+        </div>
+      </div>
+      <div class="houses-grid">
+        <a href="#" class="house reveal"><div class="ord">N° 01</div><div class="nm">Wedgwood</div><div class="yr">1759 · UK</div></a>
+        <a href="#" class="house reveal reveal-1"><div class="ord">N° 02</div><div class="nm">Bohemia</div><div class="yr">1620 · CZ</div></a>
+        <a href="#" class="house reveal reveal-2"><div class="ord">N° 03</div><div class="nm">V &amp; B</div><div class="yr">1748 · DE</div></a>
+        <a href="#" class="house reveal reveal-3"><div class="ord">N° 04</div><div class="nm">Christofle</div><div class="yr">1830 · FR</div></a>
+        <a href="#" class="house reveal"><div class="ord">N° 05</div><div class="nm">Riedel</div><div class="yr">1756 · AT</div></a>
+        <a href="#" class="house reveal reveal-1"><div class="ord">N° 06</div><div class="nm">Lalique</div><div class="yr">1888 · FR</div></a>
+        <a href="#" class="house reveal reveal-2"><div class="ord">N° 07</div><div class="nm">Royal D.</div><div class="yr">1815 · UK</div></a>
+        <a href="#" class="house reveal reveal-3"><div class="ord">N° 08</div><div class="nm">+ 26 ещё</div><div class="yr">все →</div></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="boutiques">
+        <div class="boutiques-img reveal"><img src="assets/mat_banner.jpeg" alt="Noble Showroom" /></div>
+        <div>
+          <span class="chip reveal">Бутики</span>
+          <h2 class="reveal reveal-1">Приходите <span class="it">в гости</span>.</h2>
+          <p class="reveal reveal-2" style="color: var(--ink-2); max-width: 42ch; margin: 0 0 24px;">Хрусталь надо подержать в руке, а сервиз — увидеть на свету.</p>
+          <div class="stores reveal reveal-2">
+            <a class="store" href="#"><span class="nm">Самал</span><span class="ad">Самал-2, 77 · Алматы</span><span class="tel">+7 707 171 03 00</span></a>
+            <a class="store" href="#"><span class="nm">Мирас</span><span class="ad">мкр. Мирас, 157 · Алматы</span><span class="tel">+7 708 190 37 17</span></a>
+            <a class="store" href="#"><span class="nm">Астана</span><span class="ad">пр. Мангилик Ел, 55</span><span class="tel">+7 700 393 33 27</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="news-card">
+        <span class="chip reveal">Письма Noble</span>
+        <h3 class="reveal reveal-1">Новинки и <span class="it">тихие распродажи</span>.</h3>
+        <p class="reveal reveal-2">Раз в две недели. Без шума. Только то, что стоит вашего стола.</p>
+        <form class="news-form reveal reveal-2" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Спасибо.';">
+          <input type="email" placeholder="ваш e-mail" required />
+          <button type="submit">Подписаться</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">NOBLE</div>
+          <div class="footer-sub">— almaty · с 1998 —</div>
+          <p class="footer-tag">Салон посуды и подарков · у подножия Алатау, с 1998 года.</p>
+        </div>
+        <div><h4>Каталог</h4><ul><li><a href="#">Сервизы</a></li><li><a href="#">Бокалы</a></li><li><a href="#">Хрусталь</a></li><li><a href="#">Подарки</a></li></ul></div>
+        <div><h4>О нас</h4><ul><li><a href="#">Доставка</a></li><li><a href="#">Возврат</a></li><li><a href="#">Оферта</a></li><li><a href="#">Privacy</a></li></ul></div>
+        <div><h4>Контакты</h4><ul><li><a href="tel:+77071710300">+7 707 171 03 00</a></li><li><a href="mailto:noblealmaty@gmail.com">noblealmaty@gmail.com</a></li><li><a href="https://www.instagram.com/noble_almaty/">Instagram</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 NOBLE · Все права защищены</span>
+        <span>Marcellus · Plus Jakarta Sans · Newsreader</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="switcher">
+    <span class="label">VAR</span>
+    <a href="index.html">A</a>
+    <a href="variant-b.html">B</a>
+    <a href="variant-c.html">C</a>
+    <a href="variant-d.html">D</a>
+    <a href="variant-e.html">E</a>
+    <a href="variant-f.html">F</a>
+    <a href="variant-g.html">G</a>
+    <a href="variant-h.html">H</a>
+    <a href="variant-i.html" class="on">I · Almaty</a>
+  </div>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

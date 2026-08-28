@@ -1,137 +1,65 @@
-<style scoped>
-/* Ensure the card image fills the container */
-.product-image {
-  width: 100%;
-  height: 400px; /* Adjust height as needed */
-  object-fit: cover;
-  display: block;
-  border-radius: 8px;
-}
-
-@media (max-width: 640px) {
-  .product-image {
-    height: 200px; /* Smaller height for mobile */
-  }
-}
-
-/* Discount badge positioned inside the image (Top Left) */
-.discount-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: #030712; /* Dark gray background */
-  color: white;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  z-index: 10;
-  opacity: 0.8; /* 80% opacity */
-}
-
-
-.title-container {
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  height: 3em;
-}
-
-.price-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 2.5em;
-}
-
-.old-price {
-  font-size: 0.9em;
-  color: gray;
-  text-decoration: line-through;
-}
-
-.new-price {
-  font-size: 1.2em;
-  font-weight: bold;
-}
-</style>
-
-
 <template>
-  <fwb-card
-    class="relative m-1 xl:m-2 fwb-card shadow-2xl hover:border-2 hover:m-1"
-    variant="image"
-    style="cursor: pointer;"
-  >
-    <!-- Image Container with Discount Badge inside -->
-    <div class="relative">
-      <img
-        :alt="title"
-        :src="getImgUrl(imageUrl)"
-        class="product-image"
-        @click="$router.push({ name: 'product', params: { id: id, type: type || 'SINGLE' } })"
-      />
-      
-      <!-- Discount badge positioned inside the top-left corner of the image -->
-      <div v-if="discount !== null && discount > 0" class="discount-badge">
-        -{{ discount }}%
-      </div>
+  <article class="group">
+    <div v-tilt="4" class="relative aspect-[4/5] overflow-hidden bg-surface">
+      <router-link
+        :to="{ name: 'product', params: { id: id, type: type || 'SINGLE' } }"
+        class="absolute inset-0 block"
+        :aria-label="title"
+      >
+        <img
+          :alt="title"
+          :src="getImgUrl(imageUrl)"
+          class="w-full h-full object-cover transition-transform duration-[1200ms] ease-out-lux group-hover:scale-105"
+          loading="lazy"
+        />
+      </router-link>
+
+      <span
+        v-if="discount !== null && discount > 0"
+        class="absolute top-4 left-4 bg-bg text-ink text-[11px] tracking-[0.1em] px-2.5 py-1"
+      >
+        −{{ discount }}%
+      </span>
+
+      <router-link
+        :to="{ name: 'product', params: { id: id, type: type || 'SINGLE' } }"
+        class="absolute right-4 bottom-4 w-10 h-10 rounded-full bg-bg text-ink flex items-center justify-center
+               transition-all duration-300 hover:bg-ink hover:text-bg
+               md:opacity-0 md:translate-y-1.5 md:group-hover:opacity-100 md:group-hover:translate-y-0"
+        :aria-label="$t('more_info')"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-[18px] h-[18px]"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </router-link>
     </div>
 
-    <div class="grid grid-rows-[auto_auto_1fr] p-2 lg:p-3">
-      <h5 class="mb-2 md:text-2xl font-normal tracking-tight text-gray-900 title-container min-h-24 max-h-24 overflow-hidden dark:text-white">
-        {{ title }}
-      </h5>
-
-      <!-- Updated Price Display: New price on top of the old price -->
-      <div class="price-container">
+    <div class="mt-4 flex flex-col gap-1.5 sm:flex-row sm:justify-between sm:items-baseline sm:gap-3">
+      <router-link :to="{ name: 'product', params: { id: id, type: type || 'SINGLE' } }" class="min-w-0">
+        <h3 class="serif text-lg md:text-xl leading-snug title-clamp">{{ title }}</h3>
+      </router-link>
+      <p class="text-sm whitespace-nowrap sm:shrink-0">
         <template v-if="newPrice">
-          <span class="new-price">
-            {{ currencyFormatter().format(newPrice) }}тг
-          </span>
-          <span class="old-price">
-            {{ currencyFormatter().format(oldPrice) }}тг
-          </span>
+          <span class="old-price-quiet text-xs">{{ currencyFormatter().format(oldPrice) }}</span>{{ currencyFormatter().format(newPrice) }} тг
         </template>
         <template v-else>
-          <span class="new-price">
-            {{ currencyFormatter().format(oldPrice) }}тг
-          </span>
+          {{ currencyFormatter().format(oldPrice) }} тг
         </template>
-      </div>
-
-      <div class="grid grid-flow-col justify-stretch mt-2">
-        <PrimaryBtn class="p-3 font-semibold mt-3"
-          @click="$router.push({ name: 'product', params: { id: id, type: type || 'SINGLE' } })">
-          {{ $t('more_info') }}
-        </PrimaryBtn>
-      </div>
+      </p>
     </div>
-  </fwb-card>
+  </article>
 </template>
 
-
-
-
-
 <script>
-import { FwbCard } from 'flowbite-vue'
-
 import { defineComponent } from 'vue'
-import PrimaryBtn from '@/components/PrimaryBtn.vue'
 import { getImgUrl, currencyFormatter } from '@/utils'
 
 export default defineComponent({
-  components: { PrimaryBtn, FwbCard },
   props: {
     title: {
       required: true,
       type: String
     },
     description: {
-      required: true,
+      required: false,
       type: String,
       default: ''
     },
@@ -170,67 +98,12 @@ export default defineComponent({
   }
 })
 </script>
+
 <style scoped>
-/* Ensure the card image fills the container */
-.product-image {
-  width: 100%;
-  height: 400px; /* Adjust height as needed */
-  object-fit: cover;
-  display: block;
-  border-radius: 8px;
-}
-
-@media (max-width: 640px) {
-  .product-image {
-    height: 200px; /* Smaller height for mobile */
-  }
-}
-
-/* Discount badge positioned inside the image (Top Left) */
-.discount-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: #030712; /* Dark gray background */
-  color: white;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  z-index: 10;
-  opacity: 0.8; /* 80% opacity */
-}
-
-/* Title container */
-.title-container {
+.title-clamp {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  height: 3em;
-}
-
-/* Price container: New price on top of old price */
-.price-container {
-  display: flex;
-  flex-direction: column; /* Stacks prices vertically */
-  justify-content: center;
-  align-items: center;
-  min-height: 3em; /* Ensures enough space */
-  text-align: center;
-}
-
-/* Old price with strikethrough */
-.old-price {
-  font-size: 0.9em;
-  color: gray;
-  text-decoration: line-through;
-}
-
-/* New price - Larger and Bold */
-.new-price {
-  font-size: 1.2em;
-  font-weight: bold;
 }
 </style>

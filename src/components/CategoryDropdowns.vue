@@ -1,5 +1,5 @@
 <template> 
-  <div class="flex flex-nowrap items-center justify-between text-nowrap w-full 2xl:w-4/5"> 
+  <div class="flex flex-nowrap items-center gap-1 text-nowrap">
     <category-tree-item 
       v-for="category in categories" 
       :key="category.id" 

@@ -1,8 +1,6 @@
 <template>
   <div class="mx-auto">
-    <div class="relative">
-      <HeaderBar/>
-    </div>
+    <HeaderBar/>
     <RouterView />
     <div class="relative">
       <FooterElem/>

@@ -1,31 +1,25 @@
 <template>
-  <div class="w-full">
-    <div class="relative shadow-sm mx-4 mt-3">
-      <input
-        v-model="searchQuery"
-        type="text"
-        name="search"
-        id="search"
-        class="block w-full border-0 pr-24 text-gray-900 placeholder:text-gray-400 border-b-2 focus:border-2 focus:border-gray-950 sm:text-sm sm:leading-6"
-        :placeholder="$t('search')"
-        @keyup.enter="applyFilters"
-      />
-      <div class="absolute inset-y-0 right-0 flex items-center bg-gray-950 p-3">
-        <button @click="applyFilters">
-          <MagnifyingGlassIcon class="h-4 text-white"/>
-        </button>
-      </div>
-    </div>
-  </div>
+  <form class="flex items-end gap-3 border-b border-ink pb-2 max-w-[520px] mx-auto w-full" @submit.prevent="applyFilters">
+    <input
+      v-model="searchQuery"
+      type="text"
+      name="search"
+      id="search"
+      class="block w-full border-0 bg-transparent p-0 text-ink placeholder:text-ink2 focus:ring-0 text-sm"
+      :placeholder="$t('search')"
+    />
+    <button type="submit" :aria-label="$t('search')" class="shrink-0 text-[11px] uppercase tracking-[0.3em] text-ink hover:text-clay transition-colors inline-flex items-center gap-2">
+      <MagnifyingGlassIcon class="h-4" />
+    </button>
+  </form>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { MagnifyingGlassIcon } from "@heroicons/vue/24/solid";
+import { useRouter } from 'vue-router';
+import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
 
 const router = useRouter();
-const route = useRoute();
 const searchQuery = ref('');
 
 const applyFilters = () => {
@@ -43,7 +37,4 @@ const applyFilters = () => {
     window.location.reload();
   });
 };
-
-
 </script>
-

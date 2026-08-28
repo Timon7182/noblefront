@@ -1,71 +1,62 @@
 <template>
-  <div class="relative w-full lg:w-3/5 mx-auto lg:px-10 my-20"> <!-- 90% width on small screens and full width on large -->
-    <div class="flex flex-nowrap items-start w-full">
-      <div class="gap-3 grid grid-cols-2"> <!-- Adjusted grid settings -->
-        <div
-          v-for="item in orderedProducts"
-          :key="`card-${item.id}`"
-          :class="{
-            'col-span-2': item.order === 1
-          }"
-        >
-          <Transition name="link-transition" mode="out-in">
-            <router-link :to="`/product/${item.id}/${item.type}`">
-              <div class="relative">
-                <div class="absolute bottom-0 backdrop-blur-xl bg-white/50 h-[100px] w-full"></div>
-                <img
-                  :class="{
-                    'card-image': true,
-                    'h-[460px] lg:h-[600px]': item.order === 1,
-                    'h-[280px] lg:h-[560px]': item.order > 1
-                  }"
-                  :src="getImgUrl(item.image)"
-                  :alt="item.name"
-                />
-                <div class="absolute bottom-0 font-thin text-center text-2xl lg:text-5xl w-full h-[100px]">
-                  <h2 class="h-full w-full m-auto flex items-center justify-center">{{ item.name }}</h2>
-                </div>
-              </div>
-            </router-link>
-          </Transition>
-        </div>
-      </div>
+  <section class="max-w-page mx-auto px-5 xl:px-8 my-24 md:my-36">
+    <div class="grid grid-cols-2 gap-5 md:gap-7">
+      <article
+        v-for="(item, idx) in orderedProducts"
+        :key="`card-${item.id}`"
+        v-reveal="(idx % 3)"
+        :class="{ 'col-span-2': item.order === 1 }"
+        class="group"
+      >
+        <router-link :to="`/product/${item.id}/${item.type}`" class="block">
+          <div
+            class="relative overflow-hidden bg-surface"
+            :class="item.order === 1 ? 'aspect-[16/9] md:aspect-[21/9]' : 'aspect-[3/4] md:aspect-[4/5]'"
+            data-parallax-frame
+          >
+            <img
+              v-parallax="6"
+              class="parallax-cover transition-transform duration-[1400ms] ease-out-lux group-hover:scale-[1.04]"
+              :src="getImgUrl(item.image)"
+              :alt="item.name"
+            />
+          </div>
+          <div class="mt-4 flex items-center justify-between gap-4">
+            <h2
+              class="serif font-light leading-tight [text-wrap:balance]"
+              :class="item.order === 1 ? 'text-[clamp(24px,3.4vw,44px)]' : 'text-[clamp(19px,2.2vw,28px)]'"
+            >
+              {{ item.name }}
+            </h2>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              class="w-5 h-5 shrink-0 text-ink2 transition-all duration-300 group-hover:text-ink group-hover:translate-x-1">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </div>
+        </router-link>
+      </article>
     </div>
-  </div>
+  </section>
 </template>
-
 
 <script>
 import { defineComponent } from 'vue'
-import PrimaryBtn from '@/components/PrimaryBtn.vue'
-import { FwbA } from 'flowbite-vue'
-import { getImgUrl } from '@/utils' // Make sure the path is correct
+import { getImgUrl } from '@/utils'
 
 export default defineComponent({
-  components: { FwbA, PrimaryBtn },
   props: {
     productions: {
       required: true,
       default: []
     }
   },
-  data() {
-    return {
-      orderedProducts: []
+  computed: {
+    orderedProducts() {
+      return [...this.productions].sort((a, b) => a.order - b.order)
     }
   },
-  mounted() {
-    this.orderedProducts = this.productions.sort((a, b) => a.order - b.order)
-  },
   methods: {
-    handleMoreInfoClick(item) {
-      this.$router.push({ name: 'product', params: { id: item.id, type: item.type || 'SINGLE' } })
-    },
     getImgUrl,
   }
 })
 </script>
-
-<style>
-
-</style>

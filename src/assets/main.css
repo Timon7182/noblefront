@@ -1,10 +1,215 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400..800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Baloo+Bhai+2:wght@400..800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Tangerine:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg text-ink font-sans font-light antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: #9A6B4F;
+    color: #FAF7F2;
+  }
+
+  /* Стрелки-спиннеры у числовых полей ломают тонкую линию поля */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+}
+
+@layer components {
+  .serif {
+    font-family: "Cormorant Garamond", "Times New Roman", serif;
+  }
+
+  /* Метка главы: «Пролог», «Хроника бренда», «Бутики» */
+  .section-label {
+    @apply inline-flex items-center gap-3.5 text-[11px] uppercase text-ink2;
+    letter-spacing: 0.45em;
+  }
+  .section-label::before,
+  .section-label::after {
+    content: "";
+    @apply inline-block h-px w-7 bg-ink3;
+  }
+
+  /* Кнопка-контур: тонкий pill */
+  .btn-line {
+    @apply inline-flex items-center justify-center gap-3.5 rounded-full border border-ink px-7 py-4 text-xs uppercase transition-colors duration-300;
+    letter-spacing: 0.25em;
+  }
+  .btn-line:hover {
+    @apply bg-ink text-bg;
+  }
+  .btn-line:disabled {
+    @apply border-ink3 text-ink3 cursor-not-allowed;
+  }
+  .btn-line:disabled:hover {
+    @apply bg-transparent text-ink3;
+  }
+
+  /* Кнопка-заливка */
+  .btn-solid {
+    @apply inline-flex items-center justify-center gap-3.5 rounded-full border border-ink bg-ink px-7 py-4 text-xs uppercase text-bg transition-colors duration-300;
+    letter-spacing: 0.25em;
+  }
+  .btn-solid:hover {
+    @apply bg-transparent text-ink;
+  }
+  .btn-solid:disabled {
+    @apply border-ink3 bg-ink3 text-bg cursor-not-allowed;
+  }
+
+  /* Номер товара в стиле каталога: N° 01 */
+  .cat-num {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    @apply text-sm;
+    letter-spacing: 0.05em;
+  }
+
+  .old-price-quiet {
+    @apply text-ink3 line-through mr-2;
+  }
+
+  /* Горизонтальная лента: поля совпадают с колонкой страницы, а карточки
+     всё равно уезжают за правый край экрана */
+  .rail {
+    padding-inline: max(1.25rem, calc((100% - 1320px) / 2 + 2rem));
+  }
+
+  /* Прокручиваемый список без грубой системной полосы: тонкий бегунок
+     проявляется только при наведении на сам список */
+  .quiet-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s ease;
+  }
+  .quiet-scroll:hover {
+    scrollbar-color: #D8D2C6 transparent;
+  }
+  .quiet-scroll::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .quiet-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .quiet-scroll::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 999px;
+    transition: background 0.3s ease;
+  }
+  .quiet-scroll:hover::-webkit-scrollbar-thumb {
+    background: #D8D2C6;
+  }
+
+  /* Поле формы: линия вместо коробки */
+  .field-label {
+    @apply block text-[11px] uppercase tracking-[0.2em] text-ink2 mb-2;
+  }
+  .field-input {
+    @apply w-full bg-transparent border-0 border-b border-line px-0 py-2 text-[15px] text-ink
+           placeholder:text-ink3 focus:border-ink focus:ring-0 transition-colors;
+  }
+  .field-input:disabled {
+    @apply text-ink3 cursor-not-allowed;
+  }
+  .field-input-error {
+    @apply border-danger;
+  }
+  .field-error {
+    @apply block text-xs text-danger mt-1.5;
+  }
+
+  /* Выпадающий список комбобокса */
+  .combo-menu {
+    @apply absolute left-0 right-0 top-full mt-1 z-dropdown max-h-60 overflow-y-auto
+           bg-bg border border-line shadow-[0_18px_40px_rgba(26,26,24,0.1)];
+  }
+  .combo-option {
+    @apply block w-full text-left px-4 py-2.5 text-[15px] text-ink2 transition-colors;
+  }
+  .combo-option:hover,
+  .combo-option[aria-selected='true'] {
+    @apply bg-surface text-ink;
+  }
+
+  .loader {
+    border: 1px solid #E5DFD4;
+    border-left-color: #9A6B4F;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader { animation-duration: 2.4s; }
+}
+
+/* Появление глав при скролле (управляется директивой v-reveal) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 1s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+
+/* Изображение внутри параллакс-рамки: выше рамки, чтобы был запас хода */
+.parallax-cover {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -12%;
+  height: 124%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* 3D-наклон карточек (v-tilt) */
+.tilt {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .tilt {
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
+}
 
 .dp__theme_dark {
   --dp-background-color: rgb(55 65 81) !important;
@@ -81,7 +286,7 @@
 }
 
 .text-footer {
-  color: #EFEDDB;
+  color: #6B655C;
 }
 
 .link-transition-enter-active,
@@ -94,19 +299,16 @@
   opacity: 0;
 }
 
+/* Легаси-алиасы: страницы вне редизайна остаются согласованными */
 .brand-font {
-  font-family: "Baloo Bhai", serif;
+  font-family: "Cormorant Garamond", serif;
 }
 
 .product-name-font {
-  font-family: "Abhaya Libre SemiBold", serif;
+  font-family: "Cormorant Garamond", serif;
 }
 
 .order-lead-font {
-  font-family: "Tangerine", cursive;
-}
-
-.category-dropdowns button {
-  background-color: transparent;
-  color: black;
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
 }

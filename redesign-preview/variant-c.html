@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noble — Soft Modern · Fraunces</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..600,30..100,0..1;1,9..144,300..500,30..100,0..1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #F4EFE6;
+      --surface:  #EBE3D2;
+      --surface2: #F9F6EF;
+      --ink:      #2A2A26;
+      --ink-2:    #6C695F;
+      --ink-3:    #A29D90;
+      --line:     #E0D9CA;
+      --terra:    #C77E59;
+      --terra-dk: #A05E3D;
+      --olive:    #4A4D3F;
+      --r-lg:     20px;
+      --r-md:     14px;
+      --r-sm:     8px;
+      --max:      1340px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+      font-weight: 400; font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+    .serif {
+      font-family: "Fraunces", "Times New Roman", serif;
+      font-variation-settings: "SOFT" 60, "WONK" 1, "opsz" 96;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+    .container { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+    @media (max-width: 720px) { .container { padding: 0 18px; } }
+
+    /* Pill chip label */
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface);
+      color: var(--ink);
+      padding: 8px 16px; border-radius: 999px;
+      font-size: 12px; letter-spacing: 0.04em;
+      border: 1px solid var(--line);
+    }
+    .chip.dot::before {
+      content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--terra);
+    }
+
+    /* Announcement */
+    .anno {
+      padding: 12px 0; text-align: center;
+      background: var(--olive); color: var(--surface2);
+      font-size: 13px; letter-spacing: 0.02em;
+    }
+    .anno em { font-family: "Fraunces", serif; font-style: italic; color: #E4C8A8; font-variation-settings: "SOFT" 100; }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 60;
+      background: rgba(244, 239, 230, 0.86);
+      backdrop-filter: saturate(160%) blur(18px);
+      -webkit-backdrop-filter: saturate(160%) blur(18px);
+      padding: 18px 0;
+    }
+    .nav-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .nav-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--bg); border: 1px solid var(--line); border-radius: 999px;
+      padding: 6px;
+    }
+    .nav-pill a {
+      padding: 9px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 500;
+      transition: background .25s ease, color .25s ease;
+    }
+    .nav-pill a:hover { background: var(--surface); }
+    .nav-pill a.on { background: var(--ink); color: var(--bg); }
+    .brand {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 96;
+      font-size: 28px; line-height: 1;
+    }
+    .brand .it { font-style: italic; color: var(--terra); }
+    .nav-actions { display: flex; gap: 10px; }
+    .icon-btn {
+      width: 42px; height: 42px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line);
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background .25s ease, color .25s ease, transform .25s ease;
+    }
+    .icon-btn:hover { background: var(--ink); color: var(--bg); }
+    .icon-btn .count {
+      position: absolute; transform: translate(14px, -12px); background: var(--terra); color: #fff;
+      font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 999px;
+    }
+    .nav-actions a { position: relative; }
+    @media (max-width: 900px) { .nav-pill a:not(.on) { display: none; } .brand { font-size: 24px; } }
+
+    /* HERO */
+    .hero { padding: 32px 0 60px; }
+    .hero-card {
+      position: relative; overflow: hidden;
+      border-radius: var(--r-lg);
+      min-height: 78vh; max-height: 840px;
+      background: var(--surface);
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url("assets/main.jpeg");
+      background-size: cover; background-position: center;
+      transform: scale(1.04);
+      animation: heroZoom 16s ease-out forwards;
+    }
+    @keyframes heroZoom { to { transform: scale(1); } }
+    .hero-card::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(42,42,38,0) 30%, rgba(42,42,38,0.55) 100%);
+    }
+    .hero-content {
+      position: absolute; inset: 0; z-index: 2; color: #F9F6EF;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 36px 40px;
+    }
+    @media (max-width: 720px) { .hero-content { padding: 24px; } }
+    .hero-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(249,246,239,0.12); backdrop-filter: blur(8px);
+      padding: 8px 16px; border-radius: 999px;
+      border: 1px solid rgba(249,246,239,0.25);
+      font-size: 12px; letter-spacing: 0.02em;
+    }
+    .hero-chip::before {
+      content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--terra);
+    }
+    .hero-title {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 60, "WONK" 1, "opsz" 144;
+      font-size: clamp(48px, 8vw, 116px);
+      line-height: 0.98; letter-spacing: -0.015em;
+      margin: 0; max-width: 16ch;
+    }
+    .hero-title .it {
+      font-style: italic; color: #F2C8A6;
+      font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+    }
+    .hero-bottom { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+    .hero-deck {
+      font-family: "Fraunces", serif; font-weight: 300; font-style: italic;
+      font-size: clamp(17px, 1.6vw, 22px); max-width: 28ch; line-height: 1.4;
+      color: rgba(249,246,239,0.92); margin: 0;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 16px 26px; border-radius: 999px;
+      background: var(--surface2); color: var(--ink);
+      font-weight: 500; font-size: 14px;
+      transition: background .25s ease, color .25s ease, transform .25s ease;
+    }
+    .btn:hover { background: var(--terra); color: #fff; }
+    .btn.outline-light {
+      background: transparent; color: var(--surface2);
+      border: 1px solid rgba(249,246,239,0.6);
+    }
+    .btn.outline-light:hover { background: var(--surface2); color: var(--ink); border-color: var(--surface2); }
+    .btn svg { width: 16px; height: 16px; }
+
+    /* Brand prologue */
+    .prologue { padding: 80px 0; }
+    .prologue-grid {
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; align-items: end;
+    }
+    @media (max-width: 900px) { .prologue-grid { grid-template-columns: 1fr; gap: 32px; } }
+    .prologue h2 {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+      font-size: clamp(36px, 4.8vw, 72px); line-height: 1.02;
+      letter-spacing: -0.01em; margin: 16px 0 0;
+    }
+    .prologue h2 .it { font-style: italic; color: var(--terra); font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144; }
+    .prologue p {
+      font-size: 18px; line-height: 1.65; color: var(--ink-2);
+      max-width: 52ch; margin: 0;
+    }
+    .prologue-mini {
+      display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;
+    }
+    .prologue-mini .stat {
+      background: var(--surface2); padding: 14px 22px; border-radius: var(--r-md);
+      border: 1px solid var(--line);
+    }
+    .prologue-mini .stat strong {
+      display: block; font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1;
+      font-size: 28px; line-height: 1; color: var(--terra-dk);
+    }
+    .prologue-mini .stat span { font-size: 12px; color: var(--ink-2); letter-spacing: 0.02em; }
+
+    /* Three collections — softer cards */
+    .pillars { padding: 60px 0 100px; }
+    .pillars-head {
+      display: flex; justify-content: space-between; align-items: end; gap: 24px;
+      margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .pillars-head h2 {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+      font-size: clamp(38px, 5vw, 72px); line-height: 1.02; margin: 12px 0 0;
+    }
+    .pillars-head h2 .it { font-style: italic; color: var(--terra); }
+    .pillars-filter { display: flex; gap: 8px; background: var(--surface2); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
+    .pillars-filter button {
+      padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 500; color: var(--ink-2);
+      transition: background .25s ease, color .25s ease;
+    }
+    .pillars-filter button.on { background: var(--ink); color: var(--bg); }
+    .pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    @media (max-width: 900px) { .pillars-grid { grid-template-columns: 1fr; } }
+    .pillar {
+      position: relative; overflow: hidden; aspect-ratio: 4/5;
+      border-radius: var(--r-lg);
+      background: var(--surface);
+      transition: transform .5s ease;
+    }
+    .pillar:hover { transform: translateY(-4px); }
+    .pillar img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      transition: transform 1.6s cubic-bezier(.2,.7,.2,1);
+    }
+    .pillar:hover img { transform: scale(1.07); }
+    .pillar::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(42,42,38,0.6) 100%);
+    }
+    .pillar-content {
+      position: absolute; left: 24px; right: 24px; bottom: 24px; z-index: 2; color: var(--surface2);
+      display: flex; align-items: end; justify-content: space-between; gap: 16px;
+    }
+    .pillar-tag {
+      display: inline-block; background: rgba(249,246,239,0.18); backdrop-filter: blur(6px);
+      padding: 6px 12px; border-radius: 999px; font-size: 11px; letter-spacing: 0.02em;
+      margin-bottom: 10px; border: 1px solid rgba(249,246,239,0.2);
+    }
+    .pillar-name {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1;
+      font-size: clamp(26px, 2.3vw, 34px); line-height: 1.04; margin: 0;
+    }
+    .pillar-name .it { font-style: italic; }
+    .pillar-cta {
+      width: 44px; height: 44px; border-radius: 999px;
+      background: var(--surface2); color: var(--ink);
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background .3s ease, transform .3s ease;
+    }
+    .pillar:hover .pillar-cta { background: var(--terra); color: #fff; transform: rotate(-45deg); }
+
+    /* Editorial split — soft */
+    .story { padding: 100px 0; }
+    .story-card {
+      background: var(--surface2);
+      border-radius: var(--r-lg);
+      padding: 56px;
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center;
+      border: 1px solid var(--line);
+    }
+    @media (max-width: 900px) { .story-card { grid-template-columns: 1fr; padding: 32px; gap: 32px; } }
+    .story-img { border-radius: var(--r-md); overflow: hidden; aspect-ratio: 4/5; }
+    .story-img img { width: 100%; height: 100%; object-fit: cover; }
+    .story h2 {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+      font-size: clamp(36px, 4.4vw, 60px); line-height: 1.02; margin: 18px 0 22px;
+    }
+    .story h2 .it { font-style: italic; color: var(--terra); }
+    .story p { font-size: 17px; line-height: 1.7; color: var(--ink-2); margin: 0 0 14px; max-width: 50ch; }
+    .story-meta {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      margin-top: 32px;
+    }
+    .story-meta .m {
+      background: var(--bg); padding: 16px; border-radius: var(--r-sm); border: 1px solid var(--line);
+    }
+    .story-meta .m strong {
+      display: block; font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1;
+      font-size: 26px; color: var(--terra-dk); margin-bottom: 4px;
+    }
+    .story-meta .m span { font-size: 11px; color: var(--ink-2); letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* Curator products */
+    .products-section { padding: 100px 0; }
+    .products-head {
+      display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .products-head h2 {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+      font-size: clamp(38px, 5vw, 72px); line-height: 1.02; margin: 16px 0 0;
+    }
+    .products-head h2 .it { font-style: italic; color: var(--terra); }
+    .products-head .all {
+      display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500;
+      padding-bottom: 4px; border-bottom: 1px solid var(--ink);
+    }
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .products-grid { grid-template-columns: 1fr; } }
+    .product {
+      background: var(--surface2);
+      border-radius: var(--r-md);
+      border: 1px solid var(--line);
+      padding: 14px;
+      transition: transform .35s ease, box-shadow .35s ease;
+    }
+    .product:hover { transform: translateY(-4px); box-shadow: 0 16px 40px -20px rgba(42,42,38,0.18); }
+    .product-img {
+      position: relative; aspect-ratio: 1/1; background: var(--bg); border-radius: var(--r-sm);
+      overflow: hidden; margin-bottom: 16px;
+    }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s ease; }
+    .product:hover .product-img img { transform: scale(1.04); }
+    .product-tag {
+      position: absolute; top: 10px; left: 10px;
+      font-size: 10px; padding: 4px 10px; border-radius: 999px;
+      background: var(--surface2); color: var(--ink); letter-spacing: 0.04em;
+    }
+    .product-tag.sale { background: var(--terra); color: #fff; }
+    .product-fav {
+      position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 999px;
+      background: var(--surface2); display: inline-flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translateY(4px); transition: opacity .3s ease, transform .3s ease, background .3s ease;
+    }
+    .product:hover .product-fav { opacity: 1; transform: translateY(0); }
+    .product-fav:hover { background: var(--terra); color: #fff; }
+    .product-brand { font-size: 11px; color: var(--ink-2); letter-spacing: 0.04em; margin: 0 0 4px; }
+    .product-name {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1;
+      font-size: 21px; line-height: 1.1; margin: 0 0 10px;
+    }
+    .product-name .it { font-style: italic; }
+    .product-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .product-price { font-weight: 500; font-size: 15px; }
+    .product-price .old { color: var(--ink-3); text-decoration: line-through; font-size: 12px; margin-right: 8px; font-weight: 400; }
+    .product-add {
+      width: 36px; height: 36px; border-radius: 999px; background: var(--ink); color: var(--bg);
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background .25s ease, transform .25s ease;
+    }
+    .product-add:hover { background: var(--terra); transform: rotate(90deg); }
+
+    /* Heritage tiles */
+    .heritage { padding: 100px 0; }
+    .heritage-card {
+      background: var(--olive); color: var(--surface2);
+      border-radius: var(--r-lg);
+      padding: 80px 56px;
+      text-align: center;
+    }
+    @media (max-width: 720px) { .heritage-card { padding: 56px 24px; } }
+    .heritage-card .chip { background: rgba(249,246,239,0.1); color: var(--surface2); border-color: rgba(249,246,239,0.2); }
+    .heritage-card .chip.dot::before { background: #E4C8A8; }
+    .heritage-card h2 {
+      font-family: "Fraunces", serif; font-weight: 300; font-style: italic;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+      font-size: clamp(28px, 3.4vw, 48px); line-height: 1.2; margin: 24px auto 48px;
+      max-width: 24ch;
+    }
+    .heritage-card h2 em { color: #E4C8A8; }
+    .heritage-row {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px;
+    }
+    @media (max-width: 720px) { .heritage-row { grid-template-columns: repeat(3, 1fr); } }
+    .heritage-row .brand-tile {
+      padding: 20px 12px; border: 1px solid rgba(249,246,239,0.18); border-radius: var(--r-sm);
+      font-family: "Fraunces", serif; font-style: italic;
+      font-variation-settings: "SOFT" 80, "WONK" 1;
+      font-size: 18px; transition: background .3s ease, border-color .3s ease;
+    }
+    .heritage-row .brand-tile:hover { background: rgba(249,246,239,0.08); border-color: rgba(249,246,239,0.4); }
+
+    /* Showroom */
+    .showroom { padding: 100px 0; }
+    .showroom-inner {
+      background: var(--surface2);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--line);
+      padding: 56px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    }
+    @media (max-width: 900px) { .showroom-inner { grid-template-columns: 1fr; padding: 32px; gap: 32px; } }
+    .showroom-img { border-radius: var(--r-md); overflow: hidden; aspect-ratio: 5/4; }
+    .showroom-img img { width: 100%; height: 100%; object-fit: cover; }
+    .showroom h2 {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+      font-size: clamp(38px, 4.8vw, 64px); line-height: 1.02; margin: 18px 0 24px;
+    }
+    .showroom h2 .it { font-style: italic; color: var(--terra); }
+    .showroom p { color: var(--ink-2); margin: 0 0 32px; max-width: 42ch; line-height: 1.65; }
+    .stores { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .store {
+      background: var(--bg); border-radius: var(--r-md); padding: 16px 20px;
+      display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center;
+      border: 1px solid var(--line); transition: border-color .3s ease, background .3s ease;
+    }
+    .store:hover { border-color: var(--terra); background: var(--surface2); }
+    .store .nm {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1;
+      font-style: italic; font-size: 20px;
+    }
+    .store .ad { font-size: 13px; color: var(--ink-2); }
+    .store .tel { font-weight: 500; font-size: 13px; color: var(--terra-dk); }
+
+    /* Newsletter — soft */
+    .news { padding: 100px 0; }
+    .news-card {
+      background: var(--ink); color: var(--surface2);
+      border-radius: var(--r-lg); padding: 80px 56px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .news-card::before {
+      content: ""; position: absolute; top: -100px; right: -100px;
+      width: 320px; height: 320px; border-radius: 999px;
+      background: radial-gradient(circle, rgba(199,126,89,0.25), transparent 70%);
+    }
+    @media (max-width: 720px) { .news-card { padding: 56px 24px; } }
+    .news-card .chip { background: rgba(249,246,239,0.1); color: var(--surface2); border-color: rgba(249,246,239,0.2); }
+    .news-card h3 {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+      font-size: clamp(30px, 4vw, 56px); line-height: 1.05; margin: 20px 0 14px;
+    }
+    .news-card h3 .it { font-style: italic; color: #E4C8A8; }
+    .news-card p { color: rgba(249,246,239,0.7); margin: 0 auto 36px; max-width: 36ch; }
+    .news-form {
+      display: flex; gap: 8px; max-width: 480px; margin: 0 auto;
+      background: rgba(249,246,239,0.08); border: 1px solid rgba(249,246,239,0.18);
+      padding: 6px; border-radius: 999px;
+      position: relative; z-index: 2;
+    }
+    .news-form input {
+      flex: 1; background: transparent; border: 0; outline: none;
+      padding: 0 18px; color: var(--surface2); font: inherit; font-size: 14px;
+    }
+    .news-form input::placeholder { color: rgba(249,246,239,0.5); }
+    .news-form button {
+      padding: 12px 22px; background: var(--terra); color: #fff; border-radius: 999px;
+      font-weight: 500; font-size: 13px;
+      transition: background .25s ease;
+    }
+    .news-form button:hover { background: var(--terra-dk); }
+
+    /* Footer */
+    .footer { padding: 60px 0 32px; }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px;
+    }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand {
+      font-family: "Fraunces", serif; font-weight: 400;
+      font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+      font-size: 42px; line-height: 1;
+    }
+    .footer-brand .it { font-style: italic; color: var(--terra); }
+    .footer-tag { color: var(--ink-2); max-width: 30ch; margin-top: 12px; font-size: 14px; line-height: 1.6; }
+    .footer h4 { font-size: 13px; font-weight: 500; margin: 0 0 16px; }
+    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .footer li a { color: var(--ink-2); font-size: 14px; transition: color .25s ease; }
+    .footer li a:hover { color: var(--terra-dk); }
+    .footer-bottom {
+      margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; gap: 16px;
+      font-size: 12px; color: var(--ink-3);
+    }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-1 { transition-delay: .08s; }
+    .reveal-2 { transition-delay: .16s; }
+    .reveal-3 { transition-delay: .24s; }
+
+    /* Switcher */
+    .switcher {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: var(--bg);
+      padding: 8px; border-radius: 999px; z-index: 100;
+      display: flex; align-items: center; gap: 6px;
+      box-shadow: 0 12px 40px rgba(42,42,38,0.25);
+      font-size: 12px; font-weight: 500;
+    }
+    .switcher .label { padding: 0 12px; opacity: 0.6; font-size: 11px; letter-spacing: 0.06em; }
+    .switcher a {
+      padding: 8px 14px; border-radius: 999px; transition: background .25s ease, color .25s ease;
+    }
+    .switcher a:hover { background: rgba(249,246,239,0.1); }
+    .switcher .on { background: var(--terra); color: #fff; }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement -->
+  <div class="anno">Доставка по Алматы бесплатно от 50 000 ₸ — <em>и упаковка в подарок</em></div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="container nav-row">
+      <a href="#" class="brand">N<span class="it">o</span>ble</a>
+      <div class="nav-pill">
+        <a href="#" class="on">Главная</a>
+        <a href="#">Сервизы</a>
+        <a href="#">Бокалы</a>
+        <a href="#">Хрусталь</a>
+        <a href="#">Подарки</a>
+        <a href="#">Бутики</a>
+      </div>
+      <div class="nav-actions">
+        <a class="icon-btn" aria-label="Поиск">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </a>
+        <a class="icon-btn" aria-label="Корзина">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l-1.5 11H7.5L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span class="count">2</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-card">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+          <div class="hero-top">
+            <div class="hero-chip">Spring · Summer 2026</div>
+            <a class="btn outline-light" href="#">Каталог
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div>
+            <h1 class="hero-title">Накрывайте <span class="it">медленно.</span><br/>Живите громко.</h1>
+            <div class="hero-bottom" style="margin-top: 36px;">
+              <p class="hero-deck">Посуда домов с трёхвековой историей — для ваших воскресных обедов, тихих ужинов и больших разговоров.</p>
+              <a class="btn" href="#pillars">К коллекциям
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prologue -->
+  <section class="prologue">
+    <div class="container">
+      <div class="prologue-grid">
+        <div>
+          <div class="chip dot reveal">О Noble</div>
+          <h2 class="reveal reveal-1">Дом, который <span class="it">собирает дома</span>.</h2>
+        </div>
+        <div>
+          <p class="reveal reveal-1">С 1998 года мы привозим в Алматы сервизы Wedgwood, бокалы Riedel и хрусталь Bohemia — и подбираем их так, как другие подбирают книги для библиотеки: тщательно, по характеру, на десятилетия.</p>
+          <div class="prologue-mini reveal reveal-2">
+            <div class="stat"><strong>28</strong><span>лет на рынке</span></div>
+            <div class="stat"><strong>34</strong><span>дома-производителя</span></div>
+            <div class="stat"><strong>3</strong><span>бутика в РК</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Three pillars -->
+  <section class="pillars" id="pillars">
+    <div class="container">
+      <div class="pillars-head">
+        <div>
+          <div class="chip dot reveal">Коллекции</div>
+          <h2 class="reveal reveal-1">Три направления, <span class="it">один стол</span>.</h2>
+        </div>
+        <div class="pillars-filter reveal reveal-1">
+          <button class="on">Все</button>
+          <button>Новое</button>
+          <button>Бестселлеры</button>
+          <button>Sale</button>
+        </div>
+      </div>
+      <div class="pillars-grid">
+        <a href="#" class="pillar reveal">
+          <img src="assets/serviz2.jpeg" alt="Сервизы" />
+          <div class="pillar-content">
+            <div>
+              <span class="pillar-tag">01 · Сервизы</span>
+              <h3 class="pillar-name">Костяной <span class="it">фарфор</span></h3>
+            </div>
+            <span class="pillar-cta">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="pillar reveal reveal-1">
+          <img src="assets/bokaly.jpeg" alt="Бокалы" />
+          <div class="pillar-content">
+            <div>
+              <span class="pillar-tag">02 · Бокалы</span>
+              <h3 class="pillar-name">Тонкое <span class="it">стекло</span></h3>
+            </div>
+            <span class="pillar-cta">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="pillar reveal reveal-2">
+          <img src="assets/hrustal.jpeg" alt="Хрусталь" />
+          <div class="pillar-content">
+            <div>
+              <span class="pillar-tag">03 · Хрусталь</span>
+              <h3 class="pillar-name">Гранёный <span class="it">свет</span></h3>
+            </div>
+            <span class="pillar-cta">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="story">
+    <div class="container">
+      <div class="story-card">
+        <div class="story-img reveal">
+          <img src="assets/serviz1.jpeg" alt="Wedgwood Butterfly Ball" />
+        </div>
+        <div>
+          <div class="chip dot reveal">Хроника бренда · 01</div>
+          <h2 class="reveal reveal-1">Wedgwood: <span class="it">бабочки</span> из Стаффордшира.</h2>
+          <p class="reveal reveal-2">В 1759 году Джозайя Веджвуд научился обжигать фарфор так, чтобы он становился почти прозрачным на свет. Спустя 267 лет та же глина, тот же обжиг, те же мастера.</p>
+          <p class="reveal reveal-2">Коллекция «Butterfly Ball» расписана вручную — каждая чашка проходит 32 пары рук, прежде чем оказаться в нашем салоне на Самале.</p>
+          <div class="story-meta reveal reveal-3">
+            <div class="m"><strong>1759</strong><span>Основан</span></div>
+            <div class="m"><strong>32</strong><span>Пары рук</span></div>
+            <div class="m"><strong>2014</strong><span>В Noble</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curator products -->
+  <section class="products-section">
+    <div class="container">
+      <div class="products-head">
+        <div>
+          <div class="chip dot reveal">Подборка недели</div>
+          <h2 class="reveal reveal-1">Выбор <span class="it">куратора</span>.</h2>
+        </div>
+        <a class="all reveal reveal-1" href="#">Весь каталог
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div class="products-grid">
+        <a href="#" class="product reveal">
+          <div class="product-img">
+            <span class="product-tag">Новое</span>
+            <span class="product-fav">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg>
+            </span>
+            <img src="assets/butterfly_ball.png" alt="Butterfly Ball" />
+          </div>
+          <p class="product-brand">Wedgwood</p>
+          <h4 class="product-name">Butterfly <span class="it">Ball</span></h4>
+          <div class="product-foot">
+            <span class="product-price">186 000 ₸</span>
+            <span class="product-add">+</span>
+          </div>
+        </a>
+        <a href="#" class="product reveal reveal-1">
+          <div class="product-img">
+            <span class="product-tag sale">−18%</span>
+            <span class="product-fav">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg>
+            </span>
+            <img src="assets/citrus.jpeg" alt="Citrus Bloom" />
+          </div>
+          <p class="product-brand">Wedgwood · Wonderlust</p>
+          <h4 class="product-name">Citrus <span class="it">Bloom</span></h4>
+          <div class="product-foot">
+            <span class="product-price"><span class="old">112 000</span>92 000 ₸</span>
+            <span class="product-add">+</span>
+          </div>
+        </a>
+        <a href="#" class="product reveal reveal-2">
+          <div class="product-img">
+            <span class="product-tag">Хит</span>
+            <span class="product-fav">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg>
+            </span>
+            <img src="assets/serviz3.jpeg" alt="Albatross" />
+          </div>
+          <p class="product-brand">Bohemia</p>
+          <h4 class="product-name">Albatross <span class="it">Set</span></h4>
+          <div class="product-foot">
+            <span class="product-price">74 500 ₸</span>
+            <span class="product-add">+</span>
+          </div>
+        </a>
+        <a href="#" class="product reveal reveal-3">
+          <div class="product-img">
+            <span class="product-fav">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg>
+            </span>
+            <img src="assets/serviz4.jpeg" alt="Meringa Pearl Edition" />
+          </div>
+          <p class="product-brand">Meringa</p>
+          <h4 class="product-name">Pearl <span class="it">Edition</span></h4>
+          <div class="product-foot">
+            <span class="product-price">58 200 ₸</span>
+            <span class="product-add">+</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Heritage -->
+  <section class="heritage">
+    <div class="container">
+      <div class="heritage-card">
+        <div class="chip dot reveal">Дома Noble</div>
+        <h2 class="reveal reveal-1">Бренды, которым <em>доверяют поколения</em>.</h2>
+        <div class="heritage-row reveal reveal-2">
+          <div class="brand-tile">Wedgwood</div>
+          <div class="brand-tile">Bohemia</div>
+          <div class="brand-tile">Villeroy &amp; Boch</div>
+          <div class="brand-tile">Christofle</div>
+          <div class="brand-tile">Riedel</div>
+          <div class="brand-tile">Lalique</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Showroom -->
+  <section class="showroom">
+    <div class="container">
+      <div class="showroom-inner">
+        <div class="showroom-img reveal">
+          <img src="assets/mat_banner.jpeg" alt="Noble Showroom" />
+        </div>
+        <div>
+          <div class="chip dot reveal">Бутики</div>
+          <h2 class="reveal reveal-1">Приходите <span class="it">в гости</span>.</h2>
+          <p class="reveal reveal-2">Хрусталь надо подержать в руке, а сервиз — увидеть на свету. В Алматы и Астане работают три салона.</p>
+          <div class="stores reveal reveal-2">
+            <a class="store" href="#">
+              <span class="nm">Самал</span>
+              <span class="ad">Самал-2, 77 · Алматы</span>
+              <span class="tel">+7 707 171 03 00</span>
+            </a>
+            <a class="store" href="#">
+              <span class="nm">Мирас</span>
+              <span class="ad">мкр. Мирас, 157 · Алматы</span>
+              <span class="tel">+7 708 190 37 17</span>
+            </a>
+            <a class="store" href="#">
+              <span class="nm">Астана</span>
+              <span class="ad">пр. Мангилик Ел, 55</span>
+              <span class="tel">+7 700 393 33 27</span>
+            </a>
+          </div>
+          <a class="btn reveal reveal-3" href="#">Открыть карту
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="news">
+    <div class="container">
+      <div class="news-card">
+        <div class="chip dot reveal">Письма Noble</div>
+        <h3 class="reveal reveal-1">Новинки, тихие распродажи <br/>и <span class="it">заметки куратора</span>.</h3>
+        <p class="reveal reveal-2">Раз в две недели. Без шума. Только то, что стоит вашего стола.</p>
+        <form class="news-form reveal reveal-2" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Спасибо.';">
+          <input type="email" placeholder="ваш e-mail" required />
+          <button type="submit">Подписаться</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">N<span class="it">o</span>ble</div>
+          <p class="footer-tag">Салон посуды и подарков · Алматы · Астана · с 1998 года.</p>
+        </div>
+        <div>
+          <h4>Каталог</h4>
+          <ul>
+            <li><a href="#">Сервизы</a></li>
+            <li><a href="#">Бокалы</a></li>
+            <li><a href="#">Хрусталь</a></li>
+            <li><a href="#">Подарки</a></li>
+            <li><a href="#">Бренды</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>О нас</h4>
+          <ul>
+            <li><a href="#">Доставка</a></li>
+            <li><a href="#">Возврат</a></li>
+            <li><a href="#">Оферта</a></li>
+            <li><a href="#">Privacy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Контакты</h4>
+          <ul>
+            <li><a href="tel:+77071710300">+7 707 171 03 00</a></li>
+            <li><a href="mailto:noblealmaty@gmail.com">noblealmaty@gmail.com</a></li>
+            <li><a href="https://www.instagram.com/noble_almaty/">Instagram</a></li>
+            <li><a href="#">WhatsApp</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Noble. Все права защищены.</span>
+        <span>Fraunces · DM Sans</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Switcher -->
+  <div class="switcher">
+    <span class="label">Версия</span>
+    <a href="index.html">A</a>
+    <a href="variant-b.html">B</a>
+    <a href="variant-c.html" class="on">C · Fraunces</a>
+    <a href="variant-d.html">D</a>
+    <a href="variant-e.html">E</a>
+    <a href="variant-f.html">F</a>
+    <a href="variant-g.html">G</a>
+    <a href="variant-h.html">H</a>
+    <a href="variant-i.html">I</a>
+  </div>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

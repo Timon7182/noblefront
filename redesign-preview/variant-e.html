@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noble — Sage Atelier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #F4F0E5;
+      --surface: #E8E3D2;
+      --paper:   #FBF8EE;
+      --sage:    #ABBFA0;
+      --sage-dk: #7A8F70;
+      --moss:    #4F5D3F;
+      --moss-dk: #2F3A26;
+      --ink:     #2A2E26;
+      --ink-2:   #6B6E62;
+      --ink-3:   #9A998E;
+      --line:    #D8D2C0;
+      --cream:   #FBF8EE;
+      --honey:   #D4A961;
+      --r:       18px;
+      --r-s:     10px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: "Hanken Grotesk", system-ui, sans-serif;
+      font-weight: 400; font-size: 16px; line-height: 1.55;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+    .serif { font-family: "Instrument Serif", "Times New Roman", serif; font-weight: 400; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+    .container { max-width: 1340px; margin: 0 auto; padding: 0 28px; }
+    @media (max-width: 720px) { .container { padding: 0 18px; } }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px;
+      background: var(--paper); border: 1px solid var(--line);
+      font-size: 12px; color: var(--moss);
+    }
+    .chip::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--moss); }
+
+    /* Anno */
+    .anno {
+      background: var(--moss); color: var(--cream);
+      padding: 12px 0; text-align: center; font-size: 13px; letter-spacing: 0.02em;
+    }
+    .anno em { font-family: "Instrument Serif", serif; font-style: italic; color: var(--sage); }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 60;
+      background: rgba(244, 240, 229, 0.92);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }
+    .nav-left { display: flex; gap: 24px; font-size: 14px; }
+    .nav-left a:hover { color: var(--moss); }
+    .brand {
+      font-family: "Instrument Serif", serif;
+      font-size: 32px; font-weight: 400; line-height: 1;
+      text-align: center; letter-spacing: 0.02em;
+    }
+    .brand .it { font-style: italic; color: var(--moss); }
+    .nav-right { display: flex; gap: 10px; justify-content: flex-end; }
+    .icon-btn {
+      width: 42px; height: 42px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line);
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background .25s ease, color .25s ease;
+      position: relative;
+    }
+    .icon-btn:hover { background: var(--moss); color: var(--cream); }
+    .icon-btn .count {
+      position: absolute; top: -4px; right: -4px;
+      background: var(--moss); color: var(--cream);
+      font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 999px;
+    }
+    @media (max-width: 900px) { .nav-left { display: none; } }
+
+    /* HERO */
+    .hero { padding: 28px 0 64px; }
+    .hero-card {
+      position: relative; overflow: hidden;
+      border-radius: var(--r);
+      min-height: 78vh; max-height: 880px;
+      background: var(--sage);
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url("assets/main.jpeg");
+      background-size: cover; background-position: center;
+      transform: scale(1.04);
+      animation: heroZoom 16s ease-out forwards;
+    }
+    @keyframes heroZoom { to { transform: scale(1); } }
+    .hero-card::after {
+      content: ""; position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(47,58,38,0) 30%, rgba(47,58,38,0.6) 100%),
+        linear-gradient(0deg, rgba(47,58,38,0.15), rgba(47,58,38,0.15));
+    }
+    .hero-content {
+      position: absolute; inset: 0; z-index: 2; color: var(--cream);
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 36px 40px;
+    }
+    @media (max-width: 720px) { .hero-content { padding: 24px; } }
+    .hero-top {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(251,248,238,0.16); backdrop-filter: blur(8px);
+      padding: 8px 14px; border-radius: 999px;
+      border: 1px solid rgba(251,248,238,0.3);
+      font-size: 12px;
+    }
+    .hero-chip::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--sage); }
+    .hero-mini {
+      display: flex; gap: 18px; font-size: 12px; color: rgba(251,248,238,0.8);
+    }
+    .hero-title {
+      font-family: "Instrument Serif", serif;
+      font-size: clamp(56px, 9vw, 132px);
+      line-height: 0.96; letter-spacing: -0.005em;
+      margin: 0; max-width: 14ch; font-weight: 400;
+    }
+    .hero-title .it { font-style: italic; color: var(--sage); }
+    .hero-bottom { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+    .hero-deck {
+      font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400;
+      font-size: clamp(18px, 1.7vw, 24px); max-width: 32ch; line-height: 1.35;
+      color: rgba(251,248,238,0.95); margin: 0;
+    }
+    .btn-fill {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 16px 24px; border-radius: 999px;
+      background: var(--cream); color: var(--moss);
+      font-weight: 500; font-size: 14px;
+      transition: background .25s ease, color .25s ease, transform .25s ease;
+    }
+    .btn-fill:hover { background: var(--sage); color: var(--moss-dk); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 22px; border-radius: 999px;
+      background: transparent; color: var(--cream);
+      border: 1px solid rgba(251,248,238,0.45);
+      font-weight: 500; font-size: 14px;
+      transition: background .25s ease, color .25s ease;
+    }
+    .btn-ghost:hover { background: var(--cream); color: var(--moss); border-color: var(--cream); }
+
+    /* MARQUEE — soft ticker */
+    .marquee-wrap {
+      background: var(--moss); color: var(--cream);
+      padding: 18px 0; overflow: hidden;
+      border-radius: var(--r); margin-bottom: 80px;
+    }
+    .marquee-track { display: flex; gap: 48px; animation: tick 28s linear infinite; white-space: nowrap; align-items: center; }
+    .marquee-track span { font-family: "Instrument Serif", serif; font-style: italic; font-size: 24px; }
+    .marquee-track .sep { width: 8px; height: 8px; border-radius: 999px; background: var(--sage); flex: 0 0 8px; }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* Prologue */
+    .prologue { padding: 0 0 100px; }
+    .prologue-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; align-items: end; }
+    @media (max-width: 900px) { .prologue-grid { grid-template-columns: 1fr; gap: 28px; } }
+    .prologue h2 {
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(40px, 5.4vw, 80px); line-height: 1; letter-spacing: -0.01em;
+      margin: 14px 0 0;
+    }
+    .prologue h2 .it { font-style: italic; color: var(--moss); }
+    .prologue p { font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 50ch; margin: 0; }
+
+    /* Pillars */
+    .pillars { padding: 0 0 100px; }
+    .pillars-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 36px; flex-wrap: wrap; }
+    .pillars-head h2 {
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(36px, 5vw, 64px); line-height: 1; margin: 12px 0 0;
+    }
+    .pillars-head h2 .it { font-style: italic; color: var(--moss); }
+    .pillars-head .link { font-size: 14px; display: inline-flex; align-items: center; gap: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--moss); color: var(--moss); }
+    .pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 900px) { .pillars-grid { grid-template-columns: 1fr; } }
+    .pillar {
+      position: relative; overflow: hidden; aspect-ratio: 4/5;
+      border-radius: var(--r); background: var(--surface);
+    }
+    .pillar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+    .pillar:hover img { transform: scale(1.06); }
+    .pillar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(47,58,38,0.7) 100%); }
+    .pillar-c { position: absolute; inset: 22px; z-index: 2; color: var(--cream); display: flex; flex-direction: column; justify-content: space-between; }
+    .pillar-c .tag { align-self: flex-start; background: rgba(251,248,238,0.18); backdrop-filter: blur(6px); padding: 6px 12px; border-radius: 999px; font-size: 11px; border: 1px solid rgba(251,248,238,0.2); }
+    .pillar-c .bot { display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+    .pillar-c h3 {
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(28px, 2.6vw, 38px); line-height: 1; margin: 0;
+    }
+    .pillar-c h3 .it { font-style: italic; color: var(--sage); }
+    .pillar-c .cta {
+      width: 44px; height: 44px; border-radius: 999px;
+      background: var(--cream); color: var(--moss);
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background .3s ease, transform .3s ease;
+    }
+    .pillar:hover .pillar-c .cta { background: var(--sage); transform: rotate(-45deg); }
+
+    /* Story */
+    .story { padding: 60px 0; }
+    .story-card {
+      background: var(--paper);
+      border: 1px solid var(--line); border-radius: var(--r);
+      padding: 48px;
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center;
+    }
+    @media (max-width: 900px) { .story-card { grid-template-columns: 1fr; padding: 28px; gap: 28px; } }
+    .story-img { border-radius: var(--r-s); overflow: hidden; aspect-ratio: 4/5; position: relative; }
+    .story-img img { width: 100%; height: 100%; object-fit: cover; }
+    .story-img .badge {
+      position: absolute; top: 16px; left: 16px;
+      background: var(--moss); color: var(--cream); padding: 6px 12px; border-radius: 999px;
+      font-family: "Instrument Serif", serif; font-style: italic; font-size: 13px;
+    }
+    .story h2 {
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(36px, 4.4vw, 60px); line-height: 1; margin: 16px 0 22px;
+    }
+    .story h2 .it { font-style: italic; color: var(--moss); }
+    .story p { font-size: 17px; line-height: 1.65; color: var(--ink-2); margin: 0 0 14px; max-width: 50ch; }
+    .spec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
+    .spec .m {
+      background: var(--bg); border-radius: var(--r-s); padding: 14px; border: 1px solid var(--line);
+    }
+    .spec .m strong {
+      display: block; font-family: "Instrument Serif", serif; font-style: italic; font-size: 26px; color: var(--moss); line-height: 1; margin-bottom: 4px;
+    }
+    .spec .m span { font-size: 11px; color: var(--ink-2); letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* Products */
+    .products-section { padding: 100px 0 60px; }
+    .products-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 40px; flex-wrap: wrap; }
+    .products-head h2 {
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(36px, 5vw, 64px); line-height: 1; margin: 12px 0 0;
+    }
+    .products-head h2 .it { font-style: italic; color: var(--moss); }
+    .products-head .all { font-size: 14px; padding-bottom: 4px; border-bottom: 1px solid var(--moss); color: var(--moss); }
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .products-grid { grid-template-columns: 1fr; } }
+    .product {
+      background: var(--paper); border: 1px solid var(--line); border-radius: var(--r);
+      padding: 14px; transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .product:hover { transform: translateY(-3px); border-color: var(--sage); box-shadow: 0 20px 36px -22px rgba(47,58,38,0.25); }
+    .product-img { position: relative; aspect-ratio: 1/1; background: var(--surface); border-radius: var(--r-s); overflow: hidden; margin-bottom: 16px; }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s ease; }
+    .product:hover .product-img img { transform: scale(1.04); }
+    .product-tag { position: absolute; top: 10px; left: 10px; font-size: 11px; padding: 4px 10px; border-radius: 999px; background: var(--cream); color: var(--moss); }
+    .product-tag.sale { background: var(--honey); color: var(--moss-dk); }
+    .product-fav {
+      position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 999px;
+      background: var(--cream); display: inline-flex; align-items: center; justify-content: center; color: var(--moss);
+      opacity: 0; transform: translateY(4px); transition: opacity .3s ease, transform .3s ease, background .3s ease, color .3s ease;
+    }
+    .product:hover .product-fav { opacity: 1; transform: translateY(0); }
+    .product-fav:hover { background: var(--moss); color: var(--cream); }
+    .product-brand { font-size: 11px; color: var(--ink-2); letter-spacing: 0.04em; margin: 0 0 4px; }
+    .product-name { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 22px; line-height: 1.1; margin: 0 0 10px; }
+    .product-name .it { font-style: italic; }
+    .product-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .product-price { font-weight: 500; font-size: 15px; }
+    .product-price .old { color: var(--ink-3); text-decoration: line-through; font-size: 12px; margin-right: 8px; font-weight: 400; }
+    .product-add {
+      width: 36px; height: 36px; border-radius: 999px; background: var(--moss); color: var(--cream);
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background .25s ease, transform .25s ease;
+    }
+    .product-add:hover { background: var(--honey); transform: rotate(90deg); color: var(--moss-dk); }
+
+    /* Heritage tiles — sage card */
+    .heritage { padding: 80px 0; }
+    .heritage-card {
+      background: var(--sage); color: var(--moss-dk); border-radius: var(--r);
+      padding: 72px 48px; text-align: center;
+    }
+    @media (max-width: 720px) { .heritage-card { padding: 48px 24px; } }
+    .heritage-card .chip { background: rgba(47,58,38,0.1); color: var(--moss-dk); border-color: rgba(47,58,38,0.2); }
+    .heritage-card .chip::before { background: var(--moss-dk); }
+    .heritage-card h2 {
+      font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic;
+      font-size: clamp(28px, 3.6vw, 48px); line-height: 1.15; max-width: 22ch;
+      margin: 22px auto 44px;
+    }
+    .heritage-row {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px;
+    }
+    @media (max-width: 720px) { .heritage-row { grid-template-columns: repeat(3, 1fr); } }
+    .heritage-row a {
+      padding: 18px 12px; border: 1px solid rgba(47,58,38,0.2); border-radius: var(--r-s);
+      font-family: "Instrument Serif", serif; font-style: italic; font-size: 19px;
+      transition: background .3s ease, border-color .3s ease;
+    }
+    .heritage-row a:hover { background: var(--cream); border-color: var(--moss-dk); }
+
+    /* Showroom */
+    .showroom { padding: 100px 0; }
+    .showroom-inner {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: var(--r); padding: 48px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    }
+    @media (max-width: 900px) { .showroom-inner { grid-template-columns: 1fr; padding: 28px; gap: 28px; } }
+    .showroom-img { border-radius: var(--r-s); overflow: hidden; aspect-ratio: 5/4; }
+    .showroom-img img { width: 100%; height: 100%; object-fit: cover; }
+    .showroom h2 {
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(36px, 4.6vw, 60px); line-height: 1; margin: 16px 0 22px;
+    }
+    .showroom h2 .it { font-style: italic; color: var(--moss); }
+    .showroom p { color: var(--ink-2); max-width: 42ch; margin: 0 0 28px; }
+    .stores { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .store {
+      background: var(--bg); border-radius: var(--r-s); padding: 14px 18px;
+      display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+      border: 1px solid var(--line); transition: border-color .3s ease, background .3s ease;
+    }
+    .store:hover { border-color: var(--moss); background: var(--sage); color: var(--moss-dk); }
+    .store .nm { font-family: "Instrument Serif", serif; font-style: italic; font-size: 20px; color: var(--moss); }
+    .store .ad { font-size: 13px; color: var(--ink-2); }
+    .store .tel { font-weight: 500; font-size: 13px; color: var(--moss); }
+    .store:hover .nm, .store:hover .tel { color: var(--moss-dk); }
+
+    /* News */
+    .news { padding: 80px 0; }
+    .news-card {
+      background: var(--moss); color: var(--cream); border-radius: var(--r);
+      padding: 72px 48px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .news-card::before {
+      content: ""; position: absolute; top: -100px; right: -120px; width: 360px; height: 360px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(212,169,97,0.3), transparent 65%);
+    }
+    @media (max-width: 720px) { .news-card { padding: 48px 24px; } }
+    .news-card .chip { background: rgba(251,248,238,0.1); color: var(--cream); border-color: rgba(251,248,238,0.2); }
+    .news-card .chip::before { background: var(--sage); }
+    .news-card h3 {
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(32px, 4.2vw, 56px); line-height: 1.05; margin: 18px 0 12px;
+    }
+    .news-card h3 .it { font-style: italic; color: var(--sage); }
+    .news-card p { color: rgba(251,248,238,0.75); margin: 0 auto 30px; max-width: 36ch; }
+    .news-form {
+      display: flex; gap: 8px; max-width: 480px; margin: 0 auto;
+      background: rgba(251,248,238,0.1); border: 1px solid rgba(251,248,238,0.2);
+      padding: 6px; border-radius: 999px;
+      position: relative; z-index: 2;
+    }
+    .news-form input { flex: 1; background: transparent; border: 0; outline: none; padding: 0 18px; color: var(--cream); font: inherit; font-size: 14px; }
+    .news-form input::placeholder { color: rgba(251,248,238,0.5); }
+    .news-form button {
+      padding: 12px 22px; background: var(--honey); color: var(--moss-dk); border-radius: 999px;
+      font-weight: 600; font-size: 13px;
+      transition: background .25s ease;
+    }
+    .news-form button:hover { background: var(--cream); }
+
+    /* Footer */
+    .footer { padding: 60px 0 32px; }
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 44px; line-height: 1; }
+    .footer-brand .it { font-style: italic; color: var(--moss); }
+    .footer-tag { color: var(--ink-2); max-width: 30ch; margin-top: 12px; font-size: 14px; line-height: 1.6; }
+    .footer h4 { font-size: 13px; font-weight: 500; margin: 0 0 16px; color: var(--moss); }
+    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .footer li a { color: var(--ink-2); font-size: 14px; transition: color .25s ease; }
+    .footer li a:hover { color: var(--moss); }
+    .footer-bottom {
+      margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; gap: 16px;
+      font-size: 12px; color: var(--ink-3);
+    }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-1 { transition-delay: .08s; }
+    .reveal-2 { transition-delay: .16s; }
+    .reveal-3 { transition-delay: .24s; }
+
+    /* Switcher — extended */
+    .switcher {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: var(--cream);
+      padding: 6px; border-radius: 999px; z-index: 100;
+      display: flex; align-items: center; gap: 2px;
+      box-shadow: 0 12px 40px rgba(42,46,38,0.25);
+      font-size: 11px; font-weight: 500;
+      max-width: calc(100% - 24px); overflow-x: auto;
+    }
+    .switcher::-webkit-scrollbar { display: none; }
+    .switcher .label { padding: 0 10px; opacity: 0.55; font-size: 10px; letter-spacing: 0.08em; flex-shrink: 0; }
+    .switcher a { padding: 7px 11px; border-radius: 999px; transition: background .2s ease, color .2s ease; flex-shrink: 0; white-space: nowrap; }
+    .switcher a:hover { background: rgba(251,248,238,0.1); }
+    .switcher .on { background: var(--moss); color: var(--cream); }
+  </style>
+</head>
+<body>
+
+  <div class="anno">Доставка по Алматы бесплатно от 50 000 ₸ · <em>и упаковка в подарок</em></div>
+
+  <nav class="nav">
+    <div class="container nav-row">
+      <div class="nav-left">
+        <a href="#">Сервизы</a><a href="#">Бокалы</a><a href="#">Хрусталь</a><a href="#">Подарки</a>
+      </div>
+      <a href="#" class="brand">N<span class="it">o</span>ble</a>
+      <div class="nav-right">
+        <a class="icon-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
+        <a class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12l-1.5 11H7.5L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span class="count">2</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-card">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+          <div class="hero-top">
+            <span class="hero-chip">Spring · Summer 2026</span>
+            <div class="hero-mini"><span>Алматы — 14°</span><span>·</span><span>Откр. 10:00–21:00</span></div>
+          </div>
+          <div>
+            <h1 class="hero-title">Сад на<br/>вашем <span class="it">столе</span>.</h1>
+            <div class="hero-bottom" style="margin-top: 36px;">
+              <p class="hero-deck">Сервизы, бокалы и хрусталь от 34 домов с многовековой историей — собранные в Алматы с 1998 года.</p>
+              <div style="display:flex; gap: 10px; flex-wrap: wrap;">
+                <a class="btn-ghost" href="#">Бутики</a>
+                <a class="btn-fill" href="#pillars">Каталог
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span>Wedgwood</span><span class="sep"></span>
+        <span>Bohemia</span><span class="sep"></span>
+        <span>Riedel</span><span class="sep"></span>
+        <span>Christofle</span><span class="sep"></span>
+        <span>Lalique</span><span class="sep"></span>
+        <span>Villeroy &amp; Boch</span><span class="sep"></span>
+        <span>Wedgwood</span><span class="sep"></span>
+        <span>Bohemia</span><span class="sep"></span>
+        <span>Riedel</span><span class="sep"></span>
+        <span>Christofle</span><span class="sep"></span>
+        <span>Lalique</span><span class="sep"></span>
+        <span>Villeroy &amp; Boch</span><span class="sep"></span>
+      </div>
+    </div>
+  </div>
+
+  <section class="prologue">
+    <div class="container">
+      <div class="prologue-grid">
+        <div>
+          <span class="chip reveal">О Noble</span>
+          <h2 class="reveal reveal-1">Тихая <span class="it">роскошь</span><br/>в Алматы.</h2>
+        </div>
+        <p class="reveal reveal-1">Мы привозим в Алматы посуду, которая переживает нас. Сервизы Wedgwood, бокалы Riedel, хрусталь Bohemia — собранные так, как библиотекарь собирает редкие книги: по характеру, на десятилетия, по одной полке за раз.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillars" id="pillars">
+    <div class="container">
+      <div class="pillars-head">
+        <div>
+          <span class="chip reveal">Коллекции</span>
+          <h2 class="reveal reveal-1">Три направления, <span class="it">один сад</span>.</h2>
+        </div>
+        <a class="link reveal reveal-1" href="#">Все коллекции →</a>
+      </div>
+      <div class="pillars-grid">
+        <a href="#" class="pillar reveal">
+          <img src="assets/serviz2.jpeg" alt="Сервизы" />
+          <div class="pillar-c">
+            <span class="tag">01 · Сервизы</span>
+            <div class="bot">
+              <h3>Костяной <span class="it">фарфор</span></h3>
+              <span class="cta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="pillar reveal reveal-1">
+          <img src="assets/bokaly.jpeg" alt="Бокалы" />
+          <div class="pillar-c">
+            <span class="tag">02 · Бокалы</span>
+            <div class="bot">
+              <h3>Тонкое <span class="it">стекло</span></h3>
+              <span class="cta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="pillar reveal reveal-2">
+          <img src="assets/hrustal.jpeg" alt="Хрусталь" />
+          <div class="pillar-c">
+            <span class="tag">03 · Хрусталь</span>
+            <div class="bot">
+              <h3>Гранёный <span class="it">свет</span></h3>
+              <span class="cta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="story">
+    <div class="container">
+      <div class="story-card">
+        <div class="story-img reveal">
+          <span class="badge">Глава 01</span>
+          <img src="assets/serviz1.jpeg" alt="Wedgwood" />
+        </div>
+        <div>
+          <span class="chip reveal">Хроника</span>
+          <h2 class="reveal reveal-1">Wedgwood: <span class="it">бабочки</span> из Стаффордшира.</h2>
+          <p class="reveal reveal-2">В 1759 году Джозайя Веджвуд научился обжигать фарфор так, чтобы он становился почти прозрачным на свет. С тех пор та же глина, тот же обжиг, те же мастера.</p>
+          <p class="reveal reveal-2">Коллекция Butterfly Ball расписана вручную — каждая чашка проходит через 32 пары рук.</p>
+          <div class="spec reveal reveal-3">
+            <div class="m"><strong>1759</strong><span>Основан</span></div>
+            <div class="m"><strong>32</strong><span>Пары рук</span></div>
+            <div class="m"><strong>2014</strong><span>В Noble</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="products-section">
+    <div class="container">
+      <div class="products-head">
+        <div>
+          <span class="chip reveal">Подборка недели</span>
+          <h2 class="reveal reveal-1">Выбор <span class="it">куратора</span>.</h2>
+        </div>
+        <a class="all reveal reveal-1" href="#">Весь каталог →</a>
+      </div>
+      <div class="products-grid">
+        <a href="#" class="product reveal">
+          <div class="product-img">
+            <span class="product-tag">Новое</span>
+            <span class="product-fav"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg></span>
+            <img src="assets/butterfly_ball.png" alt="Butterfly Ball" />
+          </div>
+          <p class="product-brand">Wedgwood</p>
+          <h4 class="product-name">Butterfly <span class="it">Ball</span></h4>
+          <div class="product-foot"><span class="product-price">186 000 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-1">
+          <div class="product-img">
+            <span class="product-tag sale">−18%</span>
+            <span class="product-fav"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg></span>
+            <img src="assets/citrus.jpeg" alt="Citrus" />
+          </div>
+          <p class="product-brand">Wedgwood · Wonderlust</p>
+          <h4 class="product-name">Citrus <span class="it">Bloom</span></h4>
+          <div class="product-foot"><span class="product-price"><span class="old">112 000</span>92 000 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-2">
+          <div class="product-img">
+            <span class="product-tag">Хит</span>
+            <span class="product-fav"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg></span>
+            <img src="assets/serviz3.jpeg" alt="Albatross" />
+          </div>
+          <p class="product-brand">Bohemia</p>
+          <h4 class="product-name">Albatross <span class="it">Set</span></h4>
+          <div class="product-foot"><span class="product-price">74 500 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-3">
+          <div class="product-img">
+            <span class="product-fav"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></svg></span>
+            <img src="assets/serviz4.jpeg" alt="Meringa" />
+          </div>
+          <p class="product-brand">Meringa</p>
+          <h4 class="product-name">Pearl <span class="it">Edition</span></h4>
+          <div class="product-foot"><span class="product-price">58 200 ₸</span><span class="product-add">+</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="heritage">
+    <div class="container">
+      <div class="heritage-card">
+        <span class="chip reveal">Дома Noble</span>
+        <h2 class="reveal reveal-1">Имена, которым <em>доверяют поколения</em>.</h2>
+        <div class="heritage-row reveal reveal-2">
+          <a href="#">Wedgwood</a>
+          <a href="#">Bohemia</a>
+          <a href="#">Villeroy &amp; Boch</a>
+          <a href="#">Christofle</a>
+          <a href="#">Riedel</a>
+          <a href="#">Lalique</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="showroom">
+    <div class="container">
+      <div class="showroom-inner">
+        <div class="showroom-img reveal">
+          <img src="assets/mat_banner.jpeg" alt="Noble Showroom" />
+        </div>
+        <div>
+          <span class="chip reveal">Бутики</span>
+          <h2 class="reveal reveal-1">Приходите <span class="it">в гости</span>.</h2>
+          <p class="reveal reveal-2">Хрусталь надо подержать в руке, а сервиз — увидеть на свету. Три бутика в Алматы и Астане.</p>
+          <div class="stores reveal reveal-2">
+            <a class="store" href="#"><span class="nm">Самал</span><span class="ad">Самал-2, 77 · Алматы</span><span class="tel">+7 707 171 03 00</span></a>
+            <a class="store" href="#"><span class="nm">Мирас</span><span class="ad">мкр. Мирас, 157 · Алматы</span><span class="tel">+7 708 190 37 17</span></a>
+            <a class="store" href="#"><span class="nm">Астана</span><span class="ad">пр. Мангилик Ел, 55</span><span class="tel">+7 700 393 33 27</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="news">
+    <div class="container">
+      <div class="news-card">
+        <span class="chip reveal">Письма Noble</span>
+        <h3 class="reveal reveal-1">Новинки и <span class="it">заметки куратора</span>.</h3>
+        <p class="reveal reveal-2">Раз в две недели. Без шума. Только то, что стоит вашего стола.</p>
+        <form class="news-form reveal reveal-2" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Спасибо.';">
+          <input type="email" placeholder="ваш e-mail" required />
+          <button type="submit">Подписаться</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">N<span class="it">o</span>ble</div>
+          <p class="footer-tag">Салон посуды и подарков · Алматы · Астана · с 1998 года.</p>
+        </div>
+        <div>
+          <h4>Каталог</h4>
+          <ul>
+            <li><a href="#">Сервизы</a></li>
+            <li><a href="#">Бокалы</a></li>
+            <li><a href="#">Хрусталь</a></li>
+            <li><a href="#">Подарки</a></li>
+            <li><a href="#">Бренды</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>О нас</h4>
+          <ul>
+            <li><a href="#">Доставка</a></li>
+            <li><a href="#">Возврат</a></li>
+            <li><a href="#">Оферта</a></li>
+            <li><a href="#">Privacy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Контакты</h4>
+          <ul>
+            <li><a href="tel:+77071710300">+7 707 171 03 00</a></li>
+            <li><a href="mailto:noblealmaty@gmail.com">noblealmaty@gmail.com</a></li>
+            <li><a href="https://www.instagram.com/noble_almaty/">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Noble. Все права защищены.</span>
+        <span>Instrument Serif · Hanken Grotesk</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="switcher">
+    <span class="label">VAR</span>
+    <a href="index.html">A</a>
+    <a href="variant-b.html">B</a>
+    <a href="variant-c.html">C</a>
+    <a href="variant-d.html">D</a>
+    <a href="variant-e.html" class="on">E · Sage</a>
+    <a href="variant-f.html">F</a>
+    <a href="variant-g.html">G</a>
+    <a href="variant-h.html">H</a>
+    <a href="variant-i.html">I</a>
+  </div>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

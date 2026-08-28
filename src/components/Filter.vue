@@ -1,51 +1,88 @@
 <template>
-  <div class="bg-white p-4 rounded-md shadow-2xl w-full h-full lg:h-auto pb-16 lg:pb-4"> <!-- Adjust height and add bottom padding -->
-    <button type="button" dir="rtl" class="absolute top-0 start-0" v-on:click="$emit('closeModal')">
-      <XMarkIcon class="h-7 mt-1.5 mr-1" />
-    </button>
-    <h2 class="text-2xl uppercase text-center mb-4">{{ $t('filters') }}</h2>
-    <hr class="font-bold" />
-    <div class="mt-5">
-      <h3 class="font-thin mb-2">{{ $t('price') }}</h3>
-      <div class="grid grid-cols-2 gap-2">
-  <fwb-input class="rounded text-lg" style="font-size: 16px;" v-model="filters.price.min" type="number"
-    :label="$t('min_price')" :placeholder="filters.price.min" size="lg" />
-  <fwb-input class="rounded text-lg" style="font-size: 16px;" v-model="filters.price.max" type="number"
-    :label="$t('max_price')" :placeholder="filters.price.max" size="lg" />
-</div>
-
+  <div class="relative p-5 lg:p-0 pb-24 lg:pb-0">
+    <div class="flex items-center justify-between mb-6 lg:mb-8">
+      <h2 class="text-[11px] uppercase tracking-[0.3em] text-ink">{{ $t('filters') }}</h2>
+      <button type="button" class="lg:hidden" :aria-label="$t('filters')" @click="$emit('closeModal')">
+        <XMarkIcon class="h-5" />
+      </button>
     </div>
-    <div class="mt-5">
-      <h3 class="font-thin mb-2">{{ $t('brands') }}</h3>
-      <fwb-input v-model="brands_query" :label="$t('search_brands')" :placeholder="$t('start_typing')" size="lg" />
-      <div class="h-48 lg:h-64 overflow-y-auto mt-5"> <!-- Reduced height for mobile -->
-        <fwb-radio v-for="brand in Object.values(filters.brands)" :key="brand.id" :value="brand.id"
-          v-model="filters.selectedBrand">
-          {{ brand.name }}
-        </fwb-radio>
+
+    <div class="border-t border-line pt-6">
+      <h3 class="text-[11px] uppercase tracking-[0.2em] text-ink2 mb-4">{{ $t('price') }}</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <label class="block">
+          <span class="block text-xs text-ink2 mb-1.5">{{ $t('min_price') }}</span>
+          <span class="relative block">
+            <input
+              v-model="filters.price.min"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              class="field-input text-sm py-1.5 pr-6"
+              placeholder="0"
+            />
+            <span class="absolute right-0 bottom-2 text-sm text-ink3 pointer-events-none">₸</span>
+          </span>
+        </label>
+        <label class="block">
+          <span class="block text-xs text-ink2 mb-1.5">{{ $t('max_price') }}</span>
+          <span class="relative block">
+            <input
+              v-model="filters.price.max"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              class="field-input text-sm py-1.5 pr-6"
+              placeholder="0"
+            />
+            <span class="absolute right-0 bottom-2 text-sm text-ink3 pointer-events-none">₸</span>
+          </span>
+        </label>
       </div>
     </div>
-    <PrimaryBtn class="p-3 w-full uppercase font-semibold mt-3 fixed bottom-0 left-0 lg:relative lg:mt-3"
-      @click="applyFilters()">
-      {{ $t('apply') }}
-    </PrimaryBtn>
+
+    <div class="border-t border-line mt-8 pt-6">
+      <h3 class="text-[11px] uppercase tracking-[0.2em] text-ink2 mb-4">{{ $t('brands') }}</h3>
+      <input
+        v-model="brands_query"
+        type="text"
+        class="field-input text-sm py-1.5"
+        :placeholder="$t('start_typing')"
+      />
+      <div class="quiet-scroll h-56 lg:h-72 overflow-y-auto mt-5 pr-1 flex flex-col">
+        <label
+          v-for="brand in Object.values(filters.brands)"
+          :key="brand.id"
+          class="flex items-center gap-3 py-2 cursor-pointer text-sm text-ink2 hover:text-ink transition-colors"
+        >
+          <input
+            type="radio"
+            :value="brand.id"
+            v-model="filters.selectedBrand"
+            class="w-3.5 h-3.5 border-line text-ink focus:ring-0 focus:ring-offset-0"
+          />
+          {{ brand.name }}
+        </label>
+      </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 p-5 bg-bg border-t border-line lg:static lg:p-0 lg:border-0 lg:mt-8">
+      <button type="button" class="btn-solid w-full" @click="applyFilters()">
+        {{ $t('apply') }}
+      </button>
+    </div>
   </div>
 </template>
 
 
 <script>
 import { defineComponent, reactive } from 'vue'
-import { FwbRadio, FwbInput } from 'flowbite-vue'
-import { XMarkIcon } from '@heroicons/vue/24/solid/index.js'
-import PrimaryBtn from '@/components/PrimaryBtn.vue'
+import { XMarkIcon } from '@heroicons/vue/24/outline/index.js'
 
 export default defineComponent({
   name: 'Filter',
   components: {
-    XMarkIcon,
-    FwbRadio,
-    FwbInput,
-    PrimaryBtn
+    XMarkIcon
   },
   props: {
     brands: {
@@ -55,7 +92,7 @@ export default defineComponent({
   },
   data() {
     return {
-      isMobile: window.innerWidth <= 768, // Set initial value based on screen width
+      isMobile: window.innerWidth <= 768,
       filters: {
         discount: false,
         price: {
@@ -69,25 +106,28 @@ export default defineComponent({
     }
   },
   watch: {
-    brands_query(val) {
-      let brandsFiltered = this.brands
-      if (val) {
-        brandsFiltered = brandsFiltered.filter((el) => {
-          return el.name.includes(val)
-        })
-      }
-
-      this.setBrands(brandsFiltered)
+    // Бренды приходят из store асинхронно — перезаполняем список, когда доедут
+    brands() {
+      this.setBrands(this.filterByQuery())
+    },
+    brands_query() {
+      this.setBrands(this.filterByQuery())
     }
   },
   mounted() {
     this.setBrands(this.brands)
-    window.addEventListener('resize', this.updateIsMobile) // Listen to window resize events
+    window.addEventListener('resize', this.updateIsMobile)
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.updateIsMobile) // Clean up on component unmount
+    window.removeEventListener('resize', this.updateIsMobile)
   },
   methods: {
+    filterByQuery() {
+      const all = this.brands || []
+      const q = this.brands_query.trim().toLowerCase()
+      if (!q) return all
+      return all.filter((el) => (el.name || '').toLowerCase().includes(q))
+    },
     applyFilters() {
       let query = this.$route.query
 
@@ -114,6 +154,10 @@ export default defineComponent({
     },
     setBrands(brands) {
       const updatedBrands = {}
+      if (!brands) {
+        this.filters.brands = reactive(updatedBrands)
+        return
+      }
 
       for (let i = 0; i < brands.length; i++) {
         updatedBrands[brands[i].id] = {
@@ -125,7 +169,6 @@ export default defineComponent({
       this.filters.brands = reactive(updatedBrands)
     },
     updateIsMobile() {
-      // Update `isMobile` based on screen width
       this.isMobile = window.innerWidth <= 768
     }
   }

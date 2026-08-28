@@ -1,5 +1,6 @@
 <template>
-  <div v-if="!loading">
+  <!-- Первая глава начинается сразу под навигацией, без верхнего отступа -->
+  <div v-if="!loading" class="[&>div:first-child_section]:mt-0">
     <div v-for="item in getOrderedItems()" :key="`item-${item.pageOrder}`">
       <template v-if="item.type === 'CARDS'">
         <Cards :productions="item.productions"/>
@@ -24,13 +25,12 @@
       </template>
     </div>
   </div>
-  <div v-else class="flex items-center justify-center p-10 h-screen">
-    <fwb-spinner size="12" color="gray"></fwb-spinner>
+  <div v-else class="flex items-center justify-center p-10 h-[70vh]">
+    <div class="loader"></div>
   </div>
 </template>
 
 <script setup>
-import { FwbSpinner } from 'flowbite-vue'
 import Carousel from '@/components/Carousel.vue'
 import Collections from '@/components/Collections.vue'
 import Cards from '@/components/Cards.vue'
@@ -39,12 +39,9 @@ import Photos from '../components/Photos.vue'
 import MainPhoto from '@/components/MainPhoto.vue'
 import SimpleText from '@/components/SimpleText.vue'
 import api from '@/api'
-import { useI18n } from 'vue-i18n'
 import { ref, onMounted } from 'vue'
 
 const MAIN_PAGE_URL = '/ww/mainPage/'
-
-const { t } = useI18n()
 
 const mainPageItems = ref([])
 

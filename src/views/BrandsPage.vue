@@ -1,66 +1,52 @@
 <template>
-    <div class="px-4 pt-6 grid grid-cols-12 gap-6">
-      <!-- 1. Alphabet sidebar: moves to top on mobile, left on desktop -->
-      <aside class="col-span-12 md:col-span-2 mt-4 md:mt-24 md:sticky md:top-0 bg-white p-4">
-        <div class="grid grid-cols-6 gap-2 text-center overflow-x-auto">
-          <!-- 'Все' button -->
-          <button
-            @click="selected = null"
-            :class="selected === null
-              ? 'py-1 font-bold underline'
-              : 'py-1 text-gray-500 hover:text-gray-700'
-            "
-          >
-            Все
-          </button>
-          
-          <!-- Alphabet letters -->
-          <button
-            v-for="letter in alphabet"
-            :key="letter"
-            @click="lettersWithBrands.includes(letter) && (selected = letter)"
-            :class="[
-              'py-1',
-              lettersWithBrands.includes(letter)
-                ? (selected === letter
-                    ? 'font-bold underline'
-                    : 'text-gray-500 hover:text-gray-700')
-                : 'text-gray-300 cursor-not-allowed'
-            ]"
-          >
-            {{ letter }}
-          </button>
-        </div>
-      </aside>
-  
-      <!-- 2. Brands / header: full width on mobile, right of alphabet on desktop -->
-      <main class="col-span-12 md:col-span-8 flex flex-col items-center space-y-6">
-        <h1 class="text-3xl font-semibold bg-white py-4 mb-4 text-center md:text-left">
-          Бренды
-        </h1>
-        <div class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
-          <div v-for="letter in displayedLetters" :key="letter">
-            <h2 class="text-xl md:text-2xl font-semibold mb-2">{{ letter }}</h2>
-            <ul class="space-y-1">
-              <li v-for="b in groupedBrands[letter]" :key="b.id">
-                <router-link
-                  :to="{ path: '/catalogue', query: { categoryId: b.id } }"
-                  class="block p-2 hover:bg-gray-100 rounded"
-                >
-                  {{ b.name }}
-                </router-link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </main>
-  
-      <!-- 3. Calendar / other: full width on mobile, rightmost on desktop -->
-      <aside class="col-span-12 md:col-span-2">
-        <CalendarWidget />
-      </aside>
+  <div class="max-w-page mx-auto px-5 xl:px-8 pt-10 md:pt-14 pb-20">
+    <h1 class="serif font-light text-[clamp(32px,4.4vw,60px)] leading-[1.05] mb-10 md:mb-14">
+      {{ $t('brands') }}
+    </h1>
+
+    <!-- Алфавит -->
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-line py-4 mb-12 md:mb-16">
+      <button
+        class="text-xs uppercase tracking-[0.15em] transition-colors"
+        :class="selected === null ? 'text-ink border-b border-ink' : 'text-ink2 hover:text-ink'"
+        @click="selected = null"
+      >
+        {{ $t('all') }}
+      </button>
+
+      <button
+        v-for="letter in alphabet"
+        :key="letter"
+        :disabled="!lettersWithBrands.includes(letter)"
+        class="text-xs tracking-[0.15em] transition-colors"
+        :class="[
+          lettersWithBrands.includes(letter)
+            ? (selected === letter ? 'text-ink border-b border-ink' : 'text-ink2 hover:text-ink')
+            : 'text-ink3/50 cursor-not-allowed'
+        ]"
+        @click="selected = letter"
+      >
+        {{ letter }}
+      </button>
     </div>
-  </template>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12">
+      <div v-for="letter in displayedLetters" :key="letter">
+        <h2 class="serif text-2xl md:text-3xl font-light mb-4 pb-3 border-b border-line">{{ letter }}</h2>
+        <ul class="flex flex-col gap-2.5">
+          <li v-for="b in groupedBrands[letter]" :key="b.id">
+            <router-link
+              :to="{ path: '/catalogue', query: { categoryId: b.id } }"
+              class="text-[15px] text-ink2 hover:text-ink transition-colors"
+            >
+              {{ b.name }}
+            </router-link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
   
   <script setup>
   import { ref, computed, onMounted } from 'vue'

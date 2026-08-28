@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOBLE / INDEX — REF.0001/2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:     #F4F2EC;
+      --paper:  #FFFFFF;
+      --ink:    #0A0A0A;
+      --ink-2:  #4A4A48;
+      --ink-3:  #8A8A86;
+      --line:   #0A0A0A;
+      --line-2: #D8D6CE;
+      --acid:   #DCFF3D;
+      --acid-2: #E8FF6C;
+      --red:    #FF3D1F;
+      --max:    100%;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+      font-weight: 400; font-size: 14px; line-height: 1.45;
+      letter-spacing: -0.005em;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+    .display { font-family: "Space Grotesk", system-ui, sans-serif; letter-spacing: -0.04em; font-weight: 600; }
+    .mono { font-family: "JetBrains Mono", "Courier New", monospace; font-size: 11px; letter-spacing: 0; }
+    .upper { text-transform: uppercase; letter-spacing: 0.04em; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+    .wrap { padding: 0 24px; }
+    @media (max-width: 720px) { .wrap { padding: 0 16px; } }
+
+    /* Top bar — system header */
+    .sysbar {
+      background: var(--ink); color: var(--bg);
+      padding: 8px 0; font-family: "JetBrains Mono", monospace;
+      font-size: 11px; letter-spacing: 0; border-bottom: 1px solid var(--ink);
+    }
+    .sysbar .row {
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    }
+    .sysbar .row .left, .sysbar .row .right { display: flex; gap: 28px; }
+    .sysbar .dot { display: inline-block; width: 8px; height: 8px; background: var(--acid); border-radius: 999px; margin-right: 8px; vertical-align: middle; animation: blink 1.6s ease-in-out infinite; }
+    @keyframes blink { 50% { opacity: 0.3; } }
+    .sysbar .ts { color: var(--acid); }
+    @media (max-width: 720px) { .sysbar .row { flex-wrap: wrap; gap: 12px; } .sysbar .row .right { display: none; } }
+
+    /* Marquee ticker */
+    .ticker {
+      background: var(--acid); color: var(--ink);
+      border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+      overflow: hidden; height: 36px; display: flex; align-items: center;
+      font-family: "JetBrains Mono", monospace; font-size: 12px;
+    }
+    .ticker-track { display: flex; gap: 48px; animation: tick 36s linear infinite; white-space: nowrap; }
+    .ticker-track span::before { content: "● "; color: var(--ink); margin-right: 4px; }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* Nav bar */
+    .nav {
+      position: sticky; top: 0; z-index: 60;
+      background: var(--bg);
+      border-bottom: 1px solid var(--ink);
+    }
+    .nav-row {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+      padding: 14px 0; gap: 24px;
+    }
+    .nav-logo {
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700; font-size: 22px; letter-spacing: -0.04em;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .nav-logo .ref { font-family: "JetBrains Mono", monospace; font-size: 10px; font-weight: 400; color: var(--ink-2); border-left: 1px solid var(--ink-3); padding-left: 8px; }
+    .nav-links {
+      display: flex; gap: 6px; justify-content: center;
+    }
+    .nav-links a {
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      padding: 8px 12px; border: 1px solid transparent;
+      transition: border-color .2s ease, background .2s ease;
+    }
+    .nav-links a:hover { border-color: var(--ink); }
+    .nav-links a.on { background: var(--ink); color: var(--bg); }
+    .nav-actions { display: flex; gap: 8px; font-family: "JetBrains Mono", monospace; font-size: 11px; }
+    .nav-actions a { border: 1px solid var(--ink); padding: 8px 12px; transition: background .2s ease, color .2s ease; }
+    .nav-actions a:hover { background: var(--ink); color: var(--bg); }
+    .nav-actions a.cart { background: var(--acid); }
+    .nav-actions a.cart:hover { background: var(--ink); color: var(--acid); }
+    @media (max-width: 900px) { .nav-links { display: none; } }
+
+    /* Hero — index card */
+    .hero {
+      border-bottom: 1px solid var(--ink);
+      padding: 32px 0 40px;
+    }
+    .hero-meta {
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      padding-bottom: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--line-2);
+    }
+    .hero-meta .item { display: flex; gap: 6px; }
+    .hero-meta .k { color: var(--ink-3); }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px;
+    }
+    @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+    .hero-title {
+      font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      font-size: clamp(56px, 11vw, 168px); line-height: 0.86; letter-spacing: -0.055em;
+      margin: 0; color: var(--ink);
+    }
+    .hero-title .acid {
+      background: var(--acid); padding: 0 0.08em; display: inline-block;
+      transform: skew(-4deg) rotate(-0.4deg);
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+    .hero-deck {
+      font-family: "Inter Tight", sans-serif; font-size: 17px; line-height: 1.45;
+      color: var(--ink-2); max-width: 44ch; margin: 28px 0 0;
+    }
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+      margin-top: 28px; border-top: 1px solid var(--ink);
+    }
+    .hero-stats .s {
+      padding: 14px 0; border-right: 1px solid var(--ink); padding-right: 16px;
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+    }
+    .hero-stats .s:last-child { border-right: 0; }
+    .hero-stats .v { font-family: "Space Grotesk", sans-serif; font-size: 28px; font-weight: 600; letter-spacing: -0.03em; display: block; margin-bottom: 4px; color: var(--ink); }
+    .hero-stats .k { color: var(--ink-3); }
+    .hero-photo {
+      position: relative;
+      border: 1px solid var(--ink); aspect-ratio: 4/5; overflow: hidden;
+      background: var(--paper);
+    }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-photo .corner {
+      position: absolute; top: 12px; left: 12px;
+      font-family: "JetBrains Mono", monospace; font-size: 10px;
+      background: var(--ink); color: var(--bg); padding: 4px 8px;
+    }
+    .hero-photo .corner-r {
+      position: absolute; top: 12px; right: 12px;
+      font-family: "JetBrains Mono", monospace; font-size: 10px;
+      background: var(--acid); color: var(--ink); padding: 4px 8px;
+    }
+    .hero-photo .caption {
+      position: absolute; left: 12px; right: 12px; bottom: 12px;
+      font-family: "JetBrains Mono", monospace; font-size: 10px; color: #fff;
+      background: rgba(10,10,10,0.7); padding: 6px 10px; line-height: 1.4;
+    }
+
+    /* Section header */
+    .section { padding: 64px 0; border-bottom: 1px solid var(--ink); }
+    .section-head {
+      display: flex; justify-content: space-between; align-items: end; gap: 24px;
+      margin-bottom: 32px; padding-bottom: 12px; border-bottom: 1px solid var(--ink);
+      flex-wrap: wrap;
+    }
+    .section-head h2 {
+      font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      font-size: clamp(32px, 5.5vw, 80px); line-height: 0.92; letter-spacing: -0.045em;
+      margin: 0; color: var(--ink);
+    }
+    .section-head h2 .acid { background: var(--acid); padding: 0 0.06em; }
+    .section-head .tag {
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      color: var(--ink-2);
+    }
+    .section-head .tag .v { color: var(--ink); }
+
+    /* PILLARS — three modules */
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--ink); }
+    @media (max-width: 900px) { .pillars { grid-template-columns: 1fr; } }
+    .pillar {
+      position: relative;
+      border-right: 1px solid var(--ink);
+      background: var(--paper);
+      display: flex; flex-direction: column;
+      transition: background .25s ease;
+    }
+    .pillar:last-child { border-right: 0; }
+    @media (max-width: 900px) { .pillar { border-right: 0; border-bottom: 1px solid var(--ink); } .pillar:last-child { border-bottom: 0; } }
+    .pillar:hover { background: var(--acid); }
+    .pillar-head {
+      padding: 16px; display: flex; justify-content: space-between; align-items: center;
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .pillar-head .ref { color: var(--ink-2); }
+    .pillar-head .arrow { font-family: "Space Grotesk", sans-serif; font-size: 18px; font-weight: 500; }
+    .pillar:hover .pillar-head .arrow { transform: translateX(6px); transition: transform .25s ease; }
+    .pillar-img {
+      aspect-ratio: 4/3; overflow: hidden; border-bottom: 1px solid var(--ink); position: relative;
+    }
+    .pillar-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.15) contrast(1.05); transition: filter .3s ease, transform .8s ease; }
+    .pillar:hover .pillar-img img { filter: grayscale(0) contrast(1); transform: scale(1.04); }
+    .pillar-body {
+      padding: 20px 16px 24px;
+    }
+    .pillar-title {
+      font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      font-size: clamp(28px, 3vw, 42px); line-height: 0.95; letter-spacing: -0.04em;
+      margin: 0 0 12px;
+    }
+    .pillar-desc { font-size: 13px; color: var(--ink-2); margin: 0; max-width: 36ch; }
+    .pillar-foot {
+      padding: 14px 16px; border-top: 1px solid var(--ink);
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      display: flex; justify-content: space-between;
+    }
+
+    /* ARCHIVE — long index list */
+    .archive {
+      border: 1px solid var(--ink); background: var(--paper);
+    }
+    .archive-row {
+      display: grid; grid-template-columns: 80px 80px 1.4fr 1fr 1fr 100px 80px;
+      gap: 16px; align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line-2);
+      font-family: "JetBrains Mono", monospace; font-size: 12px;
+      transition: background .15s ease;
+    }
+    .archive-row:last-child { border-bottom: 0; }
+    .archive-row.h {
+      background: var(--ink); color: var(--bg); border-bottom: 1px solid var(--ink);
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .archive-row.h .col { color: var(--ink-3); }
+    .archive-row:not(.h):hover { background: var(--acid-2); cursor: pointer; }
+    .archive-thumb { width: 60px; height: 60px; object-fit: cover; border: 1px solid var(--ink); background: var(--bg); }
+    .archive-name {
+      font-family: "Space Grotesk", sans-serif; font-weight: 600;
+      font-size: 18px; letter-spacing: -0.03em; color: var(--ink);
+    }
+    .archive-brand { color: var(--ink-2); }
+    .archive-cat { color: var(--ink-2); }
+    .archive-price { font-weight: 600; color: var(--ink); text-align: right; }
+    .archive-price .old { color: var(--ink-3); text-decoration: line-through; margin-right: 8px; font-size: 10px; font-weight: 400; }
+    .archive-stock { display: inline-flex; align-items: center; gap: 6px; }
+    .archive-stock .dot { width: 6px; height: 6px; border-radius: 999px; background: #1FB04C; }
+    .archive-stock .dot.low { background: var(--red); }
+    .archive-cta {
+      background: var(--ink); color: var(--bg); padding: 6px 10px;
+      font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.06em; text-align: center;
+      transition: background .2s ease, color .2s ease;
+    }
+    .archive-row:not(.h):hover .archive-cta { background: var(--acid); color: var(--ink); }
+    @media (max-width: 900px) {
+      .archive-row { grid-template-columns: 50px 1fr 80px; gap: 12px; }
+      .archive-row .archive-brand, .archive-row .archive-cat, .archive-row .archive-stock, .archive-row .archive-cta { display: none; }
+      .archive-row.h { display: none; }
+    }
+
+    /* DOSSIER — editorial spread, brutalist */
+    .dossier { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--ink); background: var(--paper); }
+    @media (max-width: 900px) { .dossier { grid-template-columns: 1fr; } }
+    .dossier-img { border-right: 1px solid var(--ink); overflow: hidden; aspect-ratio: 4/5; position: relative; }
+    .dossier-img img { width: 100%; height: 100%; object-fit: cover; }
+    .dossier-img .tag {
+      position: absolute; top: 14px; left: 14px;
+      background: var(--ink); color: var(--bg); padding: 6px 10px;
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+    }
+    .dossier-img .tag.acid { background: var(--acid); color: var(--ink); top: auto; bottom: 14px; left: auto; right: 14px; }
+    @media (max-width: 900px) { .dossier-img { border-right: 0; border-bottom: 1px solid var(--ink); } }
+    .dossier-body { padding: 32px; }
+    .dossier-eyebrow {
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      color: var(--ink-2); padding-bottom: 12px; border-bottom: 1px solid var(--line-2);
+      margin-bottom: 20px; display: flex; gap: 16px;
+    }
+    .dossier-eyebrow .acid-tag { background: var(--acid); padding: 0 6px; color: var(--ink); }
+    .dossier h2 {
+      font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      font-size: clamp(40px, 5vw, 72px); line-height: 0.9; letter-spacing: -0.045em;
+      margin: 0 0 24px;
+    }
+    .dossier h2 .underline { border-bottom: 4px solid var(--acid); padding-bottom: 2px; }
+    .dossier p { font-size: 15px; line-height: 1.55; color: var(--ink); margin: 0 0 14px; max-width: 52ch; }
+    .dossier-spec {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 0;
+      margin-top: 28px; border-top: 1px solid var(--ink); border-left: 1px solid var(--ink);
+    }
+    .dossier-spec .row {
+      padding: 12px 16px; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      display: flex; justify-content: space-between; gap: 12px;
+    }
+    .dossier-spec .row .k { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.04em; }
+    .dossier-spec .row .v { color: var(--ink); font-weight: 500; }
+
+    /* MANIFESTO — black slab */
+    .manifesto {
+      background: var(--ink); color: var(--bg);
+      padding: 100px 0; border-bottom: 1px solid var(--ink);
+      position: relative;
+    }
+    .manifesto::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: repeating-linear-gradient(90deg, var(--acid) 0 20px, var(--ink) 20px 24px);
+    }
+    .manifesto-head {
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      color: var(--acid); padding-bottom: 16px; border-bottom: 1px solid rgba(244,242,236,0.2);
+      margin-bottom: 32px;
+    }
+    .manifesto-text {
+      font-family: "Space Grotesk", sans-serif; font-weight: 600;
+      font-size: clamp(28px, 4vw, 56px); line-height: 1; letter-spacing: -0.04em;
+      margin: 0; max-width: 22ch;
+    }
+    .manifesto-text .acid { background: var(--acid); color: var(--ink); padding: 0 0.06em; }
+    .manifesto-sig { margin-top: 40px; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink-3); }
+
+    /* HOUSES — grid of brand cells */
+    .houses-grid {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 0;
+      border: 1px solid var(--ink); background: var(--paper);
+    }
+    @media (max-width: 720px) { .houses-grid { grid-template-columns: repeat(2, 1fr); } }
+    .house {
+      padding: 28px 16px; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+      transition: background .2s ease;
+    }
+    .house:hover { background: var(--acid); }
+    .house:nth-child(6n) { border-right: 0; }
+    .house:nth-last-child(-n+6) { border-bottom: 0; }
+    @media (max-width: 720px) {
+      .house:nth-child(6n) { border-right: 1px solid var(--ink); }
+      .house:nth-child(2n) { border-right: 0; }
+      .house:nth-last-child(-n+6) { border-bottom: 1px solid var(--ink); }
+      .house:nth-last-child(-n+2) { border-bottom: 0; }
+    }
+    .house .ref { font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--ink-3); }
+    .house .nm {
+      font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      font-size: 20px; letter-spacing: -0.03em; margin: 6px 0 4px;
+    }
+    .house .yr { font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--ink-2); }
+
+    /* BOUTIQUES */
+    .boutiques { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--ink); }
+    @media (max-width: 900px) { .boutiques { grid-template-columns: 1fr; } }
+    .boutiques-img { border-right: 1px solid var(--ink); aspect-ratio: 5/4; overflow: hidden; }
+    .boutiques-img img { width: 100%; height: 100%; object-fit: cover; }
+    @media (max-width: 900px) { .boutiques-img { border-right: 0; border-bottom: 1px solid var(--ink); } }
+    .boutiques-body { padding: 32px; background: var(--paper); }
+    .boutiques-body h2 {
+      font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      font-size: clamp(36px, 4.6vw, 64px); line-height: 0.92; letter-spacing: -0.04em;
+      margin: 0 0 28px;
+    }
+    .b-list { border-top: 1px solid var(--ink); }
+    .b-item {
+      padding: 18px 0; border-bottom: 1px solid var(--line-2);
+      display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center;
+      transition: padding .25s ease, background .2s ease;
+    }
+    .b-item:hover { background: var(--acid); padding-left: 12px; padding-right: 12px; }
+    .b-item .nm { font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.03em; }
+    .b-item .ad { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink-2); }
+    .b-item .tel { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink); font-weight: 500; }
+
+    /* NEWSLETTER — terminal style */
+    .news {
+      background: var(--ink); color: var(--bg); padding: 80px 0;
+      border-bottom: 1px solid var(--ink);
+    }
+    .news-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    @media (max-width: 900px) { .news-grid { grid-template-columns: 1fr; gap: 32px; } }
+    .news .eye { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--acid); }
+    .news h3 {
+      font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      font-size: clamp(28px, 4vw, 56px); line-height: 0.95; letter-spacing: -0.04em;
+      margin: 16px 0 16px;
+    }
+    .news h3 .acid { background: var(--acid); color: var(--ink); padding: 0 0.06em; }
+    .news p { color: var(--ink-3); margin: 0; max-width: 38ch; }
+    .news-form {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .news-form label { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink-3); }
+    .news-form .input-row {
+      display: flex; gap: 8px; align-items: stretch;
+    }
+    .news-form input {
+      flex: 1; background: transparent; border: 1px solid var(--ink-3); padding: 14px 16px;
+      font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--bg);
+      outline: none;
+      transition: border-color .2s ease;
+    }
+    .news-form input:focus { border-color: var(--acid); }
+    .news-form input::placeholder { color: var(--ink-3); }
+    .news-form button {
+      background: var(--acid); color: var(--ink); padding: 14px 22px;
+      font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      transition: background .2s ease, color .2s ease;
+    }
+    .news-form button:hover { background: var(--bg); }
+    .news-meta { font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--ink-3); }
+
+    /* FOOTER — terminal */
+    .footer {
+      background: var(--bg);
+      padding: 56px 0 24px;
+    }
+    .footer-top {
+      font-family: "Space Grotesk", sans-serif; font-weight: 700;
+      font-size: clamp(60px, 18vw, 280px); line-height: 0.86; letter-spacing: -0.06em;
+      margin: 0 0 32px;
+      color: var(--ink);
+    }
+    .footer-top .acid { background: var(--acid); padding: 0 0.04em; box-shadow: 6px 6px 0 var(--ink); }
+    .footer-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 32px;
+      border-top: 1px solid var(--ink); padding-top: 32px;
+    }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer h4 {
+      font-family: "JetBrains Mono", monospace; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--ink-3); margin: 0 0 16px;
+    }
+    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+    .footer li a { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink); transition: background .15s ease; padding: 2px 0; }
+    .footer li a:hover { background: var(--acid); }
+    .footer-bottom {
+      margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--ink);
+      display: flex; justify-content: space-between; gap: 16px;
+      font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--ink-2);
+    }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-1 { transition-delay: .06s; }
+    .reveal-2 { transition-delay: .12s; }
+    .reveal-3 { transition-delay: .18s; }
+
+    /* Switcher */
+    .switcher {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: var(--bg);
+      padding: 6px; border: 1px solid var(--ink); border-radius: 0; z-index: 100;
+      display: flex; align-items: center; gap: 4px;
+      box-shadow: 4px 4px 0 var(--acid);
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+    }
+    .switcher .label { padding: 0 10px; opacity: 0.6; letter-spacing: 0.06em; text-transform: uppercase; }
+    .switcher a {
+      padding: 6px 10px;
+      transition: background .15s ease, color .15s ease;
+    }
+    .switcher a:hover { background: rgba(244,242,236,0.1); }
+    .switcher .on { background: var(--acid); color: var(--ink); }
+  </style>
+</head>
+<body>
+
+  <!-- System bar -->
+  <div class="sysbar">
+    <div class="wrap row">
+      <div class="left">
+        <span><span class="dot"></span>NOBLE / SYSTEM ONLINE</span>
+        <span>REF.0001 / SS-MMXXVI</span>
+        <span class="ts" id="ts">— : — : —</span>
+      </div>
+      <div class="right">
+        <span>RU · KZ · EN</span>
+        <span>KZT / Алматы</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span>WEDGWOOD · BUTTERFLY BALL · IN STOCK · 186 000 ₸</span>
+      <span>BOHEMIA · ALBATROSS SET · 4 LEFT · 74 500 ₸</span>
+      <span>RIEDEL · VINUM XL · NEW DROP · 92 400 ₸</span>
+      <span>VILLEROY &amp; BOCH · MANOIR · BACK IN · 138 000 ₸</span>
+      <span>CHRISTOFLE · MOOD · PRE-ORDER · 412 000 ₸</span>
+      <span>LALIQUE · BACCHANTES · LIMITED · 1 240 000 ₸</span>
+      <span>WEDGWOOD · BUTTERFLY BALL · IN STOCK · 186 000 ₸</span>
+      <span>BOHEMIA · ALBATROSS SET · 4 LEFT · 74 500 ₸</span>
+      <span>RIEDEL · VINUM XL · NEW DROP · 92 400 ₸</span>
+      <span>VILLEROY &amp; BOCH · MANOIR · BACK IN · 138 000 ₸</span>
+      <span>CHRISTOFLE · MOOD · PRE-ORDER · 412 000 ₸</span>
+      <span>LALIQUE · BACCHANTES · LIMITED · 1 240 000 ₸</span>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="wrap nav-row">
+      <a href="#" class="nav-logo">NOBLE<span class="ref">INDEX/0001</span></a>
+      <div class="nav-links">
+        <a href="#" class="on">INDEX</a>
+        <a href="#">SERVICES</a>
+        <a href="#">GLASS</a>
+        <a href="#">CRYSTAL</a>
+        <a href="#">GIFTS</a>
+        <a href="#">HOUSES</a>
+      </div>
+      <div class="nav-actions">
+        <a href="#">[ SEARCH ]</a>
+        <a href="#" class="cart">[ BAG · 02 ]</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-meta">
+        <div class="item"><span class="k">REF:</span><span>NB-0001-SS26</span></div>
+        <div class="item"><span class="k">SEASON:</span><span>SS / MMXXVI</span></div>
+        <div class="item"><span class="k">LOC:</span><span>43.220031°N · 76.934863°E</span></div>
+        <div class="item"><span class="k">TS:</span><span>2026/05/11 — 11:42 ALA</span></div>
+        <div class="item"><span class="k">UPDATED:</span><span>34 SKU</span></div>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <h1 class="hero-title">СТОЛ<br/>КАК<br/><span class="acid">СИСТЕМА</span></h1>
+          <p class="hero-deck">Каталог сервизов, бокалов и хрусталя из 34 домов. Без скидочных плашек и поэтических метафор — только инвентарь, цена и наличие.</p>
+          <div class="hero-stats">
+            <div class="s"><span class="v">34</span><span class="k">// домов</span></div>
+            <div class="s"><span class="v">412</span><span class="k">// SKU в наличии</span></div>
+            <div class="s"><span class="v">03</span><span class="k">// бутиков · РК</span></div>
+          </div>
+        </div>
+        <div class="hero-photo">
+          <span class="corner">NB-0001</span>
+          <span class="corner-r">IN STOCK</span>
+          <img src="assets/main.jpeg" alt="Noble cover" />
+          <div class="caption">WEDGWOOD · BUTTERFLY BALL · BONE CHINA · ENGLAND · 2023</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PILLARS -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">КАТЕГОРИИ // <span class="acid">03</span></h2>
+        <div class="tag reveal reveal-1">SECTION <span class="v">01/06</span></div>
+      </div>
+      <div class="pillars">
+        <a href="#" class="pillar reveal">
+          <div class="pillar-head">
+            <span class="ref">// 01 — TABLEWARE</span>
+            <span class="arrow">→</span>
+          </div>
+          <div class="pillar-img"><img src="assets/serviz2.jpeg" alt="Tableware" /></div>
+          <div class="pillar-body">
+            <h3 class="pillar-title">СЕРВИЗЫ</h3>
+            <p class="pillar-desc">Костяной фарфор, faïence, гранитная глазурь. Парадные и повседневные комплекты.</p>
+          </div>
+          <div class="pillar-foot"><span>142 SKU</span><span>от 38 400 ₸</span></div>
+        </a>
+        <a href="#" class="pillar reveal reveal-1">
+          <div class="pillar-head">
+            <span class="ref">// 02 — GLASSWARE</span>
+            <span class="arrow">→</span>
+          </div>
+          <div class="pillar-img"><img src="assets/bokaly.jpeg" alt="Glassware" /></div>
+          <div class="pillar-body">
+            <h3 class="pillar-title">БОКАЛЫ</h3>
+            <p class="pillar-desc">Riedel, Zalto, Bohemia. Бордо, бургундия, шампань, виски и крепкие.</p>
+          </div>
+          <div class="pillar-foot"><span>198 SKU</span><span>от 8 200 ₸</span></div>
+        </a>
+        <a href="#" class="pillar reveal reveal-2">
+          <div class="pillar-head">
+            <span class="ref">// 03 — CRYSTAL</span>
+            <span class="arrow">→</span>
+          </div>
+          <div class="pillar-img"><img src="assets/hrustal.jpeg" alt="Crystal" /></div>
+          <div class="pillar-body">
+            <h3 class="pillar-title">ХРУСТАЛЬ</h3>
+            <p class="pillar-desc">Чешский, французский, российский. Графины, вазы, конфетницы, ёлочные шары.</p>
+          </div>
+          <div class="pillar-foot"><span>72 SKU</span><span>от 24 000 ₸</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHIVE — index list -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">АРХИВ // <span class="acid">КУРАТОР</span></h2>
+        <div class="tag reveal reveal-1">SECTION <span class="v">02/06</span> · CURATED BY A.YE.</div>
+      </div>
+      <div class="archive reveal">
+        <div class="archive-row h">
+          <span class="col">REF</span>
+          <span class="col">PHOTO</span>
+          <span class="col">ITEM</span>
+          <span class="col">HOUSE / SERIES</span>
+          <span class="col">CATEGORY</span>
+          <span class="col">PRICE</span>
+          <span class="col">CART</span>
+        </div>
+        <a href="#" class="archive-row">
+          <span>0042</span>
+          <img class="archive-thumb" src="assets/butterfly_ball.png" alt="Butterfly Ball" />
+          <span class="archive-name">Butterfly Ball</span>
+          <span class="archive-brand">Wedgwood / Wonderlust</span>
+          <span class="archive-cat">Bone china · 5pc set</span>
+          <span class="archive-price">186 000 ₸</span>
+          <span class="archive-cta">+ CART</span>
+        </a>
+        <a href="#" class="archive-row">
+          <span>0084</span>
+          <img class="archive-thumb" src="assets/citrus.jpeg" alt="Citrus Bloom" />
+          <span class="archive-name">Citrus Bloom</span>
+          <span class="archive-brand">Wedgwood / Wonderlust</span>
+          <span class="archive-cat">Bone china · 6pc</span>
+          <span class="archive-price"><span class="old">112 000</span>92 000 ₸</span>
+          <span class="archive-cta">+ CART</span>
+        </a>
+        <a href="#" class="archive-row">
+          <span>0117</span>
+          <img class="archive-thumb" src="assets/serviz3.jpeg" alt="Albatross" />
+          <span class="archive-name">Albatross Set</span>
+          <span class="archive-brand">Bohemia / Heritage</span>
+          <span class="archive-cat">Lead crystal · 6pc</span>
+          <span class="archive-price">74 500 ₸</span>
+          <span class="archive-cta">+ CART</span>
+        </a>
+        <a href="#" class="archive-row">
+          <span>0203</span>
+          <img class="archive-thumb" src="assets/serviz4.jpeg" alt="Meringa Pearl" />
+          <span class="archive-name">Pearl Edition</span>
+          <span class="archive-brand">Meringa / Atelier</span>
+          <span class="archive-cat">Porcelain · 4pc</span>
+          <span class="archive-price">58 200 ₸</span>
+          <span class="archive-cta">+ CART</span>
+        </a>
+        <a href="#" class="archive-row">
+          <span>0331</span>
+          <img class="archive-thumb" src="assets/albatross.jpeg" alt="Vinum XL" />
+          <span class="archive-name">Vinum XL</span>
+          <span class="archive-brand">Riedel / Vinum</span>
+          <span class="archive-cat">Crystal · 2pc</span>
+          <span class="archive-price">92 400 ₸</span>
+          <span class="archive-cta">+ CART</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOSSIER -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">ДОСЬЕ // <span class="acid">WEDGWOOD</span></h2>
+        <div class="tag reveal reveal-1">SECTION <span class="v">03/06</span> · HOUSE FILE</div>
+      </div>
+      <div class="dossier reveal">
+        <div class="dossier-img">
+          <span class="tag">REF / WW-1759</span>
+          <span class="tag acid">FOUNDED 1759</span>
+          <img src="assets/serviz1.jpeg" alt="Wedgwood" />
+        </div>
+        <div class="dossier-body">
+          <div class="dossier-eyebrow">
+            <span>FILE 01 / 34</span>
+            <span class="acid-tag">PRIORITY</span>
+            <span>STAFFORDSHIRE / UK</span>
+          </div>
+          <h2>WEDGWOOD<br/>&amp; ARS <span class="underline">CERAMICA</span></h2>
+          <p>Дом Wedgwood основан в 1759 году в Стаффордшире. Джозайя Веджвуд открыл способ обжига костяного фарфора с просвечивающей структурой — технология, которая в неизменном виде используется до сегодня.</p>
+          <p>Коллекция Butterfly Ball расписана вручную: каждая чашка проходит через 32 пары рук, прежде чем оказаться в каталоге Noble.</p>
+          <div class="dossier-spec">
+            <div class="row"><span class="k">FOUNDED</span><span class="v">1759</span></div>
+            <div class="row"><span class="k">HQ</span><span class="v">UK / STAFFS</span></div>
+            <div class="row"><span class="k">CRAFTSMEN</span><span class="v">32 pairs</span></div>
+            <div class="row"><span class="k">FIRING</span><span class="v">1245°C</span></div>
+            <div class="row"><span class="k">IN NOBLE SINCE</span><span class="v">2014</span></div>
+            <div class="row"><span class="k">SKU IN STOCK</span><span class="v">42</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <div class="wrap">
+      <div class="manifesto-head">// MANIFESTO_01.TXT &nbsp;&nbsp;LAST WRITE 2026.05.11</div>
+      <p class="manifesto-text">МЫ НЕ ПРОДАЁМ ПОСУДУ. <span class="acid">МЫ КАТАЛОГИЗИРУЕМ СТОЛЫ.</span></p>
+      <div class="manifesto-sig">— SAYA KENJAEVA / FOUNDER · 1998</div>
+    </div>
+  </section>
+
+  <!-- HOUSES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">ДОМА // <span class="acid">34</span></h2>
+        <div class="tag reveal reveal-1">SECTION <span class="v">04/06</span></div>
+      </div>
+      <div class="houses-grid">
+        <a href="#" class="house"><div class="ref">// 01</div><div class="nm">WEDGWOOD</div><div class="yr">EST. 1759 · UK</div></a>
+        <a href="#" class="house"><div class="ref">// 02</div><div class="nm">BOHEMIA</div><div class="yr">EST. 1620 · CZ</div></a>
+        <a href="#" class="house"><div class="ref">// 03</div><div class="nm">V &amp; BOCH</div><div class="yr">EST. 1748 · DE</div></a>
+        <a href="#" class="house"><div class="ref">// 04</div><div class="nm">CHRISTOFLE</div><div class="yr">EST. 1830 · FR</div></a>
+        <a href="#" class="house"><div class="ref">// 05</div><div class="nm">RIEDEL</div><div class="yr">EST. 1756 · AT</div></a>
+        <a href="#" class="house"><div class="ref">// 06</div><div class="nm">LALIQUE</div><div class="yr">EST. 1888 · FR</div></a>
+        <a href="#" class="house"><div class="ref">// 07</div><div class="nm">MERINGA</div><div class="yr">EST. 2007 · IT</div></a>
+        <a href="#" class="house"><div class="ref">// 08</div><div class="nm">ROYAL DOULTON</div><div class="yr">EST. 1815 · UK</div></a>
+        <a href="#" class="house"><div class="ref">// 09</div><div class="nm">SPODE</div><div class="yr">EST. 1770 · UK</div></a>
+        <a href="#" class="house"><div class="ref">// 10</div><div class="nm">ZALTO</div><div class="yr">EST. 2006 · AT</div></a>
+        <a href="#" class="house"><div class="ref">// 11</div><div class="nm">DAUM</div><div class="yr">EST. 1878 · FR</div></a>
+        <a href="#" class="house"><div class="ref">// 12</div><div class="nm">+ 22 MORE</div><div class="yr">SEE ALL HOUSES →</div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOUTIQUES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="reveal">БУТИКИ // <span class="acid">03</span></h2>
+        <div class="tag reveal reveal-1">SECTION <span class="v">05/06</span></div>
+      </div>
+      <div class="boutiques reveal">
+        <div class="boutiques-img"><img src="assets/mat_banner.jpeg" alt="Noble showroom" /></div>
+        <div class="boutiques-body">
+          <h2>ALA / AST<br/>// 03 LOCATIONS</h2>
+          <div class="b-list">
+            <a href="#" class="b-item">
+              <span class="nm">SAMAL</span>
+              <span class="ad">SAMAL-2, 77 · ALMATY · 050000</span>
+              <span class="tel">+7 707 171 03 00</span>
+            </a>
+            <a href="#" class="b-item">
+              <span class="nm">MIRAS</span>
+              <span class="ad">MIRAS, 157 · ALMATY · 050000</span>
+              <span class="tel">+7 708 190 37 17</span>
+            </a>
+            <a href="#" class="b-item">
+              <span class="nm">ASTANA</span>
+              <span class="ad">MANGILIK EL, 55 · ASTANA</span>
+              <span class="tel">+7 700 393 33 27</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="news">
+    <div class="wrap">
+      <div class="news-grid">
+        <div>
+          <div class="eye reveal">// NEWSLETTER_FEED &nbsp;&nbsp;BIWEEKLY</div>
+          <h3 class="reveal reveal-1">НОВЫЕ ПОЗИЦИИ<br/>В <span class="acid">ИНДЕКСЕ</span>.</h3>
+          <p class="reveal reveal-2">Раз в две недели — список новых SKU, поступлений, тихих распродаж. Без эмодзи и капслока. Только данные.</p>
+        </div>
+        <form class="news-form reveal reveal-1" onsubmit="event.preventDefault(); this.querySelector('button').textContent='SUBSCRIBED ✓';">
+          <label>&gt; EMAIL_ADDRESS:</label>
+          <div class="input-row">
+            <input type="email" placeholder="you@domain.com" required />
+            <button type="submit">SUBSCRIBE →</button>
+          </div>
+          <div class="news-meta">// Отписаться можно в любом письме · GDPR compliant</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-top">N<span class="acid">O</span>BLE</div>
+      <div class="footer-grid">
+        <div>
+          <h4>// IDENTIFICATION</h4>
+          <ul>
+            <li><a>NOBLE.KZ / SINCE 1998</a></li>
+            <li><a>ALMATY / ASTANA</a></li>
+            <li><a>REF.0001 / SS-26</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>// CATALOG</h4>
+          <ul>
+            <li><a href="#">→ TABLEWARE</a></li>
+            <li><a href="#">→ GLASSWARE</a></li>
+            <li><a href="#">→ CRYSTAL</a></li>
+            <li><a href="#">→ GIFTS</a></li>
+            <li><a href="#">→ HOUSES</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>// SUPPORT</h4>
+          <ul>
+            <li><a href="#">→ SHIPPING</a></li>
+            <li><a href="#">→ RETURN</a></li>
+            <li><a href="#">→ OFFER</a></li>
+            <li><a href="#">→ PRIVACY</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>// COMMS</h4>
+          <ul>
+            <li><a href="tel:+77071710300">→ +7 707 171 03 00</a></li>
+            <li><a href="mailto:noblealmaty@gmail.com">→ noblealmaty@gmail.com</a></li>
+            <li><a href="https://www.instagram.com/noble_almaty/">→ @noble_almaty</a></li>
+            <li><a href="#">→ WHATSAPP</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© MMXXVI / NOBLE / ALL RIGHTS RESERVED</span>
+        <span>BUILD 0001.A · SPACE GROTESK · INTER TIGHT · JETBRAINS MONO</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Switcher -->
+  <div class="switcher">
+    <span class="label">VER</span>
+    <a href="index.html">A</a>
+    <a href="variant-b.html">B</a>
+    <a href="variant-c.html">C</a>
+    <a href="variant-d.html" class="on">D · GROTESK</a>
+    <a href="variant-e.html">E</a>
+    <a href="variant-f.html">F</a>
+    <a href="variant-g.html">G</a>
+    <a href="variant-h.html">H</a>
+    <a href="variant-i.html">I</a>
+  </div>
+
+  <script>
+    // Reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Live clock for sysbar (Almaty / GMT+5)
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function tick() {
+      const now = new Date();
+      const ala = new Date(now.getTime() + (now.getTimezoneOffset() + 300) * 60000);
+      const el = document.getElementById('ts');
+      if (el) el.textContent = `${pad(ala.getHours())}:${pad(ala.getMinutes())}:${pad(ala.getSeconds())} ALA`;
+    }
+    tick(); setInterval(tick, 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noble — Matcha Pop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #F5F1E6;
+      --paper:   #FBF8EF;
+      --matcha:  #B6CDA1;
+      --matcha-2:#9DBF7E;
+      --matcha-d:#3F5A2E;
+      --ink:     #1F2421;
+      --ink-2:   #5C625B;
+      --ink-3:   #969B92;
+      --line:    #D8D3C0;
+      --coral:   #E8714D;
+      --coral-2: #FF8866;
+      --yellow:  #F2D14A;
+      --r:       22px;
+      --r-s:     14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: "Inter", system-ui, sans-serif;
+      font-weight: 400; font-size: 16px; line-height: 1.55;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+    .bricolage { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; letter-spacing: -0.04em; font-variation-settings: "opsz" 96; }
+    .serif { font-family: "Instrument Serif", "Times New Roman", serif; font-weight: 400; font-style: italic; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+    .container { max-width: 1340px; margin: 0 auto; padding: 0 28px; }
+    @media (max-width: 720px) { .container { padding: 0 18px; } }
+
+    /* Anno */
+    .anno { background: var(--matcha-d); color: var(--matcha); padding: 12px 0; text-align: center; font-size: 13px; }
+    .anno em { font-family: "Instrument Serif", serif; font-style: italic; color: var(--matcha-2); }
+
+    /* Nav */
+    .nav { position: sticky; top: 0; z-index: 60; background: rgba(245,241,230,0.92); backdrop-filter: blur(14px); padding: 16px 0; border-bottom: 1px solid var(--line); }
+    .nav-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 20px; }
+    .brand { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.05em; line-height: 1; }
+    .brand .acc { color: var(--matcha-d); }
+    .brand .dot { display: inline-block; width: 10px; height: 10px; border-radius: 999px; background: var(--coral); margin-left: 2px; transform: translateY(-12px); }
+    .nav-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 5px; }
+    .nav-pill a { padding: 9px 16px; border-radius: 999px; font-size: 13px; font-weight: 500; transition: background .25s ease, color .25s ease; }
+    .nav-pill a:hover { background: var(--matcha); color: var(--matcha-d); }
+    .nav-pill a.on { background: var(--ink); color: var(--bg); }
+    .nav-actions { display: flex; gap: 8px; }
+    .pill { display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: 13px; font-weight: 500; transition: background .25s ease, color .25s ease, border-color .25s ease; }
+    .pill:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+    .pill.coral { background: var(--coral); color: #fff; border-color: var(--coral); }
+    .pill.coral:hover { background: var(--ink); border-color: var(--ink); }
+    .pill .count { background: var(--ink); color: var(--bg); font-size: 11px; padding: 1px 7px; border-radius: 999px; font-weight: 600; }
+    .pill.coral .count { background: #fff; color: var(--coral); }
+    @media (max-width: 900px) { .nav-pill { display: none; } }
+
+    /* HERO — color-blocked */
+    .hero { padding: 28px 0 32px; }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px;
+    }
+    @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+    .hero-main {
+      background: var(--matcha);
+      border-radius: var(--r);
+      padding: 48px 40px 40px;
+      position: relative; overflow: hidden;
+      min-height: 600px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .hero-main::before {
+      content: ""; position: absolute; right: -120px; top: -120px;
+      width: 320px; height: 320px; border-radius: 999px;
+      background: var(--matcha-2);
+      opacity: 0.7;
+    }
+    .hero-main::after {
+      content: ""; position: absolute; right: 40px; bottom: -60px;
+      width: 160px; height: 160px; border-radius: 999px;
+      background: var(--coral);
+      mix-blend-mode: multiply;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 14px; border-radius: 999px;
+      background: rgba(31,36,33,0.1); color: var(--matcha-d);
+      font-size: 12px; font-weight: 500; letter-spacing: 0.02em;
+      width: fit-content; z-index: 2; position: relative;
+    }
+    .hero-eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--coral); }
+    .hero-title {
+      font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+      font-variation-settings: "opsz" 96;
+      font-size: clamp(56px, 8.5vw, 124px); line-height: 0.92; letter-spacing: -0.05em;
+      margin: 28px 0 0; color: var(--matcha-d); position: relative; z-index: 2;
+    }
+    .hero-title .it { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; color: var(--coral); letter-spacing: -0.02em; }
+    .hero-title .blob { background: var(--yellow); padding: 0 0.08em; border-radius: 18px; display: inline-block; transform: rotate(-1.5deg); color: var(--ink); }
+    .hero-deck { max-width: 38ch; color: var(--matcha-d); font-size: 17px; line-height: 1.55; margin: 32px 0 0; z-index: 2; position: relative; }
+    .hero-foot { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; z-index: 2; position: relative; margin-top: 28px; }
+    .btn-dark { display: inline-flex; align-items: center; gap: 12px; padding: 16px 26px; border-radius: 999px; background: var(--ink); color: var(--bg); font-weight: 500; font-size: 14px; transition: background .25s ease; }
+    .btn-dark:hover { background: var(--coral); }
+    .btn-line-dark { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; border: 1px solid var(--matcha-d); color: var(--matcha-d); font-weight: 500; font-size: 14px; transition: background .25s ease, color .25s ease; }
+    .btn-line-dark:hover { background: var(--matcha-d); color: var(--matcha); }
+    .hero-side {
+      display: grid; grid-template-rows: 1fr auto; gap: 16px;
+    }
+    .hero-photo { border-radius: var(--r); overflow: hidden; min-height: 360px; position: relative; }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-photo .caption {
+      position: absolute; left: 16px; right: 16px; bottom: 16px;
+      background: var(--bg); padding: 14px 18px; border-radius: 12px;
+      font-family: "Instrument Serif", serif; font-style: italic; font-size: 17px; line-height: 1.3;
+    }
+    .hero-stat-card {
+      background: var(--coral); color: #fff; border-radius: var(--r);
+      padding: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .hero-stat-card .v { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 42px; line-height: 1; letter-spacing: -0.04em; margin-bottom: 4px; font-variation-settings: "opsz" 96; }
+    .hero-stat-card .k { font-size: 11px; opacity: 0.88; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* Sections */
+    .section { padding: 80px 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+    .section-head h2 {
+      font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+      font-variation-settings: "opsz" 96;
+      font-size: clamp(40px, 5.8vw, 96px); line-height: 0.95; letter-spacing: -0.05em;
+      margin: 12px 0 0; color: var(--ink);
+    }
+    .section-head h2 .it { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; color: var(--coral); letter-spacing: -0.01em; }
+    .chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: 12px; }
+    .chip::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--coral); }
+
+    /* Pillars — color blocks */
+    .pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 900px) { .pillars-grid { grid-template-columns: 1fr; } }
+    .pillar { position: relative; border-radius: var(--r); overflow: hidden; aspect-ratio: 4/5; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .35s ease; }
+    .pillar:hover { transform: translateY(-6px); }
+    .pillar.matcha { background: var(--matcha); color: var(--matcha-d); }
+    .pillar.coral { background: var(--coral); color: #fff; }
+    .pillar.yellow { background: var(--yellow); color: var(--ink); }
+    .pillar-img-mini { position: absolute; right: -40px; bottom: -40px; width: 70%; aspect-ratio: 1/1; border-radius: 999px; overflow: hidden; }
+    .pillar-img-mini img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
+    .pillar:hover .pillar-img-mini img { transform: scale(1.1); }
+    .pillar-num { font-family: "Instrument Serif", serif; font-style: italic; font-size: 16px; opacity: 0.7; }
+    .pillar h3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-variation-settings: "opsz" 96; font-size: clamp(32px, 3vw, 48px); line-height: 0.95; letter-spacing: -0.04em; margin: 0; z-index: 2; position: relative; }
+    .pillar h3 .it { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; letter-spacing: -0.01em; opacity: 0.75; }
+    .pillar .arrow { width: 48px; height: 48px; border-radius: 999px; background: rgba(255,255,255,0.95); color: var(--ink); display: inline-flex; align-items: center; justify-content: center; z-index: 2; align-self: flex-start; transition: transform .35s ease; }
+    .pillar:hover .arrow { transform: rotate(-45deg); }
+    .pillar.matcha .arrow { background: var(--matcha-d); color: var(--matcha); }
+    .pillar.yellow .arrow { background: var(--ink); color: var(--yellow); }
+
+    /* Story */
+    .story-card {
+      background: var(--paper); border-radius: var(--r); padding: 48px;
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center;
+      border: 1px solid var(--line);
+    }
+    @media (max-width: 900px) { .story-card { grid-template-columns: 1fr; padding: 28px; gap: 28px; } }
+    .story-img { border-radius: var(--r-s); overflow: hidden; aspect-ratio: 4/5; position: relative; }
+    .story-img img { width: 100%; height: 100%; object-fit: cover; }
+    .story-img .badge { position: absolute; top: 16px; left: 16px; background: var(--coral); color: #fff; padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .story h2 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-variation-settings: "opsz" 96; font-size: clamp(36px, 5vw, 64px); line-height: 0.95; letter-spacing: -0.04em; margin: 16px 0 22px; }
+    .story h2 .it { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; color: var(--coral); letter-spacing: -0.01em; }
+    .story p { font-size: 16px; line-height: 1.65; color: var(--ink-2); margin: 0 0 12px; max-width: 50ch; }
+    .spec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 28px; }
+    .spec .m { background: var(--matcha); padding: 16px; border-radius: 14px; }
+    .spec .m strong { display: block; font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 32px; line-height: 1; color: var(--matcha-d); margin-bottom: 4px; }
+    .spec .m span { font-size: 11px; color: var(--matcha-d); opacity: 0.8; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* Products */
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .products-grid { grid-template-columns: 1fr; } }
+    .product { background: var(--paper); border-radius: var(--r); padding: 14px; transition: transform .3s ease, box-shadow .3s ease; border: 1px solid var(--line); }
+    .product:hover { transform: translateY(-4px); box-shadow: 0 20px 36px -22px rgba(31,36,33,0.18); }
+    .product-img { position: relative; aspect-ratio: 1/1; border-radius: 14px; overflow: hidden; margin-bottom: 14px; background: var(--matcha); }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s ease; }
+    .product:hover .product-img img { transform: scale(1.04); }
+    .product-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 5px 10px; border-radius: 999px; background: var(--bg); color: var(--ink); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .product-tag.sale { background: var(--coral); color: #fff; }
+    .product-tag.hit { background: var(--yellow); color: var(--ink); }
+    .product-brand { font-size: 11px; color: var(--ink-2); margin: 0 0 4px; letter-spacing: 0.04em; }
+    .product-name { font-family: "Bricolage Grotesque", sans-serif; font-weight: 600; font-size: 19px; line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.03em; }
+    .product-name .it { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; letter-spacing: 0; }
+    .product-foot { display: flex; justify-content: space-between; align-items: center; }
+    .product-price { font-weight: 600; font-size: 15px; }
+    .product-price .old { color: var(--ink-3); text-decoration: line-through; font-size: 12px; margin-right: 6px; font-weight: 400; }
+    .product-add { width: 36px; height: 36px; border-radius: 999px; background: var(--ink); color: var(--bg); display: inline-flex; align-items: center; justify-content: center; transition: background .25s ease, transform .25s ease; }
+    .product-add:hover { background: var(--coral); transform: rotate(90deg); }
+
+    /* Houses — chips bar */
+    .houses-card { background: var(--ink); color: var(--bg); border-radius: var(--r); padding: 64px 48px; }
+    @media (max-width: 720px) { .houses-card { padding: 40px 24px; } }
+    .houses-top { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+    .houses-card h2 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-variation-settings: "opsz" 96; font-size: clamp(40px, 5.4vw, 80px); line-height: 0.95; letter-spacing: -0.05em; margin: 0; }
+    .houses-card h2 .it { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; color: var(--matcha); letter-spacing: -0.01em; }
+    .houses-card .chip { background: rgba(245,241,230,0.1); color: var(--bg); border-color: rgba(245,241,230,0.2); }
+    .houses-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .houses-row a { padding: 14px 22px; border-radius: 999px; border: 1px solid rgba(245,241,230,0.25); font-family: "Bricolage Grotesque", sans-serif; font-weight: 500; font-size: 18px; transition: background .3s ease, color .3s ease, border-color .3s ease; }
+    .houses-row a:hover { background: var(--matcha); color: var(--matcha-d); border-color: var(--matcha); }
+
+    /* Showroom */
+    .showroom-inner { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }
+    @media (max-width: 900px) { .showroom-inner { grid-template-columns: 1fr; gap: 32px; } }
+    .showroom-img { border-radius: var(--r); overflow: hidden; aspect-ratio: 5/4; }
+    .showroom-img img { width: 100%; height: 100%; object-fit: cover; }
+    .showroom h2 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-variation-settings: "opsz" 96; font-size: clamp(40px, 5.4vw, 80px); line-height: 0.95; letter-spacing: -0.05em; margin: 16px 0 24px; }
+    .showroom h2 .it { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; color: var(--coral); letter-spacing: -0.01em; }
+    .stores { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .store { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; transition: background .3s ease, border-color .3s ease; }
+    .store:hover { background: var(--matcha); border-color: var(--matcha-d); }
+    .store .nm { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.03em; }
+    .store .ad { font-size: 13px; color: var(--ink-2); }
+    .store:hover .ad { color: var(--matcha-d); }
+    .store .tel { font-weight: 600; font-size: 13px; color: var(--coral); }
+
+    /* Newsletter */
+    .news-card { background: var(--coral); color: #fff; border-radius: var(--r); padding: 72px 48px; text-align: center; position: relative; overflow: hidden; }
+    @media (max-width: 720px) { .news-card { padding: 48px 24px; } }
+    .news-card::before { content: ""; position: absolute; bottom: -100px; left: -100px; width: 280px; height: 280px; border-radius: 999px; background: var(--yellow); opacity: 0.85; }
+    .news-card::after { content: ""; position: absolute; top: -80px; right: -80px; width: 220px; height: 220px; border-radius: 999px; background: var(--matcha); }
+    .news-card .chip { background: rgba(255,255,255,0.18); color: #fff; border-color: rgba(255,255,255,0.3); position: relative; z-index: 2; }
+    .news-card .chip::before { background: #fff; }
+    .news-card h3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-variation-settings: "opsz" 96; font-size: clamp(34px, 4.8vw, 64px); line-height: 0.95; letter-spacing: -0.05em; margin: 20px 0 14px; position: relative; z-index: 2; }
+    .news-card h3 .it { font-family: "Instrument Serif", serif; font-weight: 400; font-style: italic; color: var(--yellow); letter-spacing: -0.01em; }
+    .news-card p { color: rgba(255,255,255,0.92); margin: 0 auto 30px; max-width: 36ch; position: relative; z-index: 2; }
+    .news-form { display: flex; gap: 8px; max-width: 480px; margin: 0 auto; background: rgba(255,255,255,0.18); padding: 6px; border-radius: 999px; position: relative; z-index: 2; }
+    .news-form input { flex: 1; background: transparent; border: 0; outline: none; padding: 0 18px; color: #fff; font: inherit; font-size: 14px; }
+    .news-form input::placeholder { color: rgba(255,255,255,0.7); }
+    .news-form button { padding: 12px 22px; background: var(--ink); color: var(--bg); border-radius: 999px; font-weight: 600; font-size: 13px; transition: background .25s ease; }
+    .news-form button:hover { background: #fff; color: var(--ink); }
+
+    /* Footer */
+    .footer { padding: 64px 0 28px; }
+    .footer-top {
+      font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-variation-settings: "opsz" 96;
+      font-size: clamp(72px, 18vw, 280px); line-height: 0.86; letter-spacing: -0.06em;
+      margin: 0 0 32px; color: var(--ink);
+    }
+    .footer-top .acc { color: var(--matcha-d); }
+    .footer-top .dot { display: inline-block; width: 0.16em; height: 0.16em; border-radius: 999px; background: var(--coral); margin-left: 0.04em; vertical-align: text-bottom; transform: translateY(-0.2em); }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 32px; border-top: 1px solid var(--line); padding-top: 32px; }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer h4 { font-size: 12px; font-weight: 600; margin: 0 0 16px; color: var(--coral); }
+    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+    .footer li a { font-size: 14px; color: var(--ink-2); transition: color .25s ease; }
+    .footer li a:hover { color: var(--ink); }
+    .footer-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; font-size: 12px; color: var(--ink-3); }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-1 { transition-delay: .08s; } .reveal-2 { transition-delay: .16s; } .reveal-3 { transition-delay: .24s; }
+
+    /* Switcher */
+    .switcher { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 6px; border-radius: 999px; z-index: 100; display: flex; align-items: center; gap: 2px; box-shadow: 0 12px 40px rgba(31,36,33,0.2); font-size: 11px; font-weight: 500; max-width: calc(100% - 24px); overflow-x: auto; }
+    .switcher::-webkit-scrollbar { display: none; }
+    .switcher .label { padding: 0 10px; opacity: 0.55; font-size: 10px; letter-spacing: 0.08em; flex-shrink: 0; }
+    .switcher a { padding: 7px 11px; border-radius: 999px; transition: background .2s ease, color .2s ease; flex-shrink: 0; white-space: nowrap; }
+    .switcher a:hover { background: rgba(245,241,230,0.1); }
+    .switcher .on { background: var(--coral); color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div class="anno">Доставка по Алматы от 50 000 ₸ · <em>и упаковка в подарок</em></div>
+
+  <nav class="nav">
+    <div class="container nav-row">
+      <a href="#" class="brand">Noble<span class="dot"></span></a>
+      <div class="nav-pill">
+        <a href="#" class="on">Главная</a>
+        <a href="#">Сервизы</a>
+        <a href="#">Бокалы</a>
+        <a href="#">Хрусталь</a>
+        <a href="#">Подарки</a>
+        <a href="#">Бутики</a>
+      </div>
+      <div class="nav-actions">
+        <a class="pill">Поиск</a>
+        <a class="pill coral">Корзина <span class="count">2</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-main">
+          <span class="hero-eyebrow">SS 2026 · Новая коллекция</span>
+          <div>
+            <h1 class="hero-title">Стол как<br/><span class="blob">сад.</span><br/>Сервиз как <span class="it">праздник.</span></h1>
+            <p class="hero-deck">Сервизы, бокалы и хрусталь от 34 домов с многовековой историей — собранные в Алматы с 1998 года.</p>
+          </div>
+          <div class="hero-foot">
+            <a class="btn-dark" href="#pillars">Открыть каталог
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn-line-dark" href="#">Бутики</a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="hero-photo">
+            <img src="assets/main.jpeg" alt="Noble" />
+            <div class="caption">«В каждой чашке — 32 пары рук».</div>
+          </div>
+          <div class="hero-stat-card">
+            <div><div class="v">28</div><div class="k">лет на рынке</div></div>
+            <div><div class="v">34</div><div class="k">домов</div></div>
+            <div><div class="v">412</div><div class="k">SKU</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pillars">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="chip reveal">Коллекции</span>
+          <h2 class="reveal reveal-1">Три истории, <span class="it">один стол</span>.</h2>
+        </div>
+      </div>
+      <div class="pillars-grid">
+        <a href="#" class="pillar matcha reveal">
+          <div>
+            <div class="pillar-num">01 · сервизы</div>
+            <h3>Костяной<br/>фарфор</h3>
+          </div>
+          <div class="pillar-img-mini"><img src="assets/serviz2.jpeg" alt="Сервизы" /></div>
+          <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a href="#" class="pillar coral reveal reveal-1">
+          <div>
+            <div class="pillar-num" style="color: #fff; opacity: 0.7;">02 · бокалы</div>
+            <h3>Тонкое<br/><span class="it">стекло</span></h3>
+          </div>
+          <div class="pillar-img-mini"><img src="assets/bokaly.jpeg" alt="Бокалы" /></div>
+          <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a href="#" class="pillar yellow reveal reveal-2">
+          <div>
+            <div class="pillar-num">03 · хрусталь</div>
+            <h3>Гранёный<br/>свет</h3>
+          </div>
+          <div class="pillar-img-mini"><img src="assets/hrustal.jpeg" alt="Хрусталь" /></div>
+          <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="story-card">
+        <div class="story-img reveal">
+          <span class="badge">Глава 01</span>
+          <img src="assets/serviz1.jpeg" alt="Wedgwood" />
+        </div>
+        <div>
+          <span class="chip reveal">Хроника</span>
+          <h2 class="reveal reveal-1">Wedgwood:<br/><span class="it">бабочки</span> из Стаффордшира.</h2>
+          <p class="reveal reveal-2">В 1759 году Джозайя Веджвуд научился обжигать фарфор так, чтобы он становился почти прозрачным на свет. С тех пор та же глина, тот же обжиг, те же мастера.</p>
+          <p class="reveal reveal-2">Butterfly Ball расписан вручную — каждая чашка проходит через 32 пары рук.</p>
+          <div class="spec reveal reveal-3">
+            <div class="m"><strong>1759</strong><span>Основан</span></div>
+            <div class="m"><strong>32</strong><span>Пары рук</span></div>
+            <div class="m"><strong>2014</strong><span>В Noble</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="chip reveal">Подборка недели</span>
+          <h2 class="reveal reveal-1">Выбор <span class="it">куратора</span>.</h2>
+        </div>
+      </div>
+      <div class="products-grid">
+        <a href="#" class="product reveal">
+          <div class="product-img"><span class="product-tag">New</span><img src="assets/butterfly_ball.png" alt="Butterfly Ball" /></div>
+          <p class="product-brand">Wedgwood</p>
+          <h4 class="product-name">Butterfly <span class="it">Ball</span></h4>
+          <div class="product-foot"><span class="product-price">186 000 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-1">
+          <div class="product-img"><span class="product-tag sale">−18%</span><img src="assets/citrus.jpeg" alt="Citrus" /></div>
+          <p class="product-brand">Wedgwood · Wonderlust</p>
+          <h4 class="product-name">Citrus <span class="it">Bloom</span></h4>
+          <div class="product-foot"><span class="product-price"><span class="old">112 000</span>92 000 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-2">
+          <div class="product-img"><span class="product-tag hit">Хит</span><img src="assets/serviz3.jpeg" alt="Albatross" /></div>
+          <p class="product-brand">Bohemia</p>
+          <h4 class="product-name">Albatross <span class="it">Set</span></h4>
+          <div class="product-foot"><span class="product-price">74 500 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product reveal reveal-3">
+          <div class="product-img"><img src="assets/serviz4.jpeg" alt="Meringa" /></div>
+          <p class="product-brand">Meringa</p>
+          <h4 class="product-name">Pearl <span class="it">Edition</span></h4>
+          <div class="product-foot"><span class="product-price">58 200 ₸</span><span class="product-add">+</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="houses-card">
+        <div class="houses-top">
+          <div>
+            <span class="chip reveal">34 дома</span>
+            <h2 class="reveal reveal-1">Бренды, которым <span class="it">доверяют</span>.</h2>
+          </div>
+        </div>
+        <div class="houses-row reveal reveal-2">
+          <a href="#">Wedgwood</a>
+          <a href="#">Bohemia</a>
+          <a href="#">Villeroy &amp; Boch</a>
+          <a href="#">Christofle</a>
+          <a href="#">Riedel</a>
+          <a href="#">Lalique</a>
+          <a href="#">Royal Doulton</a>
+          <a href="#">Spode</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="showroom showroom-inner">
+        <div class="showroom-img reveal"><img src="assets/mat_banner.jpeg" alt="Noble Showroom" /></div>
+        <div>
+          <span class="chip reveal">Бутики</span>
+          <h2 class="reveal reveal-1">Приходите <span class="it">в гости</span>.</h2>
+          <p class="reveal reveal-2" style="color: var(--ink-2); max-width: 42ch; margin: 0;">Хрусталь надо подержать в руке, а сервиз — увидеть на свету.</p>
+          <div class="stores reveal reveal-2">
+            <a class="store" href="#"><span class="nm">Самал</span><span class="ad">Самал-2, 77 · Алматы</span><span class="tel">+7 707 171 03 00</span></a>
+            <a class="store" href="#"><span class="nm">Мирас</span><span class="ad">мкр. Мирас, 157 · Алматы</span><span class="tel">+7 708 190 37 17</span></a>
+            <a class="store" href="#"><span class="nm">Астана</span><span class="ad">пр. Мангилик Ел, 55</span><span class="tel">+7 700 393 33 27</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="news-card">
+        <span class="chip reveal">Письма Noble</span>
+        <h3 class="reveal reveal-1">Новинки и <span class="it">тихие распродажи</span>.</h3>
+        <p class="reveal reveal-2">Раз в две недели. Без шума. Только то, что стоит вашего стола.</p>
+        <form class="news-form reveal reveal-2" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Спасибо.';">
+          <input type="email" placeholder="ваш e-mail" required />
+          <button type="submit">Подписаться</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">N<span class="acc">oble</span><span class="dot"></span></div>
+      <div class="footer-grid">
+        <div>
+          <h4>Identity</h4>
+          <ul>
+            <li><a>Салон посуды и подарков</a></li>
+            <li><a>Алматы · Астана</a></li>
+            <li><a>с 1998 года</a></li>
+          </ul>
+        </div>
+        <div><h4>Каталог</h4><ul><li><a href="#">Сервизы</a></li><li><a href="#">Бокалы</a></li><li><a href="#">Хрусталь</a></li><li><a href="#">Подарки</a></li></ul></div>
+        <div><h4>О нас</h4><ul><li><a href="#">Доставка</a></li><li><a href="#">Возврат</a></li><li><a href="#">Оферта</a></li><li><a href="#">Privacy</a></li></ul></div>
+        <div><h4>Контакты</h4><ul><li><a href="tel:+77071710300">+7 707 171 03 00</a></li><li><a href="mailto:noblealmaty@gmail.com">noblealmaty@gmail.com</a></li><li><a href="https://www.instagram.com/noble_almaty/">Instagram</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Noble</span>
+        <span>Bricolage Grotesque · Instrument Serif · Inter</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="switcher">
+    <span class="label">VAR</span>
+    <a href="index.html">A</a>
+    <a href="variant-b.html">B</a>
+    <a href="variant-c.html">C</a>
+    <a href="variant-d.html">D</a>
+    <a href="variant-e.html">E</a>
+    <a href="variant-f.html">F</a>
+    <a href="variant-g.html" class="on">G · Matcha</a>
+    <a href="variant-h.html">H</a>
+    <a href="variant-i.html">I</a>
+  </div>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

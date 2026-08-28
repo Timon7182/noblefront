@@ -1,19 +1,23 @@
 <template>
-  <div class="flex justify-between items-center bg-green-950 opacity-80 font-bolder text-white">
-    <MinusCircleIcon class="h-6" @click="$emit('remove')" />
-    {{ itemsCount }}
-    <PlusCircleIcon class="h-6" @click="$emit('add')" />
+  <div class="flex justify-between items-center rounded-full border border-ink text-ink px-4 py-2.5 select-none">
+    <button type="button" aria-label="−" class="hover:text-clay transition-colors" @click="$emit('remove')">
+      <MinusIcon class="h-4" />
+    </button>
+    <span class="text-sm tracking-[0.1em]">{{ itemsCount }}</span>
+    <button type="button" aria-label="+" class="hover:text-clay transition-colors" @click="$emit('add')">
+      <PlusIcon class="h-4" />
+    </button>
   </div>
 </template>
-  
+
 <script>
-import { PlusCircleIcon, MinusCircleIcon } from '@heroicons/vue/24/outline/index.js'
+import { PlusIcon, MinusIcon } from '@heroicons/vue/24/outline/index.js'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   components: {
-    PlusCircleIcon,
-    MinusCircleIcon
+    PlusIcon,
+    MinusIcon
   },
   props: {
     itemsCount: {

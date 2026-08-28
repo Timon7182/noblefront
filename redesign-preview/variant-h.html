@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noble — Botanical Maxi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #F1ECDD;
+      --paper:    #FAF5E5;
+      --moss:     #5B6F4B;
+      --moss-d:   #3E4F32;
+      --moss-l:   #A6B89A;
+      --terra:    #C68864;
+      --terra-d:  #9F6B4C;
+      --mustard:  #C9A14A;
+      --mustard-l:#E5C870;
+      --ink:      #1F2829;
+      --ink-2:    #5C625B;
+      --ink-3:    #8F948D;
+      --line:     #D8D2BF;
+      --coral:    #D45A40;
+      --r:        20px;
+      --r-s:      12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-weight: 400; font-size: 16px; line-height: 1.6;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+    .serif { font-family: "Newsreader", serif; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+    .container { max-width: 1340px; margin: 0 auto; padding: 0 28px; }
+    @media (max-width: 720px) { .container { padding: 0 18px; } }
+
+    .chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: 12px; color: var(--moss); }
+    .chip::before { content: "✻"; color: var(--terra); font-size: 14px; line-height: 1; }
+
+    /* Anno */
+    .anno { background: var(--moss-d); color: var(--mustard-l); padding: 11px 0; text-align: center; font-size: 13px; }
+    .anno em { font-family: "Newsreader", serif; font-style: italic; color: var(--terra); }
+
+    /* Masthead — magazine style */
+    .masthead { background: var(--paper); border-bottom: 1px solid var(--moss); padding: 20px 0 10px; }
+    .masthead-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; font-size: 11px; color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+    .masthead-row .center { text-align: center; }
+    .masthead-row .vol { font-family: "Newsreader", serif; font-style: italic; font-size: 14px; letter-spacing: 0.02em; text-transform: none; color: var(--terra-d); }
+    .masthead-row .right { text-align: right; }
+    @media (max-width: 720px) { .masthead-row { grid-template-columns: 1fr; text-align: center; } .masthead-row .right { text-align: center; } }
+
+    /* Big title */
+    .title-bar { background: var(--paper); padding: 24px 0 32px; text-align: center; border-bottom: 1px solid var(--moss); }
+    .title-bar .nm {
+      font-family: "Newsreader", serif; font-weight: 400;
+      font-variation-settings: "opsz" 72;
+      font-size: clamp(64px, 13vw, 180px); line-height: 0.92; letter-spacing: -0.005em;
+      color: var(--moss-d);
+    }
+    .title-bar .nm .it { font-style: italic; color: var(--terra); }
+    .title-bar .nm .a { background: var(--mustard); padding: 0 0.06em; border-radius: 14px; display: inline-block; transform: rotate(-1deg); }
+    .title-bar .strap { font-family: "Newsreader", serif; font-style: italic; color: var(--ink-2); font-size: clamp(14px, 1.4vw, 18px); margin-top: 8px; }
+
+    /* Nav */
+    .nav { background: var(--bg); padding: 14px 0; position: sticky; top: 0; z-index: 60; border-bottom: 1px solid var(--moss); }
+    .nav-row { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--moss-d); }
+    .nav-row a { padding: 4px 0; transition: color .2s ease; }
+    .nav-row a:hover { color: var(--terra); }
+    .nav-row a.on { color: var(--terra); border-bottom: 1px solid var(--terra); }
+    .nav-row .sep { width: 4px; height: 4px; border-radius: 999px; background: var(--moss-l); }
+
+    /* HERO — magazine spread */
+    .hero { padding: 36px 0 80px; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 36px; align-items: stretch; }
+    @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+    .hero-text {
+      background: var(--moss); color: var(--paper);
+      border-radius: var(--r); padding: 48px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative; overflow: hidden;
+    }
+    .hero-text::before { content: ""; position: absolute; right: -80px; top: -80px; width: 260px; height: 260px; border-radius: 999px; background: var(--mustard); opacity: 0.85; }
+    .hero-text::after { content: ""; position: absolute; left: -40px; bottom: -100px; width: 220px; height: 220px; border-radius: 999px; background: var(--terra); opacity: 0.7; }
+    .hero-eye {
+      display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px;
+      background: rgba(250,245,229,0.18); border: 1px solid rgba(250,245,229,0.3);
+      font-size: 12px; color: var(--paper); width: fit-content; z-index: 2; position: relative;
+    }
+    .hero-eye::before { content: "✻"; color: var(--mustard-l); font-size: 14px; }
+    .hero-title {
+      font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72;
+      font-size: clamp(48px, 7vw, 96px); line-height: 0.96; letter-spacing: -0.01em;
+      margin: 28px 0 0; color: var(--paper); position: relative; z-index: 2;
+    }
+    .hero-title .it { font-style: italic; color: var(--mustard-l); }
+    .hero-title .terra { background: var(--terra); padding: 0 0.08em; border-radius: 12px; display: inline-block; transform: rotate(-1deg); color: var(--paper); }
+    .hero-deck {
+      font-family: "Newsreader", serif; font-style: italic;
+      font-size: clamp(17px, 1.6vw, 22px); line-height: 1.4;
+      color: rgba(250,245,229,0.92); max-width: 36ch; margin: 28px 0 0; z-index: 2; position: relative;
+    }
+    .hero-foot { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; z-index: 2; position: relative; }
+    .btn-cream { padding: 16px 26px; border-radius: 999px; background: var(--paper); color: var(--moss-d); font-weight: 500; font-size: 14px; display: inline-flex; align-items: center; gap: 12px; transition: background .25s ease, color .25s ease; }
+    .btn-cream:hover { background: var(--mustard); }
+    .btn-line-cream { padding: 14px 22px; border-radius: 999px; background: transparent; color: var(--paper); border: 1px solid rgba(250,245,229,0.4); font-weight: 500; font-size: 14px; transition: background .25s ease, color .25s ease; }
+    .btn-line-cream:hover { background: var(--paper); color: var(--moss); }
+    .hero-visuals { display: grid; grid-template-rows: 1.4fr 1fr; gap: 16px; }
+    .hero-photo-big { border-radius: var(--r); overflow: hidden; position: relative; min-height: 280px; }
+    .hero-photo-big img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-photo-big .caption { position: absolute; left: 16px; right: 16px; bottom: 16px; background: var(--paper); padding: 12px 18px; border-radius: var(--r-s); font-family: "Newsreader", serif; font-style: italic; font-size: 15px; line-height: 1.35; color: var(--moss-d); }
+    .hero-strip { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+    .hero-photo-small { background: var(--terra); border-radius: var(--r); overflow: hidden; position: relative; }
+    .hero-photo-small img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; opacity: 0.92; }
+    .hero-photo-small .label { position: absolute; left: 14px; bottom: 14px; color: var(--paper); font-family: "Newsreader", serif; font-style: italic; font-size: 17px; line-height: 1.2; max-width: 80%; }
+    .hero-stat { background: var(--mustard); border-radius: var(--r); padding: 24px; display: flex; flex-direction: column; justify-content: center; color: var(--moss-d); }
+    .hero-stat .v { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: clamp(48px, 5vw, 76px); line-height: 0.95; }
+    .hero-stat .v .it { font-style: italic; color: var(--terra-d); }
+    .hero-stat .k { font-size: 13px; margin-top: 4px; font-weight: 500; }
+
+    /* Section heads */
+    .section { padding: 70px 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 36px; }
+    .section-head h2 {
+      font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72;
+      font-size: clamp(40px, 5.8vw, 88px); line-height: 0.95; letter-spacing: -0.005em;
+      margin: 12px 0 0;
+    }
+    .section-head h2 .it { font-style: italic; color: var(--terra); }
+    .section-head .link { font-size: 14px; color: var(--terra); padding-bottom: 4px; border-bottom: 1px solid var(--terra); }
+
+    /* Pillars — magazine cards */
+    .pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 900px) { .pillars-grid { grid-template-columns: 1fr; } }
+    .pillar { position: relative; border-radius: var(--r); overflow: hidden; aspect-ratio: 4/5; transition: transform .35s ease; }
+    .pillar:hover { transform: translateY(-6px); }
+    .pillar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+    .pillar:hover img { transform: scale(1.06); }
+    .pillar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(31,40,41,0.7) 100%); }
+    .pillar-c { position: absolute; inset: 22px; z-index: 2; color: var(--paper); display: flex; flex-direction: column; justify-content: space-between; }
+    .pillar-tag { align-self: flex-start; padding: 7px 14px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .pillar.moss .pillar-tag { background: var(--moss); color: var(--paper); }
+    .pillar.terra .pillar-tag { background: var(--terra); color: var(--paper); }
+    .pillar.mustard .pillar-tag { background: var(--mustard); color: var(--moss-d); }
+    .pillar-c h3 { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: clamp(28px, 3vw, 42px); line-height: 1; margin: 0; }
+    .pillar-c h3 .it { font-style: italic; }
+    .pillar-c .bot { display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+    .pillar-c .arrow { width: 46px; height: 46px; border-radius: 999px; background: var(--paper); color: var(--moss-d); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .35s ease; }
+    .pillar:hover .pillar-c .arrow { transform: rotate(-45deg); }
+
+    /* Story spread */
+    .story { background: var(--terra); color: var(--paper); border-radius: var(--r); padding: 48px; display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center; }
+    @media (max-width: 900px) { .story { grid-template-columns: 1fr; padding: 28px; gap: 28px; } }
+    .story-img { border-radius: var(--r-s); overflow: hidden; aspect-ratio: 4/5; position: relative; }
+    .story-img img { width: 100%; height: 100%; object-fit: cover; }
+    .story-img .badge { position: absolute; top: 16px; left: 16px; background: var(--mustard); color: var(--moss-d); padding: 6px 14px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .story h2 { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: clamp(36px, 4.8vw, 64px); line-height: 0.98; margin: 16px 0 22px; }
+    .story h2 .it { font-style: italic; color: var(--mustard-l); }
+    .story p { color: rgba(250,245,229,0.92); margin: 0 0 14px; max-width: 50ch; }
+    .story .chip { background: rgba(250,245,229,0.18); color: var(--paper); border-color: rgba(250,245,229,0.3); }
+    .story .chip::before { color: var(--mustard-l); }
+    .story-spec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(250,245,229,0.2); }
+    .story-spec strong { display: block; font-family: "Newsreader", serif; font-style: italic; font-size: 30px; color: var(--mustard-l); line-height: 1; margin-bottom: 4px; }
+    .story-spec span { font-size: 11px; opacity: 0.8; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* Products — varied bg */
+    .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    @media (max-width: 1100px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .products-grid { grid-template-columns: 1fr; } }
+    .product { border-radius: var(--r); padding: 14px; transition: transform .3s ease; }
+    .product:hover { transform: translateY(-4px); }
+    .product.c1 { background: var(--mustard-l); }
+    .product.c2 { background: var(--moss-l); }
+    .product.c3 { background: var(--paper); border: 1px solid var(--line); }
+    .product.c4 { background: var(--terra); color: var(--paper); }
+    .product-img { position: relative; aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; margin-bottom: 14px; background: var(--paper); }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s ease; }
+    .product:hover .product-img img { transform: scale(1.04); }
+    .product-tag { position: absolute; top: 10px; left: 10px; font-size: 10px; padding: 5px 10px; border-radius: 999px; background: var(--moss-d); color: var(--paper); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .product-tag.sale { background: var(--coral); }
+    .product-brand { font-size: 11px; margin: 0 0 4px; opacity: 0.7; }
+    .product-name { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: 22px; line-height: 1.05; margin: 0 0 12px; }
+    .product-name .it { font-style: italic; }
+    .product-foot { display: flex; justify-content: space-between; align-items: center; }
+    .product-price { font-weight: 600; font-size: 15px; }
+    .product-price .old { opacity: 0.5; text-decoration: line-through; font-size: 12px; margin-right: 6px; font-weight: 400; }
+    .product-add { width: 36px; height: 36px; border-radius: 999px; background: var(--moss-d); color: var(--paper); display: inline-flex; align-items: center; justify-content: center; transition: background .25s ease, transform .25s ease; }
+    .product.c4 .product-add { background: var(--paper); color: var(--terra-d); }
+    .product-add:hover { transform: rotate(90deg); }
+
+    /* Houses tiles */
+    .houses-card { background: var(--moss-d); color: var(--paper); border-radius: var(--r); padding: 64px 48px; }
+    @media (max-width: 720px) { .houses-card { padding: 40px 24px; } }
+    .houses-top { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 36px; }
+    .houses-card h2 { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: clamp(40px, 5.4vw, 72px); line-height: 0.95; margin: 0; }
+    .houses-card h2 .it { font-style: italic; color: var(--mustard-l); }
+    .houses-card .chip { background: rgba(250,245,229,0.1); color: var(--paper); border-color: rgba(250,245,229,0.2); }
+    .houses-card .chip::before { color: var(--mustard-l); }
+    .houses-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 900px) { .houses-grid { grid-template-columns: repeat(2, 1fr); } }
+    .house { padding: 22px; border-radius: 14px; background: rgba(250,245,229,0.06); border: 1px solid rgba(250,245,229,0.15); transition: background .3s ease, border-color .3s ease; }
+    .house:hover { background: rgba(250,245,229,0.12); border-color: var(--mustard-l); }
+    .house .ord { font-family: "Newsreader", serif; font-style: italic; color: var(--mustard-l); font-size: 14px; }
+    .house .nm { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: 24px; line-height: 1; margin: 6px 0 4px; }
+    .house .yr { font-size: 11px; opacity: 0.7; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* Boutiques */
+    .boutiques { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; }
+    @media (max-width: 900px) { .boutiques { grid-template-columns: 1fr; gap: 28px; } }
+    .boutiques-img { border-radius: var(--r); overflow: hidden; aspect-ratio: 5/4; }
+    .boutiques-img img { width: 100%; height: 100%; object-fit: cover; }
+    .boutiques h2 { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: clamp(36px, 5vw, 64px); line-height: 0.98; margin: 16px 0 22px; }
+    .boutiques h2 .it { font-style: italic; color: var(--terra); }
+    .stores { display: flex; flex-direction: column; gap: 8px; }
+    .store { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; transition: background .3s ease, border-color .3s ease; }
+    .store:hover { background: var(--mustard-l); border-color: var(--mustard); }
+    .store .nm { font-family: "Newsreader", serif; font-style: italic; font-size: 22px; color: var(--moss-d); }
+    .store .ad { font-size: 13px; color: var(--ink-2); }
+    .store .tel { font-weight: 600; font-size: 13px; color: var(--terra); }
+
+    /* News */
+    .news-card { background: var(--mustard); color: var(--moss-d); border-radius: var(--r); padding: 72px 48px; text-align: center; position: relative; overflow: hidden; }
+    @media (max-width: 720px) { .news-card { padding: 48px 24px; } }
+    .news-card::before { content: ""; position: absolute; bottom: -100px; left: -100px; width: 280px; height: 280px; border-radius: 999px; background: var(--terra); opacity: 0.45; }
+    .news-card::after { content: ""; position: absolute; top: -80px; right: -80px; width: 220px; height: 220px; border-radius: 999px; background: var(--moss); opacity: 0.35; }
+    .news-card .chip { background: rgba(31,40,41,0.1); color: var(--moss-d); border-color: rgba(31,40,41,0.2); position: relative; z-index: 2; }
+    .news-card h3 { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: clamp(32px, 4.6vw, 60px); line-height: 1; margin: 20px 0 14px; position: relative; z-index: 2; }
+    .news-card h3 .it { font-style: italic; color: var(--terra-d); }
+    .news-card p { color: var(--moss-d); margin: 0 auto 30px; max-width: 36ch; position: relative; z-index: 2; opacity: 0.85; }
+    .news-form { display: flex; gap: 8px; max-width: 480px; margin: 0 auto; background: rgba(31,40,41,0.08); padding: 6px; border-radius: 999px; position: relative; z-index: 2; border: 1px solid rgba(31,40,41,0.15); }
+    .news-form input { flex: 1; background: transparent; border: 0; outline: none; padding: 0 18px; color: var(--moss-d); font: inherit; font-size: 14px; }
+    .news-form input::placeholder { color: rgba(62,79,50,0.55); }
+    .news-form button { padding: 12px 22px; background: var(--moss-d); color: var(--paper); border-radius: 999px; font-weight: 600; font-size: 13px; transition: background .25s ease; }
+    .news-form button:hover { background: var(--terra-d); }
+
+    /* Footer */
+    .footer { padding: 60px 0 28px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand { font-family: "Newsreader", serif; font-weight: 400; font-variation-settings: "opsz" 72; font-size: 48px; line-height: 1; color: var(--moss-d); }
+    .footer-brand .it { font-style: italic; color: var(--terra); }
+    .footer-tag { color: var(--ink-2); max-width: 30ch; margin-top: 12px; font-size: 14px; line-height: 1.6; }
+    .footer h4 { font-family: "Newsreader", serif; font-style: italic; font-size: 18px; margin: 0 0 14px; color: var(--terra); }
+    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .footer li a { font-size: 14px; color: var(--ink-2); transition: color .25s ease; }
+    .footer li a:hover { color: var(--moss-d); }
+    .footer-bottom { margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; font-size: 12px; color: var(--ink-3); }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-1 { transition-delay: .08s; } .reveal-2 { transition-delay: .16s; } .reveal-3 { transition-delay: .24s; }
+
+    /* Switcher */
+    .switcher { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--moss-d); color: var(--paper); padding: 6px; border-radius: 999px; z-index: 100; display: flex; align-items: center; gap: 2px; box-shadow: 0 12px 40px rgba(31,40,41,0.2); font-size: 11px; font-weight: 500; max-width: calc(100% - 24px); overflow-x: auto; }
+    .switcher::-webkit-scrollbar { display: none; }
+    .switcher .label { padding: 0 10px; opacity: 0.55; font-size: 10px; letter-spacing: 0.08em; flex-shrink: 0; }
+    .switcher a { padding: 7px 11px; border-radius: 999px; transition: background .2s ease, color .2s ease; flex-shrink: 0; white-space: nowrap; }
+    .switcher a:hover { background: rgba(250,245,229,0.1); }
+    .switcher .on { background: var(--terra); color: var(--paper); }
+  </style>
+</head>
+<body>
+
+  <div class="anno">Доставка по Алматы при заказе от 50 000 ₸ · <em>и упаковка в подарок</em></div>
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="container masthead-row">
+      <div>Almaty · Astana · с 1998</div>
+      <div class="center"><span class="vol">Volume IV — Spring/Summer 2026</span></div>
+      <div class="right">RU · KZ · EN</div>
+    </div>
+  </div>
+
+  <!-- Big title -->
+  <div class="title-bar">
+    <div class="nm">N<span class="a">o</span>ble.<span class="it"> Catalogue.</span></div>
+    <div class="strap">— Сервизы, бокалы, хрусталь и подарки —</div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="container nav-row">
+      <a href="#" class="on">Главная</a>
+      <span class="sep"></span>
+      <a href="#">Сервизы</a>
+      <span class="sep"></span>
+      <a href="#">Бокалы</a>
+      <span class="sep"></span>
+      <a href="#">Хрусталь</a>
+      <span class="sep"></span>
+      <a href="#">Подарки</a>
+      <span class="sep"></span>
+      <a href="#">Бутики</a>
+      <span class="sep"></span>
+      <a href="#">Корзина · 2</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <span class="hero-eye">Новая коллекция · MMXXVI</span>
+          <div>
+            <h1 class="hero-title">Стол —<br/>это <span class="terra">сад</span>.<br/>Сервиз —<br/><span class="it">его букет</span>.</h1>
+            <p class="hero-deck">Сервизы, бокалы и хрусталь от 34 домов, собранные в Алматы — для тех, кто всё ещё накрывает стол как событие.</p>
+          </div>
+          <div class="hero-foot">
+            <a class="btn-cream" href="#pillars">Открыть каталог
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn-line-cream" href="#">Бутики в Алматы</a>
+          </div>
+        </div>
+        <div class="hero-visuals">
+          <div class="hero-photo-big">
+            <img src="assets/main.jpeg" alt="Noble cover" />
+            <div class="caption">«Каждая чашка проходит через 32 пары рук».</div>
+          </div>
+          <div class="hero-strip">
+            <div class="hero-photo-small">
+              <img src="assets/butterfly_ball.png" alt="Butterfly Ball" />
+              <div class="label">Wedgwood<br/>Butterfly Ball</div>
+            </div>
+            <div class="hero-stat">
+              <div class="v">34<br/><span class="it">домов</span></div>
+              <div class="k">в одной коллекции</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pillars">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="chip reveal">Глава 01 · Коллекции</span>
+          <h2 class="reveal reveal-1">Три истории, <span class="it">один сад</span>.</h2>
+        </div>
+        <a class="link reveal reveal-1" href="#">Все коллекции →</a>
+      </div>
+      <div class="pillars-grid">
+        <a href="#" class="pillar moss reveal">
+          <img src="assets/serviz2.jpeg" alt="Сервизы" />
+          <div class="pillar-c">
+            <span class="pillar-tag">01 · Сервизы</span>
+            <div class="bot">
+              <h3>Костяной<br/><span class="it">фарфор</span></h3>
+              <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="pillar terra reveal reveal-1">
+          <img src="assets/bokaly.jpeg" alt="Бокалы" />
+          <div class="pillar-c">
+            <span class="pillar-tag">02 · Бокалы</span>
+            <div class="bot">
+              <h3>Тонкое<br/><span class="it">стекло</span></h3>
+              <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="pillar mustard reveal reveal-2">
+          <img src="assets/hrustal.jpeg" alt="Хрусталь" />
+          <div class="pillar-c">
+            <span class="pillar-tag">03 · Хрусталь</span>
+            <div class="bot">
+              <h3>Гранёный<br/><span class="it">свет</span></h3>
+              <span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="story reveal">
+        <div class="story-img">
+          <span class="badge">Глава 02</span>
+          <img src="assets/serviz1.jpeg" alt="Wedgwood" />
+        </div>
+        <div>
+          <span class="chip">Хроника бренда</span>
+          <h2>Wedgwood:<br/><span class="it">бабочки</span> из Стаффордшира.</h2>
+          <p>В 1759 году Джозайя Веджвуд научился обжигать фарфор так, чтобы он становился почти прозрачным на свет. С тех пор та же глина, тот же обжиг, те же мастера.</p>
+          <p>Коллекция Butterfly Ball расписана вручную — каждая чашка проходит через 32 пары рук.</p>
+          <div class="story-spec">
+            <div><strong>1759</strong><span>Основан</span></div>
+            <div><strong>32</strong><span>Пары рук</span></div>
+            <div><strong>2014</strong><span>В Noble</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="chip reveal">Глава 03 · Подборка</span>
+          <h2 class="reveal reveal-1">Выбор <span class="it">куратора</span>.</h2>
+        </div>
+        <a class="link reveal reveal-1" href="#">Весь каталог →</a>
+      </div>
+      <div class="products-grid">
+        <a href="#" class="product c1 reveal">
+          <div class="product-img"><span class="product-tag">New</span><img src="assets/butterfly_ball.png" alt="Butterfly Ball" /></div>
+          <p class="product-brand">Wedgwood</p>
+          <h4 class="product-name">Butterfly <span class="it">Ball</span></h4>
+          <div class="product-foot"><span class="product-price">186 000 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product c2 reveal reveal-1">
+          <div class="product-img"><span class="product-tag sale">−18%</span><img src="assets/citrus.jpeg" alt="Citrus" /></div>
+          <p class="product-brand">Wedgwood · Wonderlust</p>
+          <h4 class="product-name">Citrus <span class="it">Bloom</span></h4>
+          <div class="product-foot"><span class="product-price"><span class="old">112 000</span>92 000 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product c3 reveal reveal-2">
+          <div class="product-img"><span class="product-tag">Хит</span><img src="assets/serviz3.jpeg" alt="Albatross" /></div>
+          <p class="product-brand">Bohemia</p>
+          <h4 class="product-name">Albatross <span class="it">Set</span></h4>
+          <div class="product-foot"><span class="product-price">74 500 ₸</span><span class="product-add">+</span></div>
+        </a>
+        <a href="#" class="product c4 reveal reveal-3">
+          <div class="product-img"><img src="assets/serviz4.jpeg" alt="Meringa" /></div>
+          <p class="product-brand">Meringa</p>
+          <h4 class="product-name">Pearl <span class="it">Edition</span></h4>
+          <div class="product-foot"><span class="product-price">58 200 ₸</span><span class="product-add">+</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="houses-card">
+        <div class="houses-top">
+          <div>
+            <span class="chip reveal">Глава 04 · 34 дома</span>
+            <h2 class="reveal reveal-1">Имена, которым <span class="it">доверяют</span>.</h2>
+          </div>
+        </div>
+        <div class="houses-grid">
+          <a href="#" class="house reveal"><div class="ord">N° 01</div><div class="nm">Wedgwood</div><div class="yr">1759 · UK</div></a>
+          <a href="#" class="house reveal reveal-1"><div class="ord">N° 02</div><div class="nm">Bohemia</div><div class="yr">1620 · CZ</div></a>
+          <a href="#" class="house reveal reveal-2"><div class="ord">N° 03</div><div class="nm">V&amp;B</div><div class="yr">1748 · DE</div></a>
+          <a href="#" class="house reveal reveal-3"><div class="ord">N° 04</div><div class="nm">Christofle</div><div class="yr">1830 · FR</div></a>
+          <a href="#" class="house reveal"><div class="ord">N° 05</div><div class="nm">Riedel</div><div class="yr">1756 · AT</div></a>
+          <a href="#" class="house reveal reveal-1"><div class="ord">N° 06</div><div class="nm">Lalique</div><div class="yr">1888 · FR</div></a>
+          <a href="#" class="house reveal reveal-2"><div class="ord">N° 07</div><div class="nm">Royal D.</div><div class="yr">1815 · UK</div></a>
+          <a href="#" class="house reveal reveal-3"><div class="ord">N° 08</div><div class="nm">+ 26 ещё</div><div class="yr">все бренды →</div></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="boutiques">
+        <div class="boutiques-img reveal"><img src="assets/mat_banner.jpeg" alt="Noble Showroom" /></div>
+        <div>
+          <span class="chip reveal">Глава 05 · Бутики</span>
+          <h2 class="reveal reveal-1">Приходите <span class="it">в гости</span>.</h2>
+          <p class="reveal reveal-2" style="color: var(--ink-2); max-width: 42ch; margin: 0 0 22px;">Хрусталь надо подержать в руке, а сервиз — увидеть на свету.</p>
+          <div class="stores reveal reveal-2">
+            <a class="store" href="#"><span class="nm">Самал</span><span class="ad">Самал-2, 77 · Алматы</span><span class="tel">+7 707 171 03 00</span></a>
+            <a class="store" href="#"><span class="nm">Мирас</span><span class="ad">мкр. Мирас, 157 · Алматы</span><span class="tel">+7 708 190 37 17</span></a>
+            <a class="store" href="#"><span class="nm">Астана</span><span class="ad">пр. Мангилик Ел, 55</span><span class="tel">+7 700 393 33 27</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="news-card">
+        <span class="chip reveal">Письма Noble</span>
+        <h3 class="reveal reveal-1">Новинки и <span class="it">тихие распродажи</span>.</h3>
+        <p class="reveal reveal-2">Раз в две недели. Без шума. Только то, что стоит вашего стола.</p>
+        <form class="news-form reveal reveal-2" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Спасибо.';">
+          <input type="email" placeholder="ваш e-mail" required />
+          <button type="submit">Подписаться</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">N<span class="it">o</span>ble.</div>
+          <p class="footer-tag">Салон посуды и подарков · Алматы · Астана · с 1998 года.</p>
+        </div>
+        <div><h4>Каталог</h4><ul><li><a href="#">Сервизы</a></li><li><a href="#">Бокалы</a></li><li><a href="#">Хрусталь</a></li><li><a href="#">Подарки</a></li></ul></div>
+        <div><h4>О нас</h4><ul><li><a href="#">Доставка</a></li><li><a href="#">Возврат</a></li><li><a href="#">Оферта</a></li><li><a href="#">Privacy</a></li></ul></div>
+        <div><h4>Контакты</h4><ul><li><a href="tel:+77071710300">+7 707 171 03 00</a></li><li><a href="mailto:noblealmaty@gmail.com">noblealmaty@gmail.com</a></li><li><a href="https://www.instagram.com/noble_almaty/">Instagram</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Noble · Все права защищены</span>
+        <span>Newsreader · DM Sans</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="switcher">
+    <span class="label">VAR</span>
+    <a href="index.html">A</a>
+    <a href="variant-b.html">B</a>
+    <a href="variant-c.html">C</a>
+    <a href="variant-d.html">D</a>
+    <a href="variant-e.html">E</a>
+    <a href="variant-f.html">F</a>
+    <a href="variant-g.html">G</a>
+    <a href="variant-h.html" class="on">H · Maxi</a>
+    <a href="variant-i.html">I</a>
+  </div>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

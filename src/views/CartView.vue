@@ -1,180 +1,216 @@
 <template>
-  <div class="md:px-10 my-5">
+  <div class="max-w-page mx-auto px-5 xl:px-8 pt-8 md:pt-12 pb-20">
     <breadcrumbs :items="breadcrumbItems" />
-    <div class="mt-10">
-      <h1 class="text-3xl font-light text-center my-5">{{ $t('cart') }}</h1>
-      <div class="flex flex-col xl:flex-row">
-        <!-- Mobile view -->
-        <div class="xl:hidden flex flex-col border border-gray-650 p-4">
-          <template v-for="cartItem in itemsWithQuantity" :key="cartItem.id">
-            <div class="m-5 flex flex-col items-center justify-center">
-              <div class="relative image-container-noh w-[220px] h-[170px]"
-                :style="{ backgroundImage: `url(${getImgUrl(cartItem.image)})` }">
-              </div>
-              <p class="font-light text-sm">{{ cartItem.name }}</p>
-            </div>
-            <div class="flex justify-center items-center text-xl font-light">
-              <MinusCircleIcon class="h-8 text-gray-500 cursor-pointer" @click="removeFromCart(cartItem)" />
-              <p class="mx-4">{{ cartItem.quantity }}</p>
-              <PlusCircleIcon class="h-8 cursor-pointer" @click="addToCart(cartItem)" />
-            </div>
-            <div class="flex flex-col items-center justify-center font-light mt-3">
-              <template v-if="cartItem.newPrice">
-                <p class="line-through text-lg">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
-                <p class="mt-1 text-2xl">{{ currencyFormatter().format(cartItem.newPrice) }}ТГ</p>
-              </template>
-              <template v-else>
-                <p class="mt-1 text-2xl">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
-              </template>
-            </div>
-            <div class="m-2 flex flex-col items-center justify-center text-lg font-light">
-              {{ $t('mainStoreAddress') }}
-            </div>
-          </template>
+
+    <h1 class="serif font-light text-[clamp(32px,4.4vw,60px)] leading-[1.05] mt-6 md:mt-8 mb-10 md:mb-14">
+      {{ $t('cart') }}
+    </h1>
+
+    <!-- Пустая корзина -->
+    <div v-if="!itemsWithQuantity.length" class="py-20 text-center border-t border-line">
+      <p class="serif font-light italic text-[clamp(22px,2.6vw,34px)] leading-[1.4]">
+        {{ $t('cart_empty') }}
+      </p>
+      <p class="text-[15px] text-ink2 mt-4 max-w-prose mx-auto">{{ $t('cart_empty_hint') }}</p>
+      <router-link to="/catalogue" class="btn-line mt-10">
+        {{ $t('go_to_catalogue') }}
+      </router-link>
+    </div>
+
+    <div v-else class="grid grid-cols-1 xl:grid-cols-[1.5fr_1fr] gap-12 xl:gap-16 items-start">
+      <!-- Позиции заказа -->
+      <section>
+        <div class="hidden md:grid grid-cols-[88px_1fr_auto_auto] gap-6 pb-4 border-b border-line text-[11px] uppercase tracking-[0.2em] text-ink2">
+          <span></span>
+          <span>{{ $t('product') }}</span>
+          <span class="w-32 text-center">{{ $t('quantity') }}</span>
+          <span class="w-40 text-right">{{ $t('price') }}</span>
         </div>
 
-        <!-- Desktop view -->
-        <div class="hidden xl:grid grid-cols-4 xl:w-4/5 border border-gray-650 pb-[100px]">
-          <h2 class="text-xl font-light text-center p-4">
-            {{ $t('product') }}
-          </h2>
-          <h2 class="text-xl font-light text-center p-4">
-            {{ $t('quantity') }}
-          </h2>
-          <h2 class="text-xl font-light text-center p-4">
-            {{ $t('price') }}
-          </h2>
-          <div class="col-span-4 border-b border-gray-650 mx-10 mt-5"></div>
-          <template v-for="cartItem in itemsWithQuantity" :key="cartItem.id">
-            <div class="m-10 flex flex-col items-center justify-center">
-              <div class="relative image-container-noh w-[220px] h-[170px]"
-                :style="{ backgroundImage: `url(${getImgUrl(cartItem.image)})` }">
-              </div>
-              <p class="font-light text-sm">{{ cartItem.name }}</p>
-            </div>
-            <div class="flex justify-center items-center text-xl font-light">
-              <MinusCircleIcon class="h-8 cursor-pointer" @click="removeFromCart(cartItem)" />
-              <p class="mx-4">{{ cartItem.quantity }}</p>
-              <PlusCircleIcon class="h-8 cursor-pointer" @click="addToCart(cartItem)" />
-            </div>
-            <div class="flex flex-col items-center justify-center font-light">
+        <article
+          v-for="cartItem in itemsWithQuantity"
+          :key="cartItem.id"
+          class="grid grid-cols-[88px_1fr] md:grid-cols-[88px_1fr_auto_auto] gap-x-5 gap-y-4 md:gap-6 items-start md:items-center py-6 border-b border-line"
+        >
+          <router-link
+            :to="`/product/${cartItem.id}/${cartItem.type || 'SINGLE'}`"
+            class="row-span-3 md:row-span-1 block w-[88px] h-[110px] overflow-hidden bg-surface"
+          >
+            <img class="w-full h-full object-cover" :src="getImgUrl(cartItem.image)" :alt="cartItem.name" />
+          </router-link>
+
+          <div class="min-w-0">
+            <router-link :to="`/product/${cartItem.id}/${cartItem.type || 'SINGLE'}`">
+              <h2 class="serif text-lg md:text-xl leading-snug">{{ cartItem.name }}</h2>
+            </router-link>
+            <p v-if="cartItem.brand" class="text-[11px] uppercase tracking-[0.2em] text-ink3 mt-1.5">
+              {{ cartItem.brand }}
+            </p>
+          </div>
+
+          <InCartButton
+            class="w-32"
+            :itemsCount="cartItem.quantity"
+            @add="addToCart(cartItem)"
+            @remove="removeFromCart(cartItem)"
+          />
+
+          <div class="md:w-40 md:text-right">
+            <p class="serif text-xl">
               <template v-if="cartItem.newPrice">
-                <p class="line-through text-lg">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
-                <p class="mt-3 text-2xl">{{ currencyFormatter().format(cartItem.newPrice) }}ТГ</p>
+                <span class="old-price-quiet text-sm">
+                  {{ currencyFormatter().format(cartItem.oldPrice * cartItem.quantity) }}
+                </span>
+                {{ currencyFormatter().format(cartItem.newPrice * cartItem.quantity) }} тг
               </template>
               <template v-else>
-                <p class="mt-3 text-2xl">{{ currencyFormatter().format(cartItem.oldPrice) }}ТГ</p>
+                {{ currencyFormatter().format(cartItem.oldPrice * cartItem.quantity) }} тг
               </template>
-            </div>
-            <div class="m-10 flex flex-col items-center justify-center text-lg font-light">
-              {{ $t('mainStoreAddress') }}
-            </div>
-            <div class="col-span-4 border-b border-gray-650 mx-10 mt-5"></div>
-          </template>
-        </div>
+            </p>
+            <button
+              type="button"
+              class="text-xs uppercase tracking-[0.15em] text-ink3 hover:text-danger transition-colors mt-2"
+              @click="removeAll(cartItem)"
+            >
+              {{ $t('remove') }}
+            </button>
+          </div>
+        </article>
+      </section>
 
-        <!-- Order Summary and Form -->
-        <div class="xl:w-1/5 xl:ml-3 h-full flex flex-col">
-          <div class="grid grid-cols-2 border border-gray-650">
-            <h2 class="text-xl font-light text-center px-4 py-2">
-              {{ $t('sum') }}
-            </h2>
-            <h2 class="text-xl font-light text-center px-4 py-2">
-              {{ currencyFormatter().format(oldPriceCount) }}ТГ
-            </h2>
-            
-            <template v-if="selectedDeliveryType && selectedDeliveryType.deliveryPrice">
-              <h2 class="text-xl font-light text-center px-4 py-2">
-                {{ $t('delivery') }}
-              </h2>
-              <h2 class="text-xl font-light text-center px-4 py-2">
-                {{ currencyFormatter().format(selectedDeliveryType.deliveryPrice) }}ТГ</h2>
-            </template>
-            <template v-if="newPriceCount !== oldPriceCount">
-              <h2 class="text-xl font-light text-center px-4 py-2">
-                {{ $t('discount') }}
-              </h2>
-              <h2 class="text-xl font-light text-center px-4 py-2">
-                {{ currencyFormatter().format(oldPriceCount - newPriceCount) }}ТГ
-              </h2>
-            </template>
-            <div class="col-span-2 border-b border-gray-650 mx-10 mt-2"></div>
-            <h2 class="text-xl font-light text-center px-4 py-2">
-              {{ $t('total') }}
-            </h2>
-            <!-- Display final total with additional cost (if any) -->
-            <h2 class="text-xl font-light text-center px-4 py-2">
-              {{ currencyFormatter().format(finalTotal) }}ТГ
-            </h2>
+      <!-- Сводка и оформление -->
+      <aside class="xl:sticky xl:top-28">
+        <div class="bg-surface p-6 md:p-8">
+          <h2 class="text-[11px] uppercase tracking-[0.3em] text-ink mb-6">{{ $t('your_order') }}</h2>
 
-            <!-- User Information Inputs -->
-            <fwb-input class="col-span-2 m-2" v-model="createOrderForm.name" name="name" required type="text"
-              :label="$t('name')" v-validate="'required'" :placeholder="$t('enter_your_name')">
-            </fwb-input>
-            <fwb-input class="col-span-2 m-2" v-model="createOrderForm.email" required type="email" name="email"
-              :label="$t('email')" v-validate="'required|email'" :placeholder="$t('enter_your_email')">
-            </fwb-input>
-            <fwb-input class="col-span-2 m-2" v-model="createOrderForm.phone" required type="text" name="phone"
-              :label="$t('phone')" v-validate="'required|phone'" :placeholder="$t('enter_your_phone')">
-            </fwb-input>
-
-            <!-- City Input with Filtering -->
-            <div class="col-span-2 m-2 relative">
-              <fwb-input v-model="cityInput" required type="text" name="city" :label="$t('city')"
-                v-validate="'required'" :placeholder="$t('enter_your_city')" @input="onCityInputChange"
-                @focus="onCityInputFocus"></fwb-input>
-              <ul v-if="filteredCities.length"
-                class="absolute bg-white border border-gray-300 w-full z-10 max-h-60 overflow-auto">
-                <li v-for="city in filteredCities" :key="city.id" class="p-2 cursor-pointer hover:bg-gray-100"
-                  @click="selectCity(city)">
-                  {{ city.name }}
-                </li>
-              </ul>
+          <dl class="flex flex-col gap-3 text-[15px]">
+            <div class="flex justify-between gap-4">
+              <dt class="text-ink2">{{ $t('sum') }}</dt>
+              <dd>{{ currencyFormatter().format(oldPriceCount) }} тг</dd>
             </div>
 
-            <!-- Delivery Type Select -->
-            <div class="col-span-2 m-2 relative" v-if="deliveryTypes.length">
-              <fwb-input v-model="deliveryTypeInput" required type="text" name="deliveryType"
-                :label="$t('deliveryType')" v-validate="'required'" :placeholder="$t('select_delivery_type')"
-                @input="onDeliveryTypeInputChange" @focus="onDeliveryTypeInputFocus"></fwb-input>
-              <ul v-if="filteredDeliveryTypes.length"
-                class="absolute bg-white border border-gray-300 w-full z-10 max-h-60 overflow-auto">
-                <li v-for="delivery in filteredDeliveryTypes" :key="delivery.id"
-                  class="p-2 cursor-pointer hover:bg-gray-100" @click="selectDeliveryType(delivery)">
-                  {{ delivery.name }}
-                </li>
-              </ul>
+            <div v-if="newPriceCount !== oldPriceCount" class="flex justify-between gap-4">
+              <dt class="text-ink2">{{ $t('discount') }}</dt>
+              <dd class="text-clay">− {{ currencyFormatter().format(oldPriceCount - newPriceCount) }} тг</dd>
             </div>
 
-            <!-- Address Input or Storage Selection -->
-            <div class="col-span-2 m-2" v-if="!isSelfDelivery">
-              <fwb-input v-model="createOrderForm.address" required type="text" :label="$t('address')"
-                v-validate="'required'" :placeholder="$t('enter_your_address')">
-              </fwb-input>
+            <!-- Сумму доставки показываем, только когда она известна:
+                 у части способов тариф считает служба доставки -->
+            <div v-if="deliveryCost" class="flex justify-between gap-4">
+              <dt class="text-ink2">{{ $t('delivery') }}</dt>
+              <dd>{{ currencyFormatter().format(deliveryCost) }} тг</dd>
             </div>
-            <div class="col-span-2 m-2 relative" v-else>
-              <fwb-input v-model="storageInput" required type="text" name="storage" :label="$t('selectStorage')"
-                v-validate="'required'" :placeholder="$t('select_storage')" @input="onStorageInputChange"
-                @focus="onStorageInputFocus"></fwb-input>
-              <ul v-if="filteredStorages.length"
-                class="absolute bg-white border border-gray-300 w-full z-10 max-h-60 overflow-auto">
-                <li v-for="storage in filteredStorages" :key="storage.id" class="p-2 cursor-pointer hover:bg-gray-100"
-                  @click="selectStorage(storage)">
-                  {{ storage.nameRu }}
-                </li>
-              </ul>
-            </div>
+          </dl>
 
-            <PrimaryBtn
-            class="col-span-2 w-auto mx-auto px-5 py-3 my-3"
-            :disabled="isCreatingOrder"
-            @click="createOrder">
-            <span v-if="isCreatingOrder">{{ $t('creatingOrder') }}...</span>
-            <span v-else>{{ $t('createOrder') }}</span>
-          </PrimaryBtn>
+          <div class="flex justify-between items-baseline gap-4 mt-6 pt-5 border-t border-line">
+            <span class="text-[11px] uppercase tracking-[0.2em] text-ink2">{{ $t('total') }}</span>
+            <span class="serif text-[28px] leading-none">{{ currencyFormatter().format(finalTotal) }} тг</span>
           </div>
         </div>
-      </div>
+
+        <form class="mt-10" novalidate @submit.prevent="createOrder">
+          <h2 class="text-[11px] uppercase tracking-[0.3em] text-ink mb-6">{{ $t('contacts_form') }}</h2>
+
+          <div class="flex flex-col gap-6">
+            <TextField
+              v-model="createOrderForm.name"
+              :label="$t('name')"
+              :placeholder="$t('enter_your_name')"
+              autocomplete="name"
+              :error="errors.name"
+              @blur="validateName"
+            />
+
+            <TextField
+              v-model="createOrderForm.email"
+              type="email"
+              inputmode="email"
+              :label="$t('email')"
+              placeholder="name@mail.ru"
+              autocomplete="email"
+              :error="errors.email"
+              @blur="validateEmail"
+            />
+
+            <TextField
+              :modelValue="phoneDisplay"
+              type="tel"
+              inputmode="tel"
+              :label="$t('phone')"
+              placeholder="+7 (___) ___-__-__"
+              autocomplete="tel"
+              :error="errors.phone"
+              @update:modelValue="onPhoneInput"
+              @blur="validatePhone"
+            />
+          </div>
+
+          <h2 class="text-[11px] uppercase tracking-[0.3em] text-ink mt-10 mb-6">{{ $t('delivery_form') }}</h2>
+
+          <div class="flex flex-col gap-6">
+            <ComboField
+              v-model="cityInput"
+              :label="$t('city')"
+              :placeholder="$t('enter_your_city')"
+              :options="filteredCities"
+              :error="errors.city"
+              @search="onCitySearch"
+              @open="onCityOpen"
+              @select="selectCity"
+            />
+
+            <ComboField
+              v-model="deliveryTypeInput"
+              :label="$t('deliveryType')"
+              :placeholder="$t('select_delivery_type')"
+              :options="filteredDeliveryTypes"
+              :disabled="!selectedCity"
+              :hint="deliveryHint"
+              :error="errors.delivery"
+              @search="onDeliverySearch"
+              @open="onDeliveryOpen"
+              @select="selectDeliveryType"
+            />
+
+            <ComboField
+              v-if="isSelfDelivery"
+              v-model="storageInput"
+              :label="$t('selectStorage')"
+              :placeholder="$t('select_storage')"
+              :options="filteredStorages"
+              :error="errors.storage"
+              @search="onStorageSearch"
+              @open="onStorageOpen"
+              @select="selectStorage"
+            />
+
+            <TextField
+              v-else
+              v-model="createOrderForm.address"
+              :label="$t('address')"
+              :placeholder="$t('enter_your_address')"
+              autocomplete="street-address"
+              :error="errors.address"
+              @blur="validateAddress"
+            />
+
+            <p v-if="selectedDeliveryType?.description" class="text-[13px] text-ink2 leading-relaxed -mt-2">
+              {{ selectedDeliveryType.description }}
+            </p>
+          </div>
+
+          <p v-if="submitError" class="field-error mt-6">{{ submitError }}</p>
+
+          <button type="submit" class="btn-solid w-full mt-8" :disabled="isCreatingOrder">
+            <span v-if="isCreatingOrder">{{ $t('creatingOrder') }}…</span>
+            <span v-else>{{ $t('createOrder') }}</span>
+          </button>
+
+          <p class="text-xs text-ink2 mt-4 leading-relaxed">
+            {{ $t('mainStoreAddress') }}
+          </p>
+        </form>
+      </aside>
     </div>
   </div>
 </template>
@@ -182,36 +218,54 @@
 <script>
 import { defineComponent } from "vue";
 import Breadcrumbs from "@/components/Breadcrumbs.vue";
-import { FwbInput } from "flowbite-vue";
-import { PlusCircleIcon, MinusCircleIcon } from "@heroicons/vue/24/outline/index.js";
+import InCartButton from "@/components/InCartButton.vue";
+import TextField from "@/components/TextField.vue";
+import ComboField from "@/components/ComboField.vue";
 import { currencyFormatter, getImgUrl } from "@/utils.js";
-import PrimaryBtn from "@/components/PrimaryBtn.vue";
+import { formatPhone, isPhoneComplete, phoneForApi, isEmailValid, isNameValid } from "@/validation.js";
 import api from '@/api';
 
 const CREATE_ORDER_URL = '/ww/createOrderNoPayment';
 
+// Бэкенд не отдаёт список салонов, поэтому точки самовывоза заданы здесь
+const PICKUP_POINTS = [
+  { id: 'samal', city: 'Алматы', name: 'Алматы · Самал-2, 52' },
+  { id: 'miras', city: 'Алматы', name: 'Алматы · мкр. Мирас, 2Б' },
+  { id: 'astana', city: 'Астана', name: 'Астана · Мангилик Ел, 42' },
+];
+
 export default defineComponent({
   components: {
-    PrimaryBtn,
     Breadcrumbs,
-    PlusCircleIcon,
-    MinusCircleIcon,
-    FwbInput,
+    InCartButton,
+    TextField,
+    ComboField,
   },
   data() {
     return {
       createOrderForm: {
-        name: null,
-        email: null,
-        phone: null,
-        address: null,
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
         city: null,
         cityId: null,
         deliveryType: null,
         deliveryTypeId: null,
-        storageId: null, // added for self-delivery
       },
+      phoneDisplay: '',
+      errors: {
+        name: '',
+        email: '',
+        phone: '',
+        city: '',
+        delivery: '',
+        address: '',
+        storage: '',
+      },
+      submitError: '',
       cityInput: '',
+      cities: [],
       filteredCities: [],
       selectedCity: null,
       deliveryTypes: [],
@@ -236,13 +290,54 @@ export default defineComponent({
     removeFromCart(item) {
       this.$store.commit('removeSingleFromCart', item);
     },
-    onCityInputFocus() {
-      if (!this.cityInput) {
-        this.fetchCities('');
+    removeAll(item) {
+      for (let i = 0; i < item.quantity; i++) {
+        this.$store.commit('removeSingleFromCart', item);
       }
     },
-    onCityInputChange(event) {
-      const value = event.target.value;
+
+    /* --- Телефон: маска и валидация --- */
+    onPhoneInput(value) {
+      this.phoneDisplay = formatPhone(value);
+      this.createOrderForm.phone = phoneForApi(value);
+      if (this.errors.phone && isPhoneComplete(value)) this.errors.phone = '';
+    },
+    validatePhone() {
+      if (!this.phoneDisplay || this.phoneDisplay === '+7 (') {
+        this.errors.phone = this.$t('error_required');
+        return false;
+      }
+      this.errors.phone = isPhoneComplete(this.phoneDisplay) ? '' : this.$t('error_phone');
+      return !this.errors.phone;
+    },
+    validateName() {
+      if (!this.createOrderForm.name) {
+        this.errors.name = this.$t('error_required');
+        return false;
+      }
+      this.errors.name = isNameValid(this.createOrderForm.name) ? '' : this.$t('error_name');
+      return !this.errors.name;
+    },
+    validateEmail() {
+      if (!this.createOrderForm.email) {
+        this.errors.email = this.$t('error_required');
+        return false;
+      }
+      this.errors.email = isEmailValid(this.createOrderForm.email) ? '' : this.$t('error_email');
+      return !this.errors.email;
+    },
+    validateAddress() {
+      if (this.isSelfDelivery) return true;
+      this.errors.address = this.createOrderForm.address?.trim() ? '' : this.$t('error_address');
+      return !this.errors.address;
+    },
+
+    /* --- Город --- */
+    onCityOpen() {
+      if (!this.cities.length) this.fetchCities('');
+      else this.filteredCities = this.cities;
+    },
+    onCitySearch(value) {
       this.cityInput = value;
       this.resetCitySelection();
       this.fetchCities(value);
@@ -250,10 +345,12 @@ export default defineComponent({
     fetchCities(name) {
       api.get('/ww/deliveryCities', { params: { name } })
         .then(response => {
-          this.filteredCities = response.data;
+          this.cities = response.data || [];
+          this.filteredCities = this.cities;
         })
         .catch(error => {
           console.error('Failed to fetch cities:', error);
+          this.filteredCities = [];
         });
     },
     selectCity(city) {
@@ -261,19 +358,31 @@ export default defineComponent({
       this.createOrderForm.city = city.name;
       this.createOrderForm.cityId = city.id;
       this.selectedCity = city;
+      this.errors.city = '';
       this.deliveryTypes = city.deliveryPojoList || [];
+      this.deliveryTypeInput = '';
+      this.filteredDeliveryTypes = this.deliveryTypes;
+      this.resetDeliveryTypeSelection();
+    },
+    resetCitySelection() {
+      this.createOrderForm.city = null;
+      this.createOrderForm.cityId = null;
+      this.selectedCity = null;
+      this.deliveryTypes = [];
       this.deliveryTypeInput = '';
       this.filteredDeliveryTypes = [];
       this.resetDeliveryTypeSelection();
-      this.filteredCities = [];
     },
-    onDeliveryTypeInputFocus() {
-      if (this.deliveryTypes && this.deliveryTypes.length && !this.deliveryTypeInput) {
-        this.filteredDeliveryTypes = this.deliveryTypes;
-      }
+
+    /* --- Способ доставки --- */
+    deliveryHint(delivery) {
+      if (!delivery.deliveryPrice) return null;
+      return `${currencyFormatter().format(delivery.deliveryPrice)} тг`;
     },
-    onDeliveryTypeInputChange(event) {
-      const value = event.target.value;
+    onDeliveryOpen() {
+      this.filteredDeliveryTypes = this.deliveryTypes;
+    },
+    onDeliverySearch(value) {
       this.deliveryTypeInput = value;
       this.filteredDeliveryTypes = this.deliveryTypes.filter(delivery =>
         delivery.name.toLowerCase().includes(value.toLowerCase())
@@ -285,87 +394,83 @@ export default defineComponent({
       this.createOrderForm.deliveryType = delivery.name;
       this.createOrderForm.deliveryTypeId = delivery.id;
       this.selectedDeliveryType = delivery;
-      this.filteredDeliveryTypes = [];
+      this.errors.delivery = '';
+      this.filteredDeliveryTypes = this.deliveryTypes;
 
-      if (delivery.code && delivery.code.toUpperCase() === 'MYSELF') {
-        this.isSelfDelivery = true;
+      const code = delivery.code ? delivery.code.toUpperCase() : '';
+      this.additionalDeliveryCost = code === 'CITY' ? 4000 : 0;
+
+      this.isSelfDelivery = code === 'MYSELF';
+      if (this.isSelfDelivery) {
         this.createOrderForm.address = '';
-        let cityCode = (this.selectedCity && this.selectedCity.code) ? this.selectedCity.code : 'ALM';
-        api.get('/ww/storages', { params: { cityCode } })
-          .then(response => {
-            this.storages = response.data;
-            this.filteredStorages = response.data;
-          })
-          .catch(error => {
-            console.error('Failed to fetch storages:', error);
-          });
-        this.additionalDeliveryCost = 0;
-      } else if (delivery.code && delivery.code.toUpperCase() === 'CITY') {
-        this.additionalDeliveryCost = 4000;
-        this.isSelfDelivery = false;
+        this.errors.address = '';
+        this.storages = this.pickupPointsForCity;
+        this.filteredStorages = this.storages;
       } else {
-        this.additionalDeliveryCost = 0;
-        this.isSelfDelivery = false;
+        this.storageInput = '';
+        this.storages = [];
+        this.filteredStorages = [];
       }
-    },
-    resetCitySelection() {
-      this.createOrderForm.city = null;
-      this.createOrderForm.cityId = null;
-      this.selectedCity = null;
-      this.deliveryTypes = [];
-      this.deliveryTypeInput = '';
-      this.filteredDeliveryTypes = [];
-      this.resetDeliveryTypeSelection();
     },
     resetDeliveryTypeSelection() {
       this.createOrderForm.deliveryType = null;
       this.createOrderForm.deliveryTypeId = null;
       this.selectedDeliveryType = null;
-      // Reset self-delivery fields and additional cost
       this.isSelfDelivery = false;
-      this.createOrderForm.storageId = null;
       this.storageInput = '';
       this.filteredStorages = [];
       this.storages = [];
       this.additionalDeliveryCost = 0;
     },
-    onStorageInputFocus() {
-      if (this.storageInput === '' && this.storages.length > 0) {
-        this.filteredStorages = this.storages;
-      }
+
+    /* --- Салон для самовывоза --- */
+    onStorageOpen() {
+      this.filteredStorages = this.storages;
     },
-    onStorageInputChange(event) {
-      const value = event.target.value;
+    onStorageSearch(value) {
       this.storageInput = value;
       this.filteredStorages = this.storages.filter(storage =>
-        storage.nameRu.toLowerCase().includes(value.toLowerCase())
+        storage.name.toLowerCase().includes(value.toLowerCase())
       );
     },
     selectStorage(storage) {
-      this.storageInput = storage.nameRu;
-      this.createOrderForm.storageId = storage.id;
+      this.storageInput = storage.name;
       this.selectedStorage = storage;
-      this.filteredStorages = [];
+      this.errors.storage = '';
+      this.filteredStorages = this.storages;
     },
+
+    validateAll() {
+      const checks = [this.validateName(), this.validateEmail(), this.validatePhone()];
+
+      this.errors.city = this.createOrderForm.cityId ? '' : this.$t('error_city');
+      this.errors.delivery = this.createOrderForm.deliveryTypeId ? '' : this.$t('error_delivery');
+      checks.push(!this.errors.city, !this.errors.delivery);
+
+      if (this.isSelfDelivery) {
+        this.errors.storage = this.selectedStorage ? '' : this.$t('error_storage');
+        checks.push(!this.errors.storage);
+      } else {
+        checks.push(this.validateAddress());
+      }
+
+      return checks.every(Boolean);
+    },
+
     createOrder() {
       if (this.isCreatingOrder) return;
-      if (
-        !this.createOrderForm.name ||
-        !this.createOrderForm.email ||
-        !this.createOrderForm.phone ||
-        (!this.isSelfDelivery && !this.createOrderForm.address) ||
-        (this.isSelfDelivery && !this.createOrderForm.storageId) ||
-        !this.createOrderForm.cityId ||
-        !this.createOrderForm.deliveryTypeId
-      ) {
-        alert(this.$t('please_fill_all_required_fields'));
+
+      this.submitError = '';
+      if (!this.validateAll()) {
+        this.submitError = this.$t('please_fill_all_required_fields');
         return;
       }
-      
+
       this.isCreatingOrder = true;
 
       const itemsWithoutImages = this.itemsWithQuantity.map(item => {
-        const { images, ...rest } = item;
+        const rest = { ...item };
+        delete rest.images;
         return {
           ...rest,
           newPrice: item.newPrice !== null ? item.newPrice : item.oldPrice,
@@ -388,11 +493,10 @@ export default defineComponent({
           description: this.selectedDeliveryType ? this.selectedDeliveryType.description : ''
         }
       };
-      if (this.isSelfDelivery) {
-        orderPayload.storageId = this.createOrderForm.storageId;
-      } else {
-        orderPayload.address = this.createOrderForm.address;
-      }
+      // Самовывоз: вместо адреса клиента уходит выбранный салон
+      orderPayload.address = this.isSelfDelivery
+        ? this.selectedStorage.name
+        : this.createOrderForm.address;
 
       api.post(CREATE_ORDER_URL, orderPayload)
         .then((response) => {
@@ -436,36 +540,39 @@ export default defineComponent({
               currency: currency,
               phone: this.createOrderForm.phone,
               name: this.createOrderForm.name,
-              email: this.createOrderForm.email,
-              storageId: this.createOrderForm.storageId
+              email: this.createOrderForm.email
             };
             paymentObject.auth = access_token;
 
-            halyk.pay(paymentObject);
+            window.halyk.pay(paymentObject);
           } else {
-            alert(this.$t('order_processing_issue'));
+            this.submitError = this.$t('order_processing_issue');
           }
         })
         .catch(error => {
           console.error("Order creation failed:", error);
-          alert(this.$t('order_creation_error'));
+          this.submitError = this.$t('order_creation_error');
         })
         .finally(() => {
-          this.isCreatingOrder = false; 
-      });
+          this.isCreatingOrder = false;
+        });
     },
   },
   computed: {
     breadcrumbItems() {
       return [
         {
-          label: this.$t('cart'),
-          link: this.$route
+          label: this.$t('cart')
         }
       ];
     },
     cartItems() {
       return this.$store.state.mainStore.cart || [];
+    },
+    pickupPointsForCity() {
+      const city = this.selectedCity?.name;
+      const inCity = PICKUP_POINTS.filter(point => point.city === city);
+      return inCity.length ? inCity : PICKUP_POINTS;
     },
     oldPriceCount() {
       return this.itemsWithQuantity.reduce((total, item) => total + item.oldPrice * item.quantity, 0);
@@ -473,14 +580,14 @@ export default defineComponent({
     newPriceCount() {
       return this.itemsWithQuantity.reduce((total, item) => total + ((item.newPrice ? item.newPrice : item.oldPrice) * item.quantity), 0);
     },
-    finalTotal() {
-      let baseTotal = this.newPriceCount;
+    deliveryCost() {
       if (this.selectedDeliveryType && this.selectedDeliveryType.deliveryPrice) {
-        baseTotal += this.selectedDeliveryType.deliveryPrice;
-      } else {
-        baseTotal += this.additionalDeliveryCost;
+        return this.selectedDeliveryType.deliveryPrice;
       }
-      return baseTotal;
+      return this.additionalDeliveryCost;
+    },
+    finalTotal() {
+      return this.newPriceCount + this.deliveryCost;
     },
     itemsWithQuantity() {
       const itemMap = {};

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noble — Vol. XII · Bodoni Editorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;0,6..96,800;1,6..96,400;1,6..96,500;1,6..96,700&family=Tenor+Sans&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F8F6F1;
+      --surface: #ECE7DC;
+      --ink: #0E0E0C;
+      --ink-2: #58544D;
+      --ink-3: #9C968B;
+      --line: #1A1A18;
+      --gold: #A8895B;
+      --max: 1360px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Tenor Sans", "Inter", system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .serif { font-family: "Bodoni Moda", "Times New Roman", serif; }
+    .italic { font-style: italic; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+    .container { max-width: var(--max); margin: 0 auto; padding: 0 36px; }
+    @media (max-width: 720px) { .container { padding: 0 20px; } }
+
+    /* Masthead */
+    .masthead {
+      border-bottom: 1px solid var(--ink);
+      padding: 14px 0;
+      font-family: "Tenor Sans", sans-serif;
+      font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    }
+    .masthead .container {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center;
+    }
+    .masthead .left, .masthead .right { display: flex; gap: 24px; }
+    .masthead .left { justify-content: flex-start; }
+    .masthead .right { justify-content: flex-end; }
+    .masthead .center { text-align: center; }
+    .masthead .center .vol { font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400; font-size: 14px; letter-spacing: 0.08em; text-transform: none; color: var(--ink-2); }
+    @media (max-width: 720px) {
+      .masthead .container { grid-template-columns: 1fr; gap: 4px; text-align: center; }
+      .masthead .left, .masthead .right { justify-content: center; }
+    }
+
+    /* Big Title Bar */
+    .title-bar {
+      text-align: center;
+      padding: 28px 0 30px;
+      border-bottom: 1px solid var(--ink);
+      position: relative;
+    }
+    .title-bar .name {
+      font-family: "Bodoni Moda", serif;
+      font-weight: 500;
+      font-size: clamp(54px, 11vw, 160px);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+    }
+    .title-bar .name .o { font-style: italic; font-weight: 400; color: var(--gold); }
+    .title-bar .strap {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: clamp(14px, 1.5vw, 20px); color: var(--ink-2); margin-top: 8px;
+    }
+
+    /* Sticky nav (Roman menu) */
+    .nav {
+      position: sticky; top: 0; z-index: 60;
+      background: rgba(248,246,241,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--ink);
+    }
+    .nav-row {
+      display: flex; justify-content: center; gap: 40px; align-items: center;
+      padding: 16px 0; font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    }
+    .nav-row a { position: relative; }
+    .nav-row a .ord {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: 12px; letter-spacing: 0; text-transform: none; margin-right: 8px; color: var(--ink-3);
+    }
+    .nav-row a:hover .ord { color: var(--gold); }
+    @media (max-width: 720px) { .nav-row { gap: 22px; flex-wrap: wrap; padding: 12px 0; } }
+
+    /* HERO — magazine cover */
+    .hero {
+      position: relative; padding: 60px 0 80px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: center;
+    }
+    @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+    .hero-copy { padding-right: 24px; }
+    .hero-issue {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-size: 14px; color: var(--ink-2); letter-spacing: 0.02em;
+      border-bottom: 1px solid var(--ink); padding-bottom: 12px; margin-bottom: 28px; display: inline-block;
+    }
+    .hero-title {
+      font-family: "Bodoni Moda", serif; font-weight: 500;
+      font-size: clamp(56px, 9vw, 138px); line-height: 0.92;
+      letter-spacing: -0.005em; margin: 0;
+    }
+    .hero-title .it { font-style: italic; font-weight: 400; }
+    .hero-title .ampersand {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      color: var(--gold); display: inline-block; transform: translateY(0.04em);
+    }
+    .hero-deck {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: clamp(18px, 1.7vw, 24px); color: var(--ink-2);
+      margin: 28px 0 0; max-width: 36ch; line-height: 1.45;
+    }
+    .hero-meta {
+      display: flex; gap: 32px; margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--ink-3);
+      font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    }
+    .hero-meta span strong {
+      display: block; font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: 18px; letter-spacing: 0; text-transform: none; margin-top: 4px; color: var(--ink);
+    }
+    .hero-photo { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--surface); }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-photo .corner {
+      position: absolute; top: 16px; right: 16px;
+      font-family: "Bodoni Moda", serif; font-style: italic; font-size: 12px; color: #fff;
+      background: rgba(14,14,12,0.5); padding: 6px 12px; backdrop-filter: blur(4px);
+    }
+    .hero-photo .caption {
+      position: absolute; left: 16px; bottom: 16px; right: 16px;
+      font-family: "Bodoni Moda", serif; font-style: italic; font-size: 12px; color: #fff;
+      text-shadow: 0 1px 8px rgba(0,0,0,.4);
+    }
+
+    /* Section frame */
+    .section { padding: 100px 0; border-bottom: 1px solid var(--ink); }
+    .roman {
+      display: flex; align-items: center; gap: 16px;
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: 16px; color: var(--ink-2);
+      margin-bottom: 32px;
+    }
+    .roman::before {
+      content: ""; display: inline-block; width: 36px; height: 1px; background: var(--ink);
+    }
+    .roman .num { font-size: 28px; color: var(--ink); }
+
+    /* Editorial pullquote */
+    .pullquote { text-align: center; padding: 60px 0; }
+    .pullquote-text {
+      font-family: "Bodoni Moda", serif; font-weight: 400;
+      font-size: clamp(36px, 5.5vw, 80px); line-height: 1; letter-spacing: -0.01em;
+      max-width: 14ch; margin: 0 auto;
+    }
+    .pullquote-text .it { font-style: italic; color: var(--gold); font-weight: 400; }
+    .pullquote-text .ampersand { font-style: italic; color: var(--gold); display: inline-block; padding: 0 0.05em; }
+
+    /* Three editions */
+    .editions-head {
+      display: flex; justify-content: space-between; align-items: end; gap: 32px;
+      margin-bottom: 64px;
+    }
+    .editions-head h2 {
+      margin: 0; font-family: "Bodoni Moda", serif; font-weight: 500;
+      font-size: clamp(44px, 6.5vw, 92px); line-height: 0.95; letter-spacing: -0.005em;
+    }
+    .editions-head h2 .it { font-style: italic; font-weight: 400; color: var(--gold); }
+    .editions-head .lede {
+      font-family: "Bodoni Moda", serif; font-style: italic;
+      font-size: 18px; color: var(--ink-2); max-width: 28ch;
+    }
+    .editions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 900px) {
+      .editions-head { flex-direction: column; align-items: flex-start; }
+      .editions { grid-template-columns: 1fr; }
+    }
+    .edition { position: relative; }
+    .edition-img { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--surface); margin-bottom: 18px; }
+    .edition-img img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.02); transition: transform 1.4s cubic-bezier(.2,.7,.2,1); }
+    .edition:hover .edition-img img { transform: scale(1.06); }
+    .edition-img::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(14,14,12,0.55) 100%);
+    }
+    .edition-roman {
+      position: absolute; left: 18px; top: 18px;
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      color: #fff; font-size: 28px; line-height: 1;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    }
+    .edition-meta {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+      border-top: 1px solid var(--ink); padding-top: 14px;
+    }
+    .edition-name {
+      font-family: "Bodoni Moda", serif; font-weight: 500;
+      font-size: clamp(22px, 2vw, 30px); line-height: 1.05; margin: 0;
+    }
+    .edition-name .it { font-style: italic; font-weight: 400; }
+    .edition-arrow {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-size: 20px;
+      transition: transform .35s ease, color .3s ease;
+    }
+    .edition:hover .edition-arrow { transform: translateX(8px); color: var(--gold); }
+
+    /* Spread (chronicle) */
+    .spread { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    @media (max-width: 900px) { .spread { grid-template-columns: 1fr; gap: 48px; } }
+    .spread-img { position: relative; aspect-ratio: 4/5; overflow: hidden; background: var(--surface); }
+    .spread-img img { width: 100%; height: 100%; object-fit: cover; }
+    .spread-img .frame {
+      position: absolute; inset: 18px;
+      border: 1px solid rgba(248,246,241,0.8); pointer-events: none;
+    }
+    .spread-h {
+      font-family: "Bodoni Moda", serif; font-weight: 500;
+      font-size: clamp(40px, 5vw, 76px); line-height: 0.98;
+      letter-spacing: -0.005em; margin: 8px 0 28px;
+    }
+    .spread-h .it { font-style: italic; font-weight: 400; color: var(--gold); }
+    .spread p {
+      font-family: "Bodoni Moda", serif; font-weight: 400;
+      font-size: 19px; line-height: 1.55; color: var(--ink); max-width: 52ch;
+      margin: 0 0 18px;
+    }
+    .spread p:first-letter {
+      font-family: "Bodoni Moda", serif; font-weight: 500; font-style: italic;
+      font-size: 4em; line-height: 0.85; float: left; padding: 6px 14px 0 0; color: var(--gold);
+    }
+    .spread-meta {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--ink);
+    }
+    .spread-meta div {
+      font-family: "Tenor Sans", sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-2);
+    }
+    .spread-meta div strong {
+      display: block; font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: 22px; color: var(--ink); letter-spacing: 0; text-transform: none; margin-top: 4px;
+    }
+
+    /* Index — curator */
+    .index-head {
+      display: flex; justify-content: space-between; align-items: end; gap: 32px;
+      margin-bottom: 56px;
+    }
+    .index-head h2 {
+      margin: 0; font-family: "Bodoni Moda", serif; font-weight: 500;
+      font-size: clamp(40px, 6vw, 86px); line-height: 0.95;
+    }
+    .index-head h2 .it { font-style: italic; font-weight: 400; color: var(--gold); }
+    .index-head .meta {
+      font-family: "Bodoni Moda", serif; font-style: italic; color: var(--ink-2); font-size: 18px;
+    }
+    .index-list { border-top: 1px solid var(--ink); }
+    .index-item {
+      display: grid;
+      grid-template-columns: 80px 1.4fr 1fr 1fr auto;
+      gap: 24px;
+      align-items: center;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--ink-3);
+      transition: background .35s ease, padding .35s ease;
+    }
+    .index-item:hover { background: var(--surface); padding-left: 16px; padding-right: 16px; }
+    .index-num {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: 24px; color: var(--gold);
+    }
+    .index-thumb { width: 80px; height: 100px; object-fit: cover; }
+    .index-name {
+      font-family: "Bodoni Moda", serif; font-weight: 500; font-size: 24px; line-height: 1.1;
+    }
+    .index-name .it { font-style: italic; font-weight: 400; }
+    .index-brand { font-family: "Tenor Sans", sans-serif; font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-2); }
+    .index-price { font-family: "Bodoni Moda", serif; font-weight: 500; font-size: 20px; text-align: right; }
+    .index-price .old { font-style: italic; font-weight: 400; color: var(--ink-3); text-decoration: line-through; font-size: 14px; margin-right: 10px; }
+    .index-cta {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-size: 18px;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .index-cta::after { content: "→"; transition: transform .3s ease; display: inline-block; }
+    .index-item:hover .index-cta::after { transform: translateX(8px); }
+    @media (max-width: 900px) {
+      .index-item { grid-template-columns: 60px 1fr auto; gap: 16px; }
+      .index-thumb { display: none; }
+      .index-brand, .index-cta { display: none; }
+    }
+
+    /* Heritage marquee */
+    .heritage {
+      background: var(--ink); color: var(--bg);
+      padding: 80px 0; text-align: center; overflow: hidden;
+      border-bottom: 1px solid var(--ink);
+    }
+    .heritage h3 {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: clamp(20px, 2.2vw, 28px); margin: 0 0 56px;
+      color: rgba(248,246,241,0.7);
+    }
+    .marquee { display: flex; gap: 80px; animation: scroll 32s linear infinite; }
+    .marquee span {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: clamp(36px, 5vw, 64px); white-space: nowrap;
+      color: rgba(248,246,241,0.85);
+    }
+    .marquee span:nth-child(even) { color: var(--gold); font-style: italic; }
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* Boutiques */
+    .boutiques { display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-items: center; }
+    @media (max-width: 900px) { .boutiques { grid-template-columns: 1fr; gap: 48px; } }
+    .boutiques-img { aspect-ratio: 5/4; overflow: hidden; }
+    .boutiques-img img { width: 100%; height: 100%; object-fit: cover; }
+    .boutiques h2 {
+      font-family: "Bodoni Moda", serif; font-weight: 500;
+      font-size: clamp(44px, 6vw, 86px); line-height: 0.95; margin: 0 0 32px;
+    }
+    .boutiques h2 .it { font-style: italic; font-weight: 400; color: var(--gold); }
+    .b-list { border-top: 1px solid var(--ink); }
+    .b-item {
+      display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center;
+      padding: 22px 0; border-bottom: 1px solid var(--ink-3);
+    }
+    .b-item .nm {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400; font-size: 26px;
+    }
+    .b-item .ad { font-size: 13px; color: var(--ink-2); letter-spacing: 0.02em; }
+    .b-item .tel {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-size: 18px;
+    }
+
+    /* Manifesto strip */
+    .manifesto { padding: 120px 0; text-align: center; background: var(--surface); border-bottom: 1px solid var(--ink); border-top: 0; }
+    .manifesto p {
+      font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
+      font-size: clamp(28px, 3.4vw, 48px); line-height: 1.25; max-width: 22ch; margin: 0 auto;
+    }
+    .manifesto p .gold { color: var(--gold); }
+    .manifesto .sig { margin-top: 32px; font-family: "Tenor Sans", sans-serif; font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-2); }
+
+    /* Newsletter */
+    .news { padding: 100px 0; text-align: center; border-bottom: 1px solid var(--ink); }
+    .news .roman { justify-content: center; }
+    .news h3 {
+      font-family: "Bodoni Moda", serif; font-weight: 500;
+      font-size: clamp(34px, 5vw, 64px); line-height: 1; margin: 0 0 16px;
+    }
+    .news h3 .it { font-style: italic; font-weight: 400; color: var(--gold); }
+    .news p { font-family: "Bodoni Moda", serif; font-style: italic; color: var(--ink-2); margin: 0 auto 36px; max-width: 36ch; font-size: 18px; }
+    .news-form {
+      display: flex; max-width: 520px; margin: 0 auto;
+      border-bottom: 1px solid var(--ink); padding-bottom: 12px;
+    }
+    .news-form input {
+      flex: 1; background: transparent; border: 0; outline: none;
+      font-family: "Bodoni Moda", serif; font-style: italic; font-size: 18px; color: var(--ink);
+    }
+    .news-form input::placeholder { color: var(--ink-3); }
+    .news-form button {
+      font-family: "Tenor Sans", sans-serif; font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+    }
+
+    /* Footer */
+    .footer { padding: 80px 0 32px; }
+    .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 48px; }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-brand {
+      font-family: "Bodoni Moda", serif; font-weight: 500;
+      font-size: clamp(48px, 6vw, 78px); line-height: 1; letter-spacing: 0.02em;
+    }
+    .footer-brand .o { font-style: italic; color: var(--gold); font-weight: 400; }
+    .footer-tag {
+      font-family: "Bodoni Moda", serif; font-style: italic; color: var(--ink-2);
+      margin-top: 12px; max-width: 30ch; font-size: 16px;
+    }
+    .footer h4 { font-family: "Tenor Sans", sans-serif; font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; margin: 0 0 22px; }
+    .footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .footer li a { font-family: "Bodoni Moda", serif; font-size: 17px; color: var(--ink); transition: color .25s ease; }
+    .footer li a:hover { color: var(--gold); font-style: italic; }
+    .footer-bottom {
+      margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--ink);
+      display: flex; justify-content: space-between; gap: 16px;
+      font-family: "Tenor Sans", sans-serif; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-2);
+    }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-1 { transition-delay: .08s; }
+    .reveal-2 { transition-delay: .16s; }
+    .reveal-3 { transition-delay: .24s; }
+
+    /* Variant switcher */
+    .switcher {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: var(--bg);
+      padding: 10px 16px; border-radius: 999px; z-index: 100;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 8px 32px rgba(14,14,12,0.18);
+      font-family: "Tenor Sans", sans-serif; font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    }
+    .switcher .label { opacity: 0.6; }
+    .switcher a {
+      padding: 4px 10px; border-radius: 999px; transition: background .25s ease, color .25s ease;
+    }
+    .switcher a:hover { background: rgba(248,246,241,0.1); }
+    .switcher .on { background: var(--bg); color: var(--ink); }
+  </style>
+</head>
+<body>
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="container">
+      <div class="left"><span>Almaty · Astana</span><span>Est. 1998</span></div>
+      <div class="center"><span class="vol">Vol. XII · Spring/Summer MMXXVI</span></div>
+      <div class="right"><a href="#">RU</a><a href="#">KZ</a><a href="#">EN</a></div>
+    </div>
+  </div>
+
+  <!-- Title bar (logo as masthead) -->
+  <div class="title-bar">
+    <div class="name">N<span class="o">O</span>BLE</div>
+    <div class="strap">— Сервизы. Бокалы. Хрусталь. Подарки. —</div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="container nav-row">
+      <a href="#"><span class="ord">I.</span>Сервизы</a>
+      <a href="#"><span class="ord">II.</span>Бокалы</a>
+      <a href="#"><span class="ord">III.</span>Хрусталь</a>
+      <a href="#"><span class="ord">IV.</span>Подарки</a>
+      <a href="#"><span class="ord">V.</span>Бутики</a>
+      <a href="#"><span class="ord">VI.</span>Корзина <em style="font-style:italic;color:var(--gold);">·2</em></a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="hero-issue reveal">Выпуск № 12 · Весна 2026</div>
+        <h1 class="hero-title reveal reveal-1">
+          Стол<br/>
+          <span class="ampersand serif">&amp;</span><br/>
+          <span class="it">Театр</span>
+        </h1>
+        <p class="hero-deck reveal reveal-2">Сервизы, бокалы и хрусталь от домов с трёхвековой памятью — для тех, кто всё ещё накрывает стол как событие.</p>
+        <div class="hero-meta reveal reveal-3">
+          <span>Сезон<strong>SS 26</strong></span>
+          <span>Брендов<strong>34</strong></span>
+          <span>Бутики<strong>3 в РК</strong></span>
+        </div>
+      </div>
+      <div class="hero-photo reveal reveal-1">
+        <div class="corner">Фото · Алматы</div>
+        <img src="assets/main.jpeg" alt="Noble cover" />
+        <div class="caption">Сервиз Wedgwood «Butterfly Ball», на фоне — закат над Алатау.</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Pullquote -->
+  <section class="pullquote">
+    <div class="container">
+      <p class="pullquote-text reveal">«Молчание<br/><span class="ampersand">&amp;</span><br/><span class="it">костяной фарфор</span>».</p>
+    </div>
+  </section>
+
+  <!-- Three editions -->
+  <section class="section">
+    <div class="container">
+      <div class="roman reveal"><span class="num">I.</span>Три издания одного стола</div>
+      <div class="editions-head">
+        <h2 class="reveal">Сервизы.<br/>Бокалы. <span class="it">Хрусталь.</span></h2>
+        <p class="lede reveal reveal-1">Каждая глава — отдельный дом, отдельная страна, отдельная техника обжига или резки. Объединяет их одно: возраст не меньше столетия.</p>
+      </div>
+      <div class="editions">
+        <a href="#" class="edition reveal">
+          <div class="edition-img">
+            <span class="edition-roman">I.</span>
+            <img src="assets/serviz2.jpeg" alt="Сервизы" />
+          </div>
+          <div class="edition-meta">
+            <h3 class="edition-name">Сервизы <span class="it">&amp; парад</span></h3>
+            <span class="edition-arrow">→</span>
+          </div>
+        </a>
+        <a href="#" class="edition reveal reveal-1">
+          <div class="edition-img">
+            <span class="edition-roman">II.</span>
+            <img src="assets/bokaly.jpeg" alt="Бокалы" />
+          </div>
+          <div class="edition-meta">
+            <h3 class="edition-name">Бокалы <span class="it">&amp; тост</span></h3>
+            <span class="edition-arrow">→</span>
+          </div>
+        </a>
+        <a href="#" class="edition reveal reveal-2">
+          <div class="edition-img">
+            <span class="edition-roman">III.</span>
+            <img src="assets/hrustal.jpeg" alt="Хрусталь" />
+          </div>
+          <div class="edition-meta">
+            <h3 class="edition-name">Хрусталь <span class="it">&amp; свет</span></h3>
+            <span class="edition-arrow">→</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chronicle (spread) -->
+  <section class="section">
+    <div class="container">
+      <div class="roman reveal"><span class="num">II.</span>Хроника дома</div>
+      <div class="spread">
+        <div class="spread-img reveal">
+          <div class="frame"></div>
+          <img src="assets/serviz1.jpeg" alt="Wedgwood Butterfly Ball" />
+        </div>
+        <div>
+          <h2 class="spread-h reveal">Wedgwood, <span class="it">1759</span>.</h2>
+          <p class="reveal reveal-1">Джозайя Веджвуд впервые научился обжигать фарфор так, чтобы он становился почти прозрачным на свет. Через двести шестьдесят семь лет — тот же обжиг, та же рука, та же глина из Стаффордшира.</p>
+          <p class="reveal reveal-2">Коллекция «Butterfly Ball» расписана вручную: каждая чашка проходит через тридцать две пары рук, прежде чем оказаться в Алматы. Бабочки на ней живые ровно настолько, насколько живой бывает фарфор.</p>
+          <div class="spread-meta reveal reveal-3">
+            <div>Основан<strong>1759</strong></div>
+            <div>Мастеров<strong>32 пары рук</strong></div>
+            <div>В Noble с<strong>2014</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Index — Curator -->
+  <section class="section">
+    <div class="container">
+      <div class="roman reveal"><span class="num">III.</span>Указатель куратора</div>
+      <div class="index-head">
+        <h2 class="reveal">Избранное <span class="it">этой недели</span></h2>
+        <div class="meta reveal reveal-1">— по выбору Айгерим Е., Самал ·</div>
+      </div>
+      <div class="index-list">
+        <a href="#" class="index-item reveal">
+          <div class="index-num">I.</div>
+          <img class="index-thumb" src="assets/butterfly_ball.png" alt="Butterfly Ball" />
+          <div>
+            <div class="index-name">Butterfly <span class="it">Ball</span></div>
+            <div class="index-brand">Wedgwood · Костяной фарфор</div>
+          </div>
+          <div class="index-price">186 000 ₸</div>
+          <span class="index-cta">смотреть</span>
+        </a>
+        <a href="#" class="index-item reveal reveal-1">
+          <div class="index-num">II.</div>
+          <img class="index-thumb" src="assets/citrus.jpeg" alt="Citrus Bloom" />
+          <div>
+            <div class="index-name">Citrus <span class="it">Bloom</span></div>
+            <div class="index-brand">Wedgwood · Wonderlust</div>
+          </div>
+          <div class="index-price"><span class="old">112 000</span>92 000 ₸</div>
+          <span class="index-cta">смотреть</span>
+        </a>
+        <a href="#" class="index-item reveal reveal-2">
+          <div class="index-num">III.</div>
+          <img class="index-thumb" src="assets/serviz3.jpeg" alt="Albatross" />
+          <div>
+            <div class="index-name">Albatross <span class="it">Set</span></div>
+            <div class="index-brand">Bohemia · Хрусталь</div>
+          </div>
+          <div class="index-price">74 500 ₸</div>
+          <span class="index-cta">смотреть</span>
+        </a>
+        <a href="#" class="index-item reveal reveal-3">
+          <div class="index-num">IV.</div>
+          <img class="index-thumb" src="assets/serviz4.jpeg" alt="Meringa" />
+          <div>
+            <div class="index-name">Pearl <span class="it">Edition</span></div>
+            <div class="index-brand">Meringa</div>
+          </div>
+          <div class="index-price">58 200 ₸</div>
+          <span class="index-cta">смотреть</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Heritage marquee -->
+  <section class="heritage">
+    <div class="container">
+      <h3>— Дома, чьи имена помнят прабабушки —</h3>
+    </div>
+    <div class="marquee">
+      <span>Wedgwood</span><span>Bohemia</span><span>Villeroy &amp; Boch</span><span>Christofle</span><span>Riedel</span><span>Lalique</span>
+      <span>Wedgwood</span><span>Bohemia</span><span>Villeroy &amp; Boch</span><span>Christofle</span><span>Riedel</span><span>Lalique</span>
+    </div>
+  </section>
+
+  <!-- Manifesto -->
+  <section class="manifesto">
+    <div class="container">
+      <p class="reveal">«Хороший сервиз — это <span class="gold italic">архив</span>. В него складывают воскресные обеды, дни рождения и тихие разговоры с матерью.»</p>
+      <div class="sig reveal reveal-1">— Noble, Manifesto</div>
+    </div>
+  </section>
+
+  <!-- Boutiques -->
+  <section class="section">
+    <div class="container">
+      <div class="roman reveal"><span class="num">IV.</span>Бутики</div>
+      <div class="boutiques">
+        <div class="boutiques-img reveal">
+          <img src="assets/mat_banner.jpeg" alt="Noble Showroom" />
+        </div>
+        <div>
+          <h2 class="reveal">В гости, <span class="it">пешком</span>.</h2>
+          <div class="b-list reveal reveal-1">
+            <div class="b-item">
+              <div class="nm">Самал.</div>
+              <div class="ad">Самал-2, 77 · Алматы</div>
+              <a class="tel" href="tel:+77071710300">+7 707 171 03 00</a>
+            </div>
+            <div class="b-item">
+              <div class="nm">Мирас.</div>
+              <div class="ad">мкр. Мирас, 157 · Алматы</div>
+              <a class="tel" href="tel:+77081903717">+7 708 190 37 17</a>
+            </div>
+            <div class="b-item">
+              <div class="nm">Астана.</div>
+              <div class="ad">пр. Мангилик Ел, 55 · Астана</div>
+              <a class="tel" href="tel:+77003933327">+7 700 393 33 27</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="news">
+    <div class="container">
+      <div class="roman reveal"><span class="num">V.</span>Письма Noble</div>
+      <h3 class="reveal reveal-1">Новые коллекции,<br/><span class="it">тихие распродажи</span> и заметки.</h3>
+      <p class="reveal reveal-2">Раз в две недели. Без шума.</p>
+      <form class="news-form reveal reveal-2" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Спасибо.';">
+        <input type="email" placeholder="ваш e-mail" required />
+        <button type="submit">Подписаться →</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">N<span class="o">o</span>ble</div>
+          <p class="footer-tag">Салон посуды и подарков · Алматы · Астана · с 1998</p>
+        </div>
+        <div>
+          <h4>Каталог</h4>
+          <ul>
+            <li><a href="#">Сервизы</a></li>
+            <li><a href="#">Бокалы</a></li>
+            <li><a href="#">Хрусталь</a></li>
+            <li><a href="#">Подарки</a></li>
+            <li><a href="#">Бренды</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>О нас</h4>
+          <ul>
+            <li><a href="#">Доставка</a></li>
+            <li><a href="#">Возврат</a></li>
+            <li><a href="#">Оферта</a></li>
+            <li><a href="#">Privacy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Контакты</h4>
+          <ul>
+            <li><a href="tel:+77071710300">+7 707 171 03 00</a></li>
+            <li><a href="mailto:noblealmaty@gmail.com">noblealmaty@gmail.com</a></li>
+            <li><a href="https://www.instagram.com/noble_almaty/">Instagram</a></li>
+            <li><a href="#">WhatsApp</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© MMXXVI · Noble · All rights reserved</span>
+        <span>Bodoni Moda · Tenor Sans</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Variant Switcher -->
+  <div class="switcher">
+    <span class="label">Версия</span>
+    <a href="index.html">A</a>
+    <a href="variant-b.html" class="on">B · Bodoni</a>
+    <a href="variant-c.html">C</a>
+    <a href="variant-d.html">D</a>
+    <a href="variant-e.html">E</a>
+    <a href="variant-f.html">F</a>
+    <a href="variant-g.html">G</a>
+    <a href="variant-h.html">H</a>
+    <a href="variant-i.html">I</a>
+  </div>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 <template>
-  <button :type="type"
-          class="bg-gray-950 opacity-80 font-bolder text-white">
+  <button :type="type" class="btn-solid">
     <slot/>
   </button>
 </template>

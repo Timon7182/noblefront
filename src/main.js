@@ -9,6 +9,7 @@ import ru from '@/locales/ru.json';
 import en from '@/locales/en.json';
 import kz from '@/locales/kz.json';
 import store from '@/store'
+import { reveal, tilt, parallax } from '@/directives/motion'
 
 const localeFromLocalStorage = localStorage.getItem('locale');
 
@@ -27,4 +28,7 @@ const app = createApp(App)
 app.use(router)
 app.use(store)
 app.use(i18n);
+app.directive('reveal', reveal)
+app.directive('tilt', tilt)
+app.directive('parallax', parallax)
 app.mount('#app')

@@ -1,31 +1,30 @@
 <template>
-  <div class="relative my-20 text-center">
-    <!-- Title -->
-    <h2 class="text-3xl lg:text-4xl font-thin text-center mb-10 " v-html="title"></h2>
+  <section class="my-24 md:my-36 text-center">
+    <div class="max-w-page mx-auto px-5 xl:px-8">
+      <h2
+        v-reveal
+        class="serif font-light text-[clamp(28px,3.4vw,48px)] leading-[1.1] [text-wrap:balance] mb-12 md:mb-16"
+        v-html="title"
+      ></h2>
 
-    <!-- Centered Container at 80% Width -->
-    <div class="w-4/5 mx-auto">
-      <!-- Grid for Even Distribution -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10 max-w-5xl mx-auto">
         <div
-          v-for="photo in sortedPhotos"
+          v-for="(photo, idx) in sortedPhotos"
           :key="photo.id"
+          v-reveal="(idx % 3) + 1"
           class="flex flex-col items-center text-center"
         >
-          <!-- Image (Fixed 100x100) -->
           <img
-            class="w-[100px] h-[100px] object-contain"
+            class="w-[88px] h-[88px] object-contain"
             :src="getImgUrl(photo.image)"
             :alt="photo.description"
           />
-          <!-- Description -->
-          <p class="text-lg text-gray-700 mt-4" v-html="photo.description"></p>
+          <p class="text-[15px] leading-relaxed text-ink2 mt-5 max-w-[32ch]" v-html="photo.description"></p>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
-
 
 <script>
 import { defineComponent } from "vue";

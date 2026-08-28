@@ -1,33 +1,44 @@
 <template>
-  <div class="bg-gray-950 font-light py-20">
-    <div class="md:grid md:grid-cols-4 gap-2">
-      <div class="md:hidden">
-        <button type="button" class="text-gray-300 mt-3 flex w-50 mx-auto uppercase font-thin py-2"
-          @click="scrollToTop">
-          {{ $t('go_up') }}
-          <ChevronUpIcon class="h-3 mt-1.5 ml-1"></ChevronUpIcon>
-        </button>
+  <footer class="bg-bg border-t border-line mt-24 md:mt-36 pt-14 md:pt-20 pb-10">
+    <div class="max-w-page mx-auto px-5 xl:px-8">
+      <!-- «Наверх» — только мобильный -->
+      <button
+        type="button"
+        class="md:hidden mx-auto mb-10 flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-ink2 hover:text-ink transition-colors"
+        @click="scrollToTop"
+      >
+        {{ $t('go_up') }}
+        <ChevronUpIcon class="h-3" />
+      </button>
 
-        <hr class="mt-2" />
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[1.3fr_1fr_1fr_1.3fr] gap-x-10 gap-y-12">
+        <div>
+          <router-link to="/" class="serif text-[30px] tracking-[0.35em] font-normal inline-block">NOBLE</router-link>
+          <p class="text-sm text-ink2 mt-4 max-w-[30ch] leading-relaxed">{{ $t('tagline') }}</p>
+        </div>
+
+        <FooterMenu title="catalogue" :items="categories" />
+        <FooterMenu title="about_us" :items="aboutUsItems" />
+        <FooterMenu title="contacts" :items="contactItems" />
       </div>
-      <FooterMenu title="catalogue" :items="categories" />
-      <FooterMenu title="about_us" :items="aboutUsItems" />
-      <FooterMenu title="contacts" :items="contactItems" />
-      <div class="text-footer mt-10 md:mt-0 md:py-16 md:pr-10">
+
+      <div class="mt-14 md:mt-16 border border-line overflow-hidden">
         <TwoGisMap />
       </div>
+
+      <div class="mt-10 pt-7 border-t border-line flex flex-col sm:flex-row justify-between gap-3 text-xs text-ink2">
+        <span>© {{ new Date().getFullYear() }} Noble</span>
+        <span class="serif italic text-sm">Almaty · Astana</span>
+      </div>
     </div>
-  </div>
+  </footer>
 </template>
 <script setup>
 import TwoGisMap from "@/components/TwoGisMap.vue";
 import FooterMenu from "@/components/FooterMenu.vue";
-import { ChevronUpIcon } from "@heroicons/vue/24/solid/index.js";
+import { ChevronUpIcon } from "@heroicons/vue/24/outline/index.js";
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import PublicOffer from "@/views/PublicOffer.vue";
-import PrivacyPolicy from "@/views/PrivacyPolicy.vue";
-
 
 const store = useStore()
 
@@ -44,21 +55,6 @@ const scrollToTop = () => {
     behavior: "smooth"
   });
 }
-
-const catalogueItems = [
-  {
-    key: 'cutlery',
-  },
-  {
-    key: 'dishes',
-  },
-  {
-    key: 'wine_glasses',
-  },
-  {
-    key: 'brands',
-  },
-]
 
 const aboutUsItems = [
   {
